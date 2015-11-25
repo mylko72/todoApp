@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+	<title>할일 리스트</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://bootstrapk.com/examples/carousel/carousel.css">
+	<link rel="stylesheet" href="/css/common.css">
+	<style type="text/css" media="screen">
+		@import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css" ) ;
+	</style>
+</head>
+<body>
+
+	<div class="carousel">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="container">
+					<div class="carousel-caption">
+						<h1>To do List</h1>
+						<p>- 할 일을 기록하세요 -</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container bs-main-container">
+		<div id="display-info">
+			<span class="start"></span>
+			<span class="end"></span>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="timeline-bx">
+					<a href="#" class="prev" id="left"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+					<div class="time-wrap">
+						<div id="time-sheet">
+							<div id="time-line"></div>
+							<ol id="time-list" class="clfix"></ol>
+						</div>
+					</div>
+					<a href="#none" class="next" id="right"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+				</div>
+			</div>
+		</div>
+
+		<form>
+		<fieldset class="form col-md-6 pull-left">
+			<legend>할일 목록</legend>
+			<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 할 일 목록</h2>
+			<div class="form-field">
+				<ul class="list-group todo-list">
+				</ul>
+			</div>
+		</fieldset>
+		</form>
+
+		<ul class="list-group col-md-6 pull-right" id="object-info">
+		</ul>
+	</div>
+
+	<div id="msgBx" class="panel panel-default">
+	  <div class="panel-body">
+		<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+		<p>할 일이 등록되었습니다.</p>
+	  </div>
+	</div>
+
+	<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-labelledby="todoModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title" id="exampleModalLabel">Step2. 할 일을 등록하세요.</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="container-fluid">
+				<form>
+				  <div class="form-group">
+					<label for="todo-title" class="control-label">할 일 :</label>
+					<input type="text" class="form-control" id="todo-title">	
+				  </div>
+				  <div class="form-group">
+					<p class="b">일시 :</p>
+					<p class="txt-time">
+						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+						<span id="year">0000-00-00</span>
+						<span class="glyphicon glyphicon-time ml5" aria-hidden="true"></span>
+						<span id="start-date">00:00</span>
+						<span class="txt-bar">~</span>
+						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+						<span id="year2">0000-00-00</span>
+						<span class="glyphicon glyphicon-time ml5" aria-hidden="true"></span>
+						<span id="end-date">00:00</span>시 까지
+					</p>
+				  </div>
+				  <div class="form-group">
+					<label for="todo-text" class="control-label">메모를 입력하세요 :</label>
+					<textarea class="form-control" id="todo-memo"></textarea>
+				  </div>
+				</form>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" id="cancel" data-dismiss="modal">취소</button>
+			<button type="button" class="btn btn-primary" id="save">등록</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="/javascript/timeline.js"></script>
+	<script src="/javascript/timepicker.js"></script>
+	<script src="/javascript/timedata.js"></script>
+	<script src="/javascript/common.js"></script>
+</body>
+</html>
