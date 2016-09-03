@@ -76,6 +76,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 #time-list {position:relative; width:3720px; left:1px; top:-100px; z-index:5;}
 #time-list li.first {border-left:1px solid #ddd;}
 #time-list li {float:left; width:120px; height:130px; border-right:1px solid #bbb; font-size:14px; font-weight:bold;}
+#time-list li a {color:#0a8efd;}
 
 .list-group-item {position:relative; padding:20px 15px;}
 .list-group-item>.badge {float:left; margin-right:5px;}
