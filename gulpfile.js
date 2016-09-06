@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	rename = require('gulp-rename'),
 	sass = require('gulp-sass'),
 	livereload = require('gulp-livereload'),
+	browserSync = require('browser-sync').create(),
 	path = require('path');
 
 var src = 'public/src',
@@ -34,7 +35,8 @@ gulp.task('tmp:js:minify', function(){
 		/*.pipe(uglify())
 		.pipe(rename('tmp.combined.min.js'))*/
 		.pipe(gulp.dest(tmp+'/js'))
-		.pipe(livereload());
+		.pipe(browserSync.reload({stream:true}));
+		//.pipe(livereload());
 });
 
 // sass 컴파일
@@ -42,7 +44,8 @@ gulp.task('tmp:scss', function () {
 	gulp.src(paths.scss)
 		.pipe(sass())
 		.pipe(gulp.dest(tmp+ '/css'))
-		.pipe(livereload());
+		.pipe(browserSync.reload({stream:true}));
+		//.pipe(livereload());
 });
 
 //js build
@@ -68,13 +71,13 @@ gulp.task('webserver', function(){
 		}));
 });
 
-gulp.task('connect', function(){
-	connect.server({
-			root: [src, tmp],
-			port: 8080,
-			livereload: true,
-			fallback: src +  '/html/todo-write.html'
-		});
+gulp.task('connect', ['tmp:js:minify', 'tmp:scss'], function(){
+	return browserSync.init({
+		server : {
+			baseDir: [src, tmp],
+			index: 'html/todo-write.html'
+		}
+	});
 });
 
 gulp.task('html', function(){
@@ -88,8 +91,8 @@ gulp.task('watch', function(){
 	gulp.watch(paths.html, ['html']);
 	gulp.watch(paths.js, ['tmp:js:minify']);
 	gulp.watch(paths.scss, ['tmp:scss']);
-	gulp.watch(src+'/**').on('change', livereload.changed);
+	//gulp.watch(src+'/**').on('change', livereload.changed);
 });
 
 //default task
-gulp.task('default', ['connect', 'tmp:js:minify', 'tmp:scss', 'watch']);
+gulp.task('default', ['connect',  'watch']);
