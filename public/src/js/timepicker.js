@@ -48,6 +48,7 @@ var startOffsetX = null,
 
 			$timeline.on('click', function(event){
 				var e = event;
+				e.stopPropagation();
 				getStartPoint(e, $(this));	//시간설정(bar생성)을 위한 start point
 
 			});
@@ -142,7 +143,7 @@ var startOffsetX = null,
 				}
 			}
 
-			$bar = $('<div class="bar progress" id="bar'+idNum+'">').appendTo($timeline);	// Bar 객체 생성
+			$bar = $('<div class="bar progress" id="bar'+idNum+'"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div>').appendTo($timeline);	// Bar 객체 생성
 
 			startPos = $bar.offset();
 			startOffsetX = (e.pageX+config.base)-(startPos.left+config.base);

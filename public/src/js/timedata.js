@@ -195,7 +195,7 @@ var nowStr = null,
 		}
 
 		function addTime(tTimes){
-			var now = new $.TimeLine().getCurrentHour();
+			var now = $$.timeLine.getCurrentHour();
 			var hour = Math.floor(tTimes/60) + now;
 
 			console.log(now);
