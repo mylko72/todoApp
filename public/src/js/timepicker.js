@@ -30,8 +30,8 @@ var startOffsetX = null,
 		**/
 		function init(timeline) {
 
-			calToPx = new $.TimeLine().calToPx();
-			config = new $.TimeLine().config;
+			calToPx = $$.timeLine.calToPx();
+			config = $$.timeLine.config;
 
 			$.timedata = new $.TimeData();
 			storedData = $.timedata._getData();

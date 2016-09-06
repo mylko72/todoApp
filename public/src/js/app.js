@@ -5,6 +5,8 @@ Array.prototype.removeElement = function(index) {
 	return this; 
 }; 
 
+var $$ = {};
+
 (function ($) {
 	
 
@@ -20,7 +22,7 @@ Array.prototype.removeElement = function(index) {
 		@function init
 		**/
         function init() {
-			new $.TimeLine().init();
+			$$.timeLine.init();
 			new $.TimePicker().init();
 			new $.Form().init();
 		}
