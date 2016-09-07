@@ -23,7 +23,7 @@ var $$ = {};
 		**/
         function init() {
 			$$.timeLine.init();
-			new $.TimePicker().init();
+			$$.timePicker.init();
 			new $.Form().init();
 		}
 		

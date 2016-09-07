@@ -1,6 +1,15 @@
 @charset "utf-8";
 * { margin:0; padding:0; }
-html, body { margin:0px; padding:0px; background-color:#fff; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
+*,
+*:after,
+*:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+html, body { margin:0px; padding:0px; background:#f7f7f7 url(http://css-tricks.com/examples/RoundButtons/images/bg.png) repeat center top; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
 img, fieldset { border:0px; }
 legend { visibility:hidden; height:0px; width:0px; line-height:0; _text-indent:-10px; font-size:0px; }
 table { border-collapse:collapse; }
@@ -118,8 +127,20 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	.items {margin-top:10px;}
 }
 
+.panel-bx {
+	//box-shadow: inset 0 0 35px 5px rgba(0, 0, 0, 0.25), inset 0 2px 1px 1px rgba(255, 255, 255, 0.9), inset 0 -2px 1px 0 rgba(0, 0, 0, 0.25);
+	position:relative;
+	background: #eaeaea;
+	box-shadow: 
+		0 3px 5px rgba(0,0,0,0.25),
+		inset 0 1px 0 rgba(255,255,255,0.3),
+		inset 0 -5px 5px rgba(100,100,100,0.1),
+		inset 0 5px 5px rgba(255,255,255,0.3);
+	border-radius:20px;
+	border:none;
 
-.panel-body {height:190px;}
+}
+.panel-body {height:200px;}
 
 .carousel {
 	height:200px;
@@ -129,7 +150,50 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 .carousel-caption {bottom:0;}
 
 .timeline-bx {position:relative;}
-.time-wrap {position:absolute; width:1027px; height:130px; left:40px; top:15px; overflow:hidden;}
+.time-wrap {
+	position:relative; 
+	width:1045px; 
+	height:140px; 
+	left:30px; 
+	top:15px; 
+	overflow:hidden;
+	padding:10px;
+	-webkit-border-radius:20px;
+	border-radius:20px;
+	//-webkit-box-shadow:0 15px 25px -4px rgba(0, 0, 0, 0.2), inset 0 -8px 25px -1px rgba(255, 255, 255, 0.9), 0 -10px 15px -1px rgba(255, 255, 255, 0.6), inset 0 8px 20px 0 rgba(0, 0, 0, 0.2), inset 0 0 5px 1px rgba(255, 255, 255, 0.6);
+	//box-shadow:0 15px 25px -4px rgba(0, 0, 0, 0.4), inset 0 -8px 25px -1px rgba(255, 255, 255, 0.9), 0 -10px 15px -1px rgba(255, 255, 255, 0.6), inset 0 8px 20px 0 rgba(0, 0, 0, 0.2), inset 0 0 5px 1px rgba(255, 255, 255, 0.6);
+	background: #dedede;
+	background: -moz-linear-gradient(#dedede, #fdfdfd);
+	background: -ms-linear-gradient(#dedede, #fdfdfd);
+	background: -o-linear-gradient(#dedede, #fdfdfd);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#dedede), to(#fdfdfd));
+	background: -webkit-linear-gradient(#dedede, #fdfdfd);
+	background: linear-gradient(#dedede, #fdfdfd);
+
+	&:after {
+		content: "";
+		position: absolute;
+		top: -8%; right: -8%; bottom: -8%; left: -8%;
+		border-radius: inherit;
+		background: #ddd;
+		background: -moz-linear-gradient(#ccc, #fff);
+		background: -ms-linear-gradient(#ccc, #fff);
+		background: -o-linear-gradient(#ccc, #fff);
+		background: -webkit-gradient(linear, 0 0, 0 100%, from(#ccc), to(#fff));
+		background: -webkit-linear-gradient(#ccc, #fff);
+		background: linear-gradient(#ccc, #fff);
+		box-shadow: inset 0 2px 1px rgba(0,0,0,0.15), 0 2px 5px rgba(200,200,200,0.1);
+	}
+
+	.time-inner {
+		position:relative;
+		width:100%;
+		height:120px;
+		overflow:hidden;
+		-webkit-border-radius:10px;
+		border-radius:10px;
+	}
+}
 #time-sheet {position:absolute; left:0; top:4px; width:3000px; height:120px;}
 #time-line {
 	position:relative; 
@@ -145,11 +209,15 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	float:left; 
 	width:10px; 
 	height:100px; 
-	border-right:1px solid #dfe5ba;
+	border-right:1px dotted #dfe5ba;
 	//background-color:#ddd; 
 
 	&:nth-child(even) {
 		background-color:#eee; 
+	}
+
+	&:nth-child(12n) {
+		border-right:1px dotted #bbb;
 	}
 } /* 10px - 5minute  */
 .quarter {float:left; width:29px; height:80px; background-color:#ebebeb; border-right:1px solid #dfe5ba;} /* 2px - 1minute  */

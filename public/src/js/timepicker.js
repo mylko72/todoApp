@@ -3,233 +3,234 @@ var startOffsetX = null,
 	clickCnt = 0,
 	idNum = 0;
 
-(function ($) {
-    /**
-	@class $.TimePicker
-	@constructor
+/**
+  @module $$.timePicker
+ **/
+$$.timePicker= (function ($) {
+
+	var _startPos = null,
+		_endPos = null,
+		_clicked = false,
+		_$bar = null,
+		_$del = null,
+		config = null,
+		calToPx = null,
+		storedData = null,
+		timeStr = null;
+		
+	var _init,
+		_bindEvents,
+		_getStartPoint,
+		_getEndPoint,
+		_getChkPoint,
+		_getRange,
+		_drawBar;
+
+	/** 
+	Init function will check for specific body classes and create the necessary page object.
+	@function init
 	**/
-    $.TimePicker= function () {
+	_init = function (timeline) {
 
-		var startPos = null,
-			endPos = null,
-			cnt = 0,
-			config = null,
-			clicked = false,
-			$bar = null,
-			calToPx = null,
+		calToPx = $$.timeLine.calToPx();
+		config = $$.timeLine.config;
 
-			storedData = null,
+		$.timedata = new $.TimeData();
+		storedData = $.timedata._getData();
 
-			timeStr = null,
-			time = {};
+		_bindEvents();
+	}
 
-			
-		/** 
-		Init function will check for specific body classes and create the necessary page object.
-		@function init
-		**/
-		function init(timeline) {
+	_bindEvents = function (){
+		
+		var _self = this,
+			_saved = false,
+			_$timeline = $('#time-line'),
+			_$todoModal = $('#todoModal');
 
-			calToPx = $$.timeLine.calToPx();
-			config = $$.timeLine.config;
-
-			$.timedata = new $.TimeData();
-			storedData = $.timedata._getData();
-
-			bindEvents();
-		}
-
-		function bindEvents(){
-			
-			var self = this,
-				saved = false,
-				$timeline = $('#time-line'),
-				$todoModal = $('#todoModal');
-
-			$timeline.on('click', function(event){
-				var e = event;
-				e.stopPropagation();
-				getStartPoint(e, $(this));	//시간설정(bar생성)을 위한 start point
-
-			});
-
-			$timeline.on('mousemove', function(event){
-				var e = event;
-				getRange(e, $bar);	//시간설정(bar생성)을 위한 end point
-			});
-
-			$todoModal.find('#save').on('click', function(event){
-				saved = true;
-				$todoModal.modal('hide')
-			});
-
-			$todoModal.find('#cancel').on('click', function(event){
-				$todoModal.modal('hide')
-			});
-
-			$('#todoModal').on('hide.bs.modal', function(){
-				var idx = idNum-1;
-				if(saved){
-					var title = $todoModal.find('#todo-title').val();
-					var memo = $todoModal.find('#todo-memo').val();
-					$.timedata._saveTime(idx, title, memo);
-					saved = false;
-				}else{
-					$('.del').eq(idx).trigger('click');	
-				}
-			});
-
-			$('#todoModal').on('hidden.bs.modal', function(){
-				$('#todoModal').find('#todo-title').val('');
-				$('#todoModal').find('#todo-memo').val('');
-			});
-		}
-
-		function getStartPoint(event, target){	// 할일설정(bar생성)을 위한 Start 함수
-
-			var self = this, 
-				e = event,
-				$timeline = target;
-
-			clickCnt++;
-
-			if(clickCnt>=2){
-
-				getEndPoint(e, $bar);	//할일 종료를 위한 함수 호출
-
-				if(endOffsetX != null &&endOffsetX<(calToPx/2)){
-					alert('call 1');
-					alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
-					$('#bar'+idNum).remove();
-					clickCnt = 0;
-					clicked = false;
-					return false;
-				}
-
-				if(endOffsetX != null && storedData.length>0){
-					var lastPoint = startOffsetX+endOffsetX;
-
-					getChkPoint(lastPoint); // 등록시간 중복오류 체크 
-				}
-
-				if(endOffsetX != null && clicked){
-
-					var timeStr = $.timedata._getTime(clickCnt, idNum, startOffsetX, endOffsetX);	//할일 시간 설정
-					//$('#display-info span').eq(clickCnt-1).append(testStr);
-
-					drawBar($timeline, $bar);		//설정한 시간만큼 Bar를 타임시트에 생성
-
-					// Modal popup open
-					$('#todoModal').modal({
-						keyboard: true,
-						timeStr: timeStr
-					});
-
-					$('#todoModal').on('shown.bs.modal', function(){
-						var $time = $('#todoModal').find('.txt-time');
-
-						$time.find('#year').empty().append(timeStr.startYear);
-						$time.find('#year2').empty().append(timeStr.endYear);
-						$time.find('#start-date').empty().append(timeStr.startDate);
-						$time.find('#end-date').empty().append(timeStr.endDate);
-
-						$(this).find('#todo-title').focus();
-					});
-
-					clickCnt = 0;
-					clicked = false;
-
-					return false;
-				}
-			}
-
-			$bar = $('<div class="bar progress" id="bar'+idNum+'"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div>').appendTo($timeline);	// Bar 객체 생성
-
-			startPos = $bar.offset();
-			startOffsetX = (e.pageX+config.base)-(startPos.left+config.base);
-
-			if(storedData.length>0){ //데이터가 하나이상 등록되어 있다면
-
-				getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
-
-			}
-
-			$bar.css('left', startOffsetX).css('width','2px');
-
-			$.timedata._getTime(clickCnt, idNum, startOffsetX);	//할일 시간 설정
-			//$('#display-info span').eq(clickCnt-1).append(testStr);
-
-			clicked = true;
-		}
-
-		function getEndPoint(event, target){	// 할일 종료를 위한 End 함수
+		_$timeline.on('click', function(event){
 			var e = event;
-			var $bar = target;
+			e.stopPropagation();
+			_getStartPoint(e, $(this));	//시간설정(bar생성)을 위한 start point
 
-			endPos = $bar.offset();
-			endOffsetX = (e.pageX+config.base)-(endPos.left+config.base);
+		});
 
-			/*if(endOffsetX>($.timeline._getAnHour()*2)){
-				alert("할일은 최대 2시간까지 가능합니다");
-				endOffsetX = 240;	//할일시간이 2시간(240px)이 넘어가지 않도록 설정
-			}*/
-
-			return endOffsetX;
-		}
-
-		function getChkPoint(locOfClick, callback){
-			var cnt = 0;
-			if(callback && typeof (callback) === 'fuction'){
-				callback();
-			}
-			do{
-				if(locOfClick > storedData[cnt]["startPoint"] &&  locOfClick < storedData[cnt]["endPoint"]){
-					alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
-					$('#bar'+idNum).remove();
-					clickCnt = 0;
-					clicked = false;
-					return false;
-				}
-				cnt++;
-			}while (cnt<storedData.length);
-		}
-
-		function getRange(event, target){	// 시간 범위 설정
+		_$timeline.on('mousemove', function(event){
 			var e = event;
-			var $bar = target;
+			_getRange(e, _$bar);	//시간설정(bar생성)을 위한 end point
+		});
 
-			if(clicked){
-				var tempPos = $bar.offset();
-				var tempOffsetX = e.pageX-tempPos.left;
+		_$todoModal.find('#save').on('click', function(event){
+			_saved = true;
+			_$todoModal.modal('hide')
+		});
 
-				$bar.css('width', tempOffsetX+2);
+		_$todoModal.find('#cancel').on('click', function(event){
+			_$todoModal.modal('hide')
+		});
+
+		_$todoModal.on('hide.bs.modal', function(){
+			var _idx = idNum-1;
+			if(_saved){
+				var _title = _$todoModal.find('#todo-title').val();
+				var _desc = _$todoModal.find('#todo-memo').val();
+				$.timedata._saveTime(_idx, _title, _desc);
+				_saved = false;
+			}else{
+				$('.del').eq(_idx).trigger('click');	
 			}
-		}
+		});
 
-		function drawBar(target1, target2){		// Bar 생성
-			var $timeline = target1;
-			var $bar = target2;
+		_$todoModal.on('hidden.bs.modal', function(){
+			_$todoModal.find('#todo-title').val('');
+			_$todoModal.find('#todo-memo').val('');
+		});
+	}
 
-			$bar.css('width', endOffsetX);
+	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
 
-			$del = $('<div class="btn btn-default btn-xs del" id="del'+idNum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>').appendTo($timeline);
-			$del.css({'left' : (startOffsetX+endOffsetX)-24});
+		var _self = this, 
+			e = event,
+			_$timeline = target;
 
-			idNum++;
+		clickCnt++;
 
-			//time.home.setTimeData._delTime();
-			
-			$del.bind('click', function(){
-				var self = $(this);
-				$.timedata._delTime(self);
+		if(clickCnt>=2){
+
+			_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+
+			if(endOffsetX != null &&endOffsetX<(calToPx/2)){
+				alert('call 1');
+				alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
+				$('#bar'+idNum).remove();
+				clickCnt = 0;
+				_clicked = false;
+				return false;
+			}
+
+			if(endOffsetX != null && storedData.length>0){
+				var _lastPoint = startOffsetX+endOffsetX;
+
+				_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
+			}
+
+			if(endOffsetX != null && _clicked){
+
+				timeStr = $.timedata._getTime(clickCnt, idNum, startOffsetX, endOffsetX);	//할일 시간 설정
+				//$('#display-info span').eq(clickCnt-1).append(testStr);
+
+				_drawBar(_$timeline, _$bar);		//설정한 시간만큼 Bar를 타임시트에 생성
+
+				// Modal popup open
+				$('#todoModal').modal({
+					keyboard: true,
+					timeStr: timeStr
+				});
+
+				$('#todoModal').on('shown.bs.modal', function(){
+					var _$time = $('#todoModal').find('.txt-time');
+
+					_$time.find('#year').empty().append(timeStr.startYear);
+					_$time.find('#year2').empty().append(timeStr.endYear);
+					_$time.find('#start-date').empty().append(timeStr.startDate);
+					_$time.find('#end-date').empty().append(timeStr.endDate);
+
+					$(this).find('#todo-title').focus();
+				});
+
+				clickCnt = 0;
+				_clicked = false;
 
 				return false;
-			});
+			}
 		}
 
-		return {
-			init : init
-		};
+		_$bar = $('<div class="bar progress" id="bar'+idNum+'"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div>').appendTo(_$timeline);	// Bar 객체 생성
+
+		_startPos = _$bar.offset();
+		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
+
+		if(storedData.length>0){ //데이터가 하나이상 등록되어 있다면
+
+			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
+
+		}
+
+		_$bar.css('left', startOffsetX).css('width','2px');
+
+		$.timedata._getTime(clickCnt, idNum, startOffsetX);	//할일 시간 설정
+		//$('#display-info span').eq(clickCnt-1).append(testStr);
+
+		_clicked = true;
+	}
+
+	_getEndPoint = function (event, target){	// 할일 종료를 위한 End 함수
+		var e = event;
+		var _$bar = target;
+
+		_endPos = _$bar.offset();
+		endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
+
+		/*if(endOffsetX>($.timeline._getAnHour()*2)){
+			alert("할일은 최대 2시간까지 가능합니다");
+			endOffsetX = 240;	//할일시간이 2시간(240px)이 넘어가지 않도록 설정
+		}*/
+
+		return endOffsetX;
+	}
+
+	_getChkPoint = function (locOfClick, callback){
+		var _idx = 0;
+		if(callback && typeof (callback) === 'fuction'){
+			callback();
+		}
+		do{
+			if(locOfClick > storedData[_idx]["startPoint"] &&  locOfClick < storedData[_idx]["endPoint"]){
+				alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
+				$('#bar'+idNum).remove();
+				clickCnt = 0;
+				_clicked = false;
+				return false;
+			}
+			_idx++;
+		}while (_idx<storedData.length);
+	};
+
+	_getRange = function (event, target){	// 시간 범위 설정
+		var e = event;
+		var _$bar = target;
+
+		if(_clicked){
+			var _tempPos = _$bar.offset();
+			var _tempOffsetX = e.pageX-_tempPos.left;
+
+			_$bar.css('width', _tempOffsetX+2);
+		}
+	}
+
+	_drawBar = function (target1, target2){		// Bar 생성
+		var _$timeline = target1;
+		var _$bar = target2;
+
+		_$bar.css('width', endOffsetX);
+
+		_$del = $('<div class="btn btn-default btn-xs del" id="del'+idNum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>').appendTo(_$timeline);
+		_$del.css({'left' : (startOffsetX+endOffsetX)-24});
+
+		idNum++;
+
+		//time.home.setTimeData._delTime();
+		
+		_$del.bind('click', function(){
+			var _self = $(this);
+			$.timedata._delTime(_self);
+
+			return false;
+		});
+	}
+
+	return {
+		init : _init
 	};
 
 }(jQuery));

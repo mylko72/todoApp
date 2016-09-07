@@ -15,8 +15,8 @@ $$.timeLine = (function ($) {
 		_fiveminutes = _unit/2,
 		_$prev = $('#left'),
 		_$next = $('#right'),
-		_timeNav = null,
-		_timeSheetWidth = $('#time-sheet').outerWidth();
+		_timeSheetWidth = $('#time-sheet').outerWidth(),
+		timeNavObj = null;
 
 	var _init,
 		_bindEvents,
@@ -31,7 +31,7 @@ $$.timeLine = (function ($) {
 	@function init
 	**/
 	_init = function () {
-		_timeNav = $$.timelineNav; //네비게이션 객체 생성
+		timeNavObj = $$.timelineNav; //네비게이션 객체 생성
 
 		_setupTimeline('#time-line');
 		_bindEvents();
@@ -39,14 +39,14 @@ $$.timeLine = (function ($) {
 
 	_bindEvents = function (){
 
-		_$prev.on('click', $$.timelineNav.goPrev);	//타임시트 탐색 (이전시간 탐색) 
-		_$next.on('click', $$.timelineNav.goNext);	//타임시트 탐색 (다음시간 탐색) 
+		_$prev.on('click', timeNavObj.goPrev);	//타임시트 탐색 (이전시간 탐색) 
+		_$next.on('click', timeNavObj.goNext);	//타임시트 탐색 (다음시간 탐색) 
 
 		var _$link = $('#time-list').find('li > a');
 		// 클릭한 시간을 앞으로 slide
 		_$link.on('click', function(){
 			var _$self = $(this);
-			$$.timelineNav.goMove(_$self);
+			timeNavObj.goMove(_$self);
 		});
 	};
 	
