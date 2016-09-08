@@ -131,9 +131,8 @@ $$.timeData = (function ($) {
 
 	_saveData = function(timeWorker){
 		_storedData = timeWorker;
-
-		_addStrHtml('.todo-list', _storedData.no);
-		_getTimeList('#object-info', _storedData.no);
+		_addStrHtml('.todo-list', _storedData[_storedData.length-1].no);
+		_getTimeList('#object-info', _storedData[_storedData.length-1].no);
 
 		setTimeout(function(){
 			_showMsg('#msgBx');
@@ -181,6 +180,8 @@ $$.timeData = (function ($) {
 
 	_addStrHtml = function (target, idx){
 		var _$todoList = $(target).eq(-1);
+
+		console.log(idx);
 
 		var _str='<li class="list-group-item">';
 		_str += '<span class="badge">' + (idx+1) + '</span> ';

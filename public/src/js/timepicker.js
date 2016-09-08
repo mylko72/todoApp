@@ -16,7 +16,7 @@ $$.timePicker= (function ($) {
 		_settings = {},
 		config = null,
 		calToPx = null,
-		storedData = null,
+		storedData = {},
 		timeStr = null,
 		timeDataObj = null,
 		tempBar = null,
@@ -40,7 +40,7 @@ $$.timePicker= (function ($) {
 		config = $$.timeLine.config;
 
 		timeDataObj = $$.timeData;
-		storedData = timeDataObj.getData();
+		//storedData = timeDataObj.getData();
 
 		_bindEvents();
 	}
@@ -93,7 +93,6 @@ $$.timePicker= (function ($) {
 				tempBar = TimeBar.extend(_settings);
 				//console.log(tempBar.__proto__===TimeBar);
 				timeWorker.push(tempBar);
-				console.log(timeWorker);
 
 				timeDataObj.saveData(timeWorker);
 				_saved = false;
