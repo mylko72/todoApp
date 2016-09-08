@@ -13,10 +13,14 @@ $$.timePicker= (function ($) {
 		_clicked = false,
 		_$bar = null,
 		_$del = null,
+		_settings = {},
 		config = null,
 		calToPx = null,
 		storedData = null,
-		timeStr = null;
+		timeStr = null,
+		timeDataObj = null,
+		tempBar = null,
+		timeWorker = [];
 		
 	var _init,
 		_bindEvents,
@@ -35,8 +39,8 @@ $$.timePicker= (function ($) {
 		calToPx = $$.timeLine.calToPx();
 		config = $$.timeLine.config;
 
-		$.timedata = new $.TimeData();
-		storedData = $.timedata._getData();
+		timeDataObj = $$.timeData;
+		storedData = timeDataObj.getData();
 
 		_bindEvents();
 	}
@@ -73,9 +77,27 @@ $$.timePicker= (function ($) {
 			var _idx = idNum-1;
 			if(_saved){
 				var _title = _$todoModal.find('#todo-title').val();
-				var _desc = _$todoModal.find('#todo-memo').val();
-				$.timedata._saveTime(_idx, _title, _desc);
+				var _desc = _$todoModal.find('#todo-desc').val();
+
+				_settings = {
+					no: _idx,
+					startDate: timeStr.startDate(),
+					startTime: timeStr.startTime(),
+					startPoint: startOffsetX,
+					endDate: timeStr.endDate(),
+					endTime: timeStr.endTime(),
+					endPoint: startOffsetX + endOffsetX, 
+					title: _title,
+					desc: _desc 
+				};					
+				tempBar = TimeBar.extend(_settings);
+				//console.log(tempBar.__proto__===TimeBar);
+				timeWorker.push(tempBar);
+				console.log(timeWorker);
+
+				timeDataObj.saveData(timeWorker);
 				_saved = false;
+				tempBar = '';
 			}else{
 				$('.del').eq(_idx).trigger('click');	
 			}
@@ -83,7 +105,7 @@ $$.timePicker= (function ($) {
 
 		_$todoModal.on('hidden.bs.modal', function(){
 			_$todoModal.find('#todo-title').val('');
-			_$todoModal.find('#todo-memo').val('');
+			_$todoModal.find('#todo-desc').val('');
 		});
 	}
 
@@ -116,7 +138,7 @@ $$.timePicker= (function ($) {
 
 			if(endOffsetX != null && _clicked){
 
-				timeStr = $.timedata._getTime(clickCnt, idNum, startOffsetX, endOffsetX);	//할일 시간 설정
+				timeStr = timeDataObj.getTime(clickCnt, idNum, startOffsetX, endOffsetX);	//할일 시간 설정
 				//$('#display-info span').eq(clickCnt-1).append(testStr);
 
 				_drawBar(_$timeline, _$bar);		//설정한 시간만큼 Bar를 타임시트에 생성
@@ -130,10 +152,10 @@ $$.timePicker= (function ($) {
 				$('#todoModal').on('shown.bs.modal', function(){
 					var _$time = $('#todoModal').find('.txt-time');
 
-					_$time.find('#year').empty().append(timeStr.startYear);
-					_$time.find('#year2').empty().append(timeStr.endYear);
-					_$time.find('#start-date').empty().append(timeStr.startDate);
-					_$time.find('#end-date').empty().append(timeStr.endDate);
+					_$time.find('#startDate').empty().append(timeStr.startDate());
+					_$time.find('#endDate').empty().append(timeStr.endDate());
+					_$time.find('#startTime').empty().append(timeStr.startTime());
+					_$time.find('#endTime').empty().append(timeStr.endTime());
 
 					$(this).find('#todo-title').focus();
 				});
@@ -158,7 +180,7 @@ $$.timePicker= (function ($) {
 
 		_$bar.css('left', startOffsetX).css('width','2px');
 
-		$.timedata._getTime(clickCnt, idNum, startOffsetX);	//할일 시간 설정
+		timeDataObj.getTime(clickCnt, idNum, startOffsetX);	//할일 시간 설정
 		//$('#display-info span').eq(clickCnt-1).append(testStr);
 
 		_clicked = true;
@@ -223,7 +245,7 @@ $$.timePicker= (function ($) {
 		
 		_$del.bind('click', function(){
 			var _self = $(this);
-			$.timedata._delTime(_self);
+			timeDataObj.delTime(_self);
 
 			return false;
 		});

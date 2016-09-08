@@ -1,245 +1,264 @@
-var nowStr = null, 
-	todayStr = null,
-	todayStr2 = null,
-	startTimeStr = null,
-	endTimeStr = null
-	config = null,
+/**
+  @module $$.timeData
+**/
+$$.timeData = (function ($) {
 
-	day =  24,
-	currentDay = null,		//현재일(theDay)
-	today = null,			//오늘(today)
-	daysInMonth = null,	//총일수(Month기준)
-	dateObj = null,
-	year = null,
-	month = null,
-	date = null,
-	todayObj = new Date();
+	var _nowStr = null, 
+		_startDateStr = null,
+		_endDateStr = null,
+		_startTimeStr = null,
+		_endTimeStr = null
 
-(function ($) {
+		_day =  24,
+		_currentDay = null,		//현재일(theDay)
+		_today = null,			//오늘(today)
+		_daysInMonth = null,	//총일수(Month기준)
+		_dateObj = null,
+		_year = null,
+		_month = null,
+		_date = null,
+		_todayObj = new Date(),
+		_storedData = null;
 
-    /**
-	@class $.TimeData
-	@constructor
-	**/
-    $.TimeData = function () {
+	var _getNToday,
+		_getTime,
+		_showMsg,
+		_hideMsg,
+		_getTimeList,
+		_addStrHtml,
+		_addTime,
+		_delTime,
+		_saveData,
+		_getDaysInMonth;
 
-		var storedData = [];
 
-		function getNToday(dt){	//Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환
+	_getNToday = function (dt){	//Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환
 
-			var self = this;
+		var _self = this;
 
-			if(currentDay > daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
-				dateObj = new Date ();
-				dateObj.setDate (dateObj.getDate () + 1);
-				month = dateObj.getMonth()+1;
-				date = dateObj.getDate();
+		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
+			_dateObj = new Date ();
+			_dateObj.setDate (_dateObj.getDate () + 1);
+			_month = _dateObj.getMonth()+1;
+			_date = _dateObj.getDate();
 
-				currentDay = today;
+			_currentDay = _today;
 
-			}else{
+		}else{
 
-				dateObj = new Date(dt);
-				year = dateObj.getFullYear();
-				month = dateObj.getMonth()+1;
-				date = dateObj.getDate();
+			_dateObj = new Date(dt);
+			_year = _dateObj.getFullYear();
+			_month = _dateObj.getMonth()+1;
+			_date = _dateObj.getDate();
 
-				if(daysInMonth==null){
-					daysInMonth = getDaysInMonth(year, month-1);		//이달의 총일수를 설정
-				}
-
-				if(currentDay==null){
-					currentDay = today = date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
-				}
-
-				if(currentDay>date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
-					date = dateObj.getDate()+1
-				}
-
-			}
-			return (year + '-' + (month < 10 ? "0": "") + (month) + '-' + (date < 10 ? "0": "") + date);
-		}
-
-		function getTime(clickcnt, idnum, startoffsetx, endoffsetx){
-			
-			var self = this;
-
-			getNToday(todayObj);
-
-			if(clickcnt==1){
-				var startTime = startoffsetx / 2;
-				startTimeStr = addTime(startTime);
-				todayStr = getNToday(todayObj);
-			}else{
-				var endTime = (startoffsetx + endoffsetx)/2;
-				endTimeStr = addTime(endTime);
-				todayStr2 = getNToday(todayObj);
-
-				//saveTime();
-
-				//addStrHtml('#time-info');
+			if(_daysInMonth==null){
+				_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
 			}
 
-			return {
-				startYear : function(){
-					return todayStr;
-				},
-				endYear : function(){
-					return todayStr2;
-				},
-				startDate : function(){
-					return startTimeStr;
-				},
-				endDate : function(){
-					return endTimeStr;
-				}
-			};
-		}
-
-		function saveTime(no, title, memo){
-			var self = this;
-
-			storedData[no] = {};
-			
-			storedData[no]["no"] = no;
-			storedData[no]["startYear"] = todayStr;
-			storedData[no]["startTime"] = startTimeStr;
-			storedData[no]["startPoint"] = startOffsetX;
-			storedData[no]["endYear"] = todayStr2;
-			storedData[no]["endTime"] = endTimeStr;
-			storedData[no]["endPoint"] = startOffsetX + endOffsetX;
-			storedData[no]["title"] = title;
-			storedData[no]["memo"] = memo;
-
-			addStrHtml('.todo-list', no);
-			getTimeList('#object-info', no);
-
-			setTimeout(function(){
-				showMsg('#msgBx');
-			}, 200);
-		}
-
-		function showMsg(target){
-			$(target).addClass(function(index){
-				var addClass;
-				if($(target).is(':hidden')){
-					$(target).css('display', 'block');
-					addClass = 'in';
-				}
-				var top = parseInt($(this).css('top'));
-				$(target).css('transform', 'translateY(30px)');
-
-				return addClass;
-			});
-
-			setTimeout(function(){
-				hideMsg(target);
-			}, 2000);
-		}
-
-		function hideMsg(target){
-			var top = parseInt($(target).css('top'));
-			$(target).css('transform', 'translateY(-30px)');
-			$(target).removeClass('in')
-			setTimeout(function(){
-				$(target).css('display', 'none');	
-			}, 2000);
-		}
-
-		function getTimeList(target, idx){
-			var $objInfo = $(target),
-				result = '\n';
-
-			for(var prop in storedData[idx]){
-				result += '[속성명 : ' + prop + ', 값: ' + storedData[idx][prop] + ']\n';
-			}
-			console.log(idx);
-			$objInfo.append('<li class="list-group-item" />');
-			$objInfo.children().eq(idx).text(result);
-
-		}
-
-		function addStrHtml(target, idx){
-			var $todoList = $(target).eq(-1);
-
-			var str='<li class="list-group-item">';
-			str += '<span class="badge">' + (idx+1) + '</span> ';
-			str += '<span class="input-chk inline"><input type="checkbox" name="todo" id="chk'+(idx+1)+'">';
-			str += '<label for="chk'+(idx+1)+'">' + storedData[idx]["title"] + '</label>';
-			str += '</span>';
-			str += '<p class="time">';
-			str += '<span class="start-time">' + startTimeStr + '</span> ~ <span class="end-time">' + endTimeStr + '</span>';
-			str += '</p>';
-			//str += ' 설정시간 : <span class="today">' + todayStr + '</span> ';
-			//str += '<span class="start-time">' + startTimeStr + '</span> ~  ';
-			//str += '<span class="today2">' + todayStr2 + '</span> '; 
-			//str += '<span class="end-time">' + endTimeStr + '</span><br />';
-			str += '<p style="display:none">내용 : ' + storedData[idx]["memo"] + '</p>';
-			str += '</li>';
-
-			if(nowStr==null){
-				$('<h3 class="years">' + todayStr  + '</h3>').insertBefore($todoList);
-				//$todoList.attr('id', 'todo-list'+(idx+1));
-				nowStr = todayStr;
-			}else if(nowStr != todayStr){
-				$('<h3 class="years">' + todayStr  + '</h3>').insertAfter($todoList);
-				$todoList = $('<ul class="list-group todo-list" />');
-				$todoList.insertAfter($('.years').eq(-1));
-				nowStr = todayStr;
-			}
-			$todoList.append(str);
-
-			setTimeout(function(){
-				new $.Form().init();
-			}, 2000);
-		}
-
-		function addTime(tTimes){
-			var now = $$.timeLine.getCurrentHour();
-			var hour = Math.floor(tTimes/60) + now;
-
-			console.log(now);
-
-			if(hour>=day){
-				hour %= day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
-				currentDay = today+1;
-			}else{
-				currentDay = today;
+			if(_currentDay==null){
+				_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
 			}
 
-			var minute = Math.floor(tTimes%60);
+			if(_currentDay>_date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
+				_date = _dateObj.getDate()+1
+			}
 
-			var timeStr = (hour < 10 ? "0": "") + hour+' : ' + (minute < 10 ? "0": "") + minute;
-
-			return timeStr;
 		}
+		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
+	};
 
-		function delTime(target){
-			var idx = $('.del').index(target);
-			$('.bar').eq(idx).remove();
-			$(target).remove();
+	_getTime = function (clickcnt, idnum, startoffsetx, endoffsetx){
+		
+		var _self = this;
 
-			storedData.removeElement(idx);
+		_getNToday(_todayObj);
 
-			$('.todo-list').children().eq(idx).remove();
+		if(clickcnt==1){
+			var _startTime = startoffsetx / 2;
+			_startTimeStr = _addTime(_startTime);
+			_startDateStr = _getNToday(_todayObj);
+		}else{
+			var _endTime = (startoffsetx + endoffsetx)/2;
+			_endTimeStr = _addTime(_endTime);
+			_endDateStr = _getNToday(_todayObj);
 
-			$('#object-info').children().eq(idx).remove();
+			//saveTime();
 
-			idNum--;
-		} 
-
-		function getDaysInMonth(year, month) {
-			return 32 - new Date(year, month, 32).getDate();
+			//addStrHtml('#time-info');
 		}
 
 		return {
-			_getData : function(){
-				return storedData;
+			startDate : function(){
+				return _startDateStr;
 			},
-			_getTime : getTime,
-			_delTime : delTime,
-			_saveTime : saveTime
+			endDate : function(){
+				return _endDateStr;
+			},
+			startTime : function(){
+				return _startTimeStr;
+			},
+			endTime : function(){
+				return _endTimeStr;
+			}
 		};
+	};
+
+	_saveTime = function (no, title, desc){
+		var _self = this,
+			_no = no,
+			_title = title,
+			_desc = desc;
+
+		_storedData[_no] = {};
+		
+		_storedData[_no]["no"] = _no;
+		_storedData[_no]["startYear"] = _startDateStr;
+		_storedData[_no]["startTime"] = _startTimeStr;
+		_storedData[_no]["startPoint"] = startOffsetX;
+		_storedData[_no]["endYear"] = _endDateStr;
+		_storedData[_no]["endTime"] = _endTimeStr;
+		_storedData[_no]["endPoint"] = startOffsetX + endOffsetX;
+		_storedData[_no]["title"] = _title;
+		_storedData[_no]["desc"] = _desc;
+
+		_addStrHtml('.todo-list', _no);
+		_getTimeList('#object-info', _no);
+
+		setTimeout(function(){
+			_showMsg('#msgBx');
+		}, 200);
+	};
+
+	_saveData = function(timeWorker){
+		_storedData = timeWorker;
+
+		_addStrHtml('.todo-list', _storedData.no);
+		_getTimeList('#object-info', _storedData.no);
+
+		setTimeout(function(){
+			_showMsg('#msgBx');
+		}, 200);
+	}
+
+	_showMsg = function (target){
+		$(target).addClass(function(index){
+			var _addClass;
+			if($(target).is(':hidden')){
+				$(target).css('display', 'block');
+				_addClass = 'in';
+			}
+			var _top = parseInt($(this).css('top'));
+			$(target).css('transform', 'translateY(30px)');
+
+			return _addClass;
+		});
+
+		setTimeout(function(){
+			_hideMsg(target);
+		}, 2000);
+	};
+
+	_hideMsg = function (target){
+		var _top = parseInt($(target).css('top'));
+		$(target).css('transform', 'translateY(-30px)');
+		$(target).removeClass('in')
+		setTimeout(function(){
+			$(target).css('display', 'none');	
+		}, 2000);
+	};
+
+	_getTimeList = function (target, idx){
+		var _$objInfo = $(target),
+			_result = '\n';
+
+		for(var prop in _storedData[idx]){
+			_result += '[속성명 : ' + prop + ', 값: ' + _storedData[idx][prop] + ']\n';
+		}
+		console.log(idx);
+		_$objInfo.append('<li class="list-group-item" />');
+		_$objInfo.children().eq(idx).text(_result);
+	};
+
+	_addStrHtml = function (target, idx){
+		var _$todoList = $(target).eq(-1);
+
+		var _str='<li class="list-group-item">';
+		_str += '<span class="badge">' + (idx+1) + '</span> ';
+		_str += '<span class="input-chk inline"><input type="checkbox" name="todo" id="chk'+(idx+1)+'">';
+		_str += '<label for="chk'+(idx+1)+'">' + _storedData[idx]["title"] + '</label>';
+		_str += '</span>';
+		_str += '<p class="time">';
+		_str += '<span class="start-time">' + _startTimeStr + '</span> ~ <span class="end-time">' + _endTimeStr + '</span>';
+		_str += '</p>';
+		//str += ' 설정시간 : <span class="_today">' + _startDateStr + '</span> ';
+		//str += '<span class="start-time">' + _startTimeStr + '</span> ~  ';
+		//str += '<span class="today2">' + _endDateStr + '</span> '; 
+		//str += '<span class="end-time">' + _endTimeStr + '</span><br />';
+		_str += '<p style="display:none">내용 : ' + _storedData[idx]["desc"] + '</p>';
+		_str += '</li>';
+
+		if(_nowStr==null){
+			$('<h3 class="years">' + _startDateStr  + '</h3>').insertBefore(_$todoList);
+			//$todoList.attr('id', 'todo-list'+(idx+1));
+			_nowStr = _startDateStr;
+		}else if(_nowStr != _startDateStr){
+			$('<h3 class="years">' + _startDateStr  + '</h3>').insertAfter(_$todoList);
+			_$todoList = $('<ul class="list-group todo-list" />');
+			_$todoList.insertAfter($('.years').eq(-1));
+			_nowStr = _startDateStr;
+		}
+		_$todoList.append(_str);
+
+		setTimeout(function(){
+			new $.Form().init();
+		}, 2000);
+	};
+
+	_addTime = function (tTimes){
+		var _now = $$.timeLine.getCurrentHour();
+		var _hour = Math.floor(tTimes/60) + _now;
+
+		console.log(_now);
+
+		if(_hour>=_day){
+			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
+			_currentDay = _today+1;
+		}else{
+			_currentDay = _today;
+		}
+
+		var _minute = Math.floor(tTimes%60);
+
+		var _timeStr = (_hour < 10 ? "0": "") + _hour+' : ' + (_minute < 10 ? "0": "") + _minute;
+
+		return _timeStr;
+	};
+
+	_delTime = function (target){
+		var _idx = $('.del').index(target);
+		$('.bar').eq(_idx).remove();
+		$(target).remove();
+
+		_storedData.removeElement(_idx);
+
+		$('.todo-list').children().eq(_idx).remove();
+
+		$('#object-info').children().eq(_idx).remove();
+
+		idNum--;
+	};
+
+	_getDaysInMonth = function (_year, _month) {
+		return 32 - new Date(_year, _month, 32).getDate();
+	};
+
+	return {
+		getData : function(){
+			return _storedData;
+		},
+		getTime : _getTime,
+		delTime : _delTime,
+		saveData : _saveData
 	};
 
 }(jQuery));
