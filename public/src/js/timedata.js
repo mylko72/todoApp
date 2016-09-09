@@ -170,6 +170,8 @@ $$.timeData = (function ($) {
 		var _$objInfo = $(target),
 			_result = '\n';
 
+		console.log(_storedData[idx]);
+
 		for(var prop in _storedData[idx]){
 			_result += '[속성명 : ' + prop + ', 값: ' + _storedData[idx][prop] + ']\n';
 		}

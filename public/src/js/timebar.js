@@ -19,9 +19,9 @@ var TimeBar = {
 	title: '할일 제목',
 	description: '할일 내용',
 	done: false,
-	toString: function(){
+	/*toString: function(){
 		return this.startDate + ' ' + this.startTime + '부터 ' + this.endDate + ' ' + this.endTime + '까지 할일 내용으로 ' + this.title + ' 를(을) 등록했습니다';
-	},
+	},*/
 	extend: function(config){
 		var tmp = Object.create(this);
 		for(var key in config){

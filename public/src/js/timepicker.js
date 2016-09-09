@@ -88,7 +88,7 @@ $$.timePicker= (function ($) {
 					endTime: timeStr.endTime(),
 					endPoint: startOffsetX + endOffsetX, 
 					title: _title,
-					desc: _desc 
+					description: _desc 
 				};					
 				tempBar = TimeBar.extend(_settings);
 				//console.log(tempBar.__proto__===TimeBar);
