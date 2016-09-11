@@ -75,6 +75,7 @@ gulp.task('connect', ['tmp:js:minify', 'tmp:scss'], function(){
 	return browserSync.init({
 		server : {
 			baseDir: [src, tmp],
+			browser: "google chrome",
 			index: 'html/todo-write.html'
 		}
 	});

@@ -8,6 +8,7 @@
 **/
 $$.timeLine = (function ($) {
 
+	//--- 모듈 스코프 변수 시작 ---
 	var _base = null,	//현재시간(_now변수)을 기준으로 타임시트를 재설정하기 위한 변수
 		_now = null;			//window 시간을 현재시간으로 설정하기 위한 변수
 		_day =  24,
@@ -25,18 +26,18 @@ $$.timeLine = (function ($) {
 		_createTimeSheet,
 		_calToPx,
 		_getTotalUnit;
+	//--- 모듈 스코프 변수 끝 ---
 
-	/** 
-	Init function will check for specific body classes and create the necessary page object.
-	@function init
-	**/
+	//--- 초기화 메서드 시작 ---
 	_init = function () {
 		timeNavObj = $$.timelineNav; //네비게이션 객체 생성
 
 		_setupTimeline('#time-line');
 		_bindEvents();
 	};
+	//--- 초기화 메서드 끝 ---
 
+	//---  이벤트 핸들러 시작 ---
 	_bindEvents = function (){
 
 		_$prev.on('click', timeNavObj.goPrev);	//타임시트 탐색 (이전시간 탐색) 
@@ -49,7 +50,9 @@ $$.timeLine = (function ($) {
 			timeNavObj.goMove(_$self);
 		});
 	};
-	
+	//---  이벤트 핸들러 끝 ---
+
+	//---  DOM 메서드 시작 ---
 	_setupTimeline = function (target){
 		var _$timeline = $(target).css('width','3000px');
 		
@@ -100,7 +103,9 @@ $$.timeLine = (function ($) {
 	_getTotalUnit = function (){	//타임시트내의 Total Unit 개수
 		return _timeSheetWidth / _unit;
 	};
+	//---  DOM 메서드 끝 ---
 
+	//---  공개 api ---
 	return {
 		init : _init,
 		calToPx : _calToPx,
@@ -115,9 +120,12 @@ $$.timeLine = (function ($) {
 }(jQuery));
 
 $$.timelineNav = (function($){
+	//--- 모듈 스코프 변수 시작 ---
 	var _cnt = 0,
 		_$timesheet = $('#time-sheet');
+	//--- 모듈 스코프 변수 끝 ---
 
+	//---  공개 api ---
 	return {
 		goPrev : function(){
 			_cnt==0 ? _cnt : _cnt--;

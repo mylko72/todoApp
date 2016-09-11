@@ -3,6 +3,7 @@
 **/
 $$.timeData = (function ($) {
 
+	//--- 모듈 스코프 변수 시작 ---
 	var _nowStr = null, 
 		_startDateStr = null,
 		_endDateStr = null,
@@ -26,12 +27,14 @@ $$.timeData = (function ($) {
 		_hideMsg,
 		_getTimeList,
 		_addStrHtml,
+		_renderTemplate,
 		_addTime,
 		_delTime,
 		_saveData,
 		_getDaysInMonth;
+	//--- 모듈 스코프 변수 끝 ---
 
-
+	//---  이벤트 핸들러 시작 ---
 	_getNToday = function (dt){	//Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환
 
 		var _self = this;
@@ -129,10 +132,12 @@ $$.timeData = (function ($) {
 		}, 200);
 	};
 
-	_saveData = function(timeWorker){
-		_storedData = timeWorker;
-		_addStrHtml('.todo-list', _storedData[_storedData.length-1].no);
-		_getTimeList('#object-info', _storedData[_storedData.length-1].no);
+	_saveData = function(storedData){
+		_storedData = storedData;
+
+		//_addStrHtml('.todo-list', _storedData[_storedData.length-1].no);
+		_renderTemplate('.todo-list', _storedData);
+		//_getTimeList('#object-info', _storedData[_storedData.length-1].no);
 
 		setTimeout(function(){
 			_showMsg('#msgBx');
@@ -217,6 +222,45 @@ $$.timeData = (function ($) {
 		}, 2000);
 	};
 
+	_renderTemplate = function(target, storedData){
+		var _$todoList = $(target),
+			_storedData = storedData[storedData.length-1],
+			_idx = _storedData.no,
+			_url = _$todoList.data('template'),
+			_$newItem = null;
+	
+		//if(_nowStr==null){
+			$.ajax({
+				type : "GET",
+				async : false,
+				url : _url,
+				success : function(data) {
+					if(_$todoList.find('.timeline').size()==0){
+						_$todoList.append(data);
+					}else{
+						var _liEl = $(data).find('li');
+						_$todoList.find('.timeline').append(_liEl);
+					}
+				},
+				complete: function(){
+					var _$liEl = _$todoList.find('li').eq(-1);
+					if(_idx%2 == 0){
+						_$liEl.find('.direction-r').removeClass().addClass('direction-l');
+					}
+					_$liEl.find('.title').text(_storedData.title);
+					_$liEl.find('.start-time').text(_storedData.startTime);
+					_$liEl.find('.end-time').text(_storedData.endTime);
+					_$liEl.find('.desc').text(_storedData.description);
+
+					_nowStr = _storedData.startDate;
+				}
+			});
+		/*}else{
+
+		}*/
+		
+	};
+
 	_addTime = function (tTimes){
 		var _now = $$.timeLine.getCurrentHour();
 		var _hour = Math.floor(tTimes/60) + _now;
@@ -254,7 +298,9 @@ $$.timeData = (function ($) {
 	_getDaysInMonth = function (_year, _month) {
 		return 32 - new Date(_year, _month, 32).getDate();
 	};
+	//--- 이벤트 핸들러 끝 ---
 
+	//--- 공개 api ---
 	return {
 		getData : function(){
 			return _storedData;

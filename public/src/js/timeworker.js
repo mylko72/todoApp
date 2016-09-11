@@ -1,4 +1,4 @@
-//Object.create()À» Áö¿øÇÏÁö ¾Ê´Â ºê¶ó¿ìÀú¸¦ À§ÇÑ Å©·Î½ººê¶ó¿ìÀú ¸Ş¼­µå
+//Object.create()
 var objectCreate = function(arg){
     if( !arg ) { return {}; }
     function obj() {};
@@ -8,7 +8,7 @@ var objectCreate = function(arg){
 
 Object.create = Object.create || objectCreate;
 
-var TimeBar = {
+var TimeWorker = {
 	no: 0,
 	startDate: '0000-00-00',
 	startTime: '00:00',
@@ -16,15 +16,37 @@ var TimeBar = {
 	endDate: '0000-00-00',
 	endTime: '00:00',
 	endPoint: 0,
-	title: 'ÇÒÀÏ Á¦¸ñ',
-	description: 'ÇÒÀÏ ³»¿ë',
+	title: 'í• ì¼ ì œëª©',
+	description: 'í• ì¼ ë‚´ìš©',
 	done: false,
-	/*toString: function(){
-		return this.startDate + ' ' + this.startTime + 'ºÎÅÍ ' + this.endDate + ' ' + this.endTime + '±îÁö ÇÒÀÏ ³»¿ëÀ¸·Î ' + this.title + ' ¸¦(À») µî·ÏÇß½À´Ï´Ù';
-	},*/
+	toString: function(){
+		return this.startDate + ' ' + this.startTime + ' ë¶€í„°' + this.endDate + ' ' + this.endTime + ' ê¹Œì§€' + this.title + '(ì„)ë¥¼ í• ì¼ë¡œ ë“±ë¡í–ˆìŠµë‹ˆë‹¤.';
+	},
+	drawBar: function(target1, target2, startoffsetx, endoffsetx, idnum){
+		var $timeline = target1,
+			$bar = target2,
+			$del;
+
+		$bar.css('width', endoffsetx);
+
+		$del = $('<div class="btn btn-default btn-xs del" id="del'+idnum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>').appendTo($timeline);
+		$del.css({'left' : (startoffsetx+endoffsetx)-24});
+
+		//idnum++;
+
+		//time.home.setTimeData._delTime();
+		
+		$del.bind('click', function(){
+			var self = this;
+			$$.timeData.delTime(self);
+
+			return false;
+		});
+	},
 	extend: function(config){
-		var tmp = Object.create(this);
-		for(var key in config){
+		var tmp = Object.create(this),
+			key;
+		for(key in config){
 			if(config.hasOwnProperty(key)){
 				tmp[key] = config[key];
 			}
