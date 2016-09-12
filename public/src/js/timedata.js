@@ -26,11 +26,13 @@ $$.timeData = (function ($) {
 		_showMsg,
 		_hideMsg,
 		_getTimeList,
+		_getTimeInfo,
 		_addStrHtml,
-		_renderTemplate,
+		_renderHtml,
 		_addTime,
-		_delTime,
+		_removeData,
 		_saveData,
+		_sortBy,
 		_getDaysInMonth;
 	//--- 모듈 스코프 변수 끝 ---
 
@@ -106,38 +108,10 @@ $$.timeData = (function ($) {
 		};
 	};
 
-	_saveTime = function (no, title, desc){
-		var _self = this,
-			_no = no,
-			_title = title,
-			_desc = desc;
-
-		_storedData[_no] = {};
-		
-		_storedData[_no]["no"] = _no;
-		_storedData[_no]["startYear"] = _startDateStr;
-		_storedData[_no]["startTime"] = _startTimeStr;
-		_storedData[_no]["startPoint"] = startOffsetX;
-		_storedData[_no]["endYear"] = _endDateStr;
-		_storedData[_no]["endTime"] = _endTimeStr;
-		_storedData[_no]["endPoint"] = startOffsetX + endOffsetX;
-		_storedData[_no]["title"] = _title;
-		_storedData[_no]["desc"] = _desc;
-
-		_addStrHtml('.todo-list', _no);
-		_getTimeList('#object-info', _no);
-
-		setTimeout(function(){
-			_showMsg('#msgBx');
-		}, 200);
-	};
-
+	//할일저장
 	_saveData = function(storedData){
 		_storedData = storedData;
-
-		//_addStrHtml('.todo-list', _storedData[_storedData.length-1].no);
-		_renderTemplate('.todo-list', _storedData);
-		//_getTimeList('#object-info', _storedData[_storedData.length-1].no);
+		_getTimeList('.todo-list', _storedData);
 
 		setTimeout(function(){
 			_showMsg('#msgBx');
@@ -171,7 +145,29 @@ $$.timeData = (function ($) {
 		}, 2000);
 	};
 
-	_getTimeList = function (target, idx){
+	//할일 목록
+	_getTimeList = function(target, storedData){
+		var _$todoList = $(target),
+			_url = _$todoList.data('template'),
+			_storedData = storedData[storedData.length-1],
+			_idx = _storedData.no,
+			_$liEl;
+
+		_$liEl = _renderHtml(_$todoList, _url);
+		console.log(_$liEl);
+
+		if(_idx%2 == 0){
+			_$liEl.find('.direction-r').removeClass().addClass('direction-l');
+		}
+		_$liEl.find('.title').text(_storedData.title);
+		_$liEl.find('.start-time').text(_storedData.startTime);
+		_$liEl.find('.end-time').text(_storedData.endTime);
+		_$liEl.find('.desc').text(_storedData.description);
+
+		_nowStr = _storedData.startDate;
+	};
+
+	_getTimeInfo = function (target, idx){
 		var _$objInfo = $(target),
 			_result = '\n';
 
@@ -222,12 +218,11 @@ $$.timeData = (function ($) {
 		}, 2000);
 	};
 
-	_renderTemplate = function(target, storedData){
-		var _$todoList = $(target),
-			_storedData = storedData[storedData.length-1],
-			_idx = _storedData.no,
-			_url = _$todoList.data('template'),
-			_$newItem = null;
+	//Html(목록) 렌더링
+	_renderHtml = function(target, url){
+		var _$target = target,
+			_url = url,
+			_$liEl;
 	
 		//if(_nowStr==null){
 			$.ajax({
@@ -235,26 +230,19 @@ $$.timeData = (function ($) {
 				async : false,
 				url : _url,
 				success : function(data) {
-					if(_$todoList.find('.timeline').size()==0){
-						_$todoList.append(data);
+					if(_$target.find('.timeline').size()==0){
+						_$target.append(data);
 					}else{
 						var _liEl = $(data).find('li');
-						_$todoList.find('.timeline').append(_liEl);
+						_$target.find('.timeline').append(_liEl);
 					}
 				},
 				complete: function(){
-					var _$liEl = _$todoList.find('li').eq(-1);
-					if(_idx%2 == 0){
-						_$liEl.find('.direction-r').removeClass().addClass('direction-l');
-					}
-					_$liEl.find('.title').text(_storedData.title);
-					_$liEl.find('.start-time').text(_storedData.startTime);
-					_$liEl.find('.end-time').text(_storedData.endTime);
-					_$liEl.find('.desc').text(_storedData.description);
-
-					_nowStr = _storedData.startDate;
+					_$liEl = _$target.find('li').eq(-1);
 				}
 			});
+
+			return _$liEl;
 		/*}else{
 
 		}*/
@@ -281,18 +269,33 @@ $$.timeData = (function ($) {
 		return _timeStr;
 	};
 
-	_delTime = function (target){
+	_removeData = function (target){
 		var _idx = $('.del').index(target);
 		$('.bar').eq(_idx).remove();
 		$(target).remove();
 
 		_storedData.removeElement(_idx);
 
-		$('.todo-list').children().eq(_idx).remove();
+		$('.timeline').children().eq(_idx).remove();
+		setTimeout(function(){
+			_sortBy('.timeline');
+		}, 1000);
 
-		$('#object-info').children().eq(_idx).remove();
+		//$('#object-info').children().eq(_idx).remove();
 
 		idNum--;
+	};
+
+	_sortBy = function(target){
+		var _$liEl = $(target).find('li');
+		_$liEl.each(function(){
+			var _idx = $(target).find('li').index(this);	
+			if(_idx%2 == 1){
+				$(this).find('.direction-l').removeClass().addClass('direction-r');
+			}else{
+				$(this).find('.direction-r').removeClass().addClass('direction-l');
+			}
+		});
 	};
 
 	_getDaysInMonth = function (_year, _month) {
@@ -306,7 +309,7 @@ $$.timeData = (function ($) {
 			return _storedData;
 		},
 		getTime : _getTime,
-		delTime : _delTime,
+		removeData : _removeData,
 		saveData : _saveData
 	};
 

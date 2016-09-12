@@ -38,7 +38,7 @@ var TimeWorker = {
 		
 		$del.bind('click', function(){
 			var self = this;
-			$$.timeData.delTime(self);
+			$$.timeData.removeData(self);
 
 			return false;
 		});
