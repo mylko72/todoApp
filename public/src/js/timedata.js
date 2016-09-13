@@ -153,16 +153,22 @@ $$.timeData = (function ($) {
 			_idx = _storedData.no,
 			_$liEl;
 
-		_$liEl = _renderHtml(_$todoList, _url);
-		console.log(_$liEl);
+		_$todoList.find('.nolist').hide();
+		_$liEl = _renderHtml(_$todoList, _storedData.startDate, _url);
 
-		if(_idx%2 == 0){
+		//(_nowStr != _storedData.startDate) ? _$todoList.find('.time-tit').eq(-1).text(_storedData.startDate) : _$todoList.find('.time-tit').eq(0).text(_storedData.startDate);
+		$('.date_'+_storedData.startDate).find('.time-tit').text(_storedData.startDate);
+
+		/*if(_idx%2 == 0){
 			_$liEl.find('.direction-r').removeClass().addClass('direction-l');
-		}
+		}*/
+
 		_$liEl.find('.title').text(_storedData.title);
 		_$liEl.find('.start-time').text(_storedData.startTime);
 		_$liEl.find('.end-time').text(_storedData.endTime);
 		_$liEl.find('.desc').text(_storedData.description);
+
+		_sortBy($('.date_'+_storedData.startDate).find('.timeline'));
 
 		_nowStr = _storedData.startDate;
 	};
@@ -219,34 +225,32 @@ $$.timeData = (function ($) {
 	};
 
 	//Html(목록) 렌더링
-	_renderHtml = function(target, url){
+	_renderHtml = function(target, date, url){
 		var _$target = target,
+			_date = date,
 			_url = url,
 			_$liEl;
 	
-		//if(_nowStr==null){
-			$.ajax({
-				type : "GET",
-				async : false,
-				url : _url,
-				success : function(data) {
-					if(_$target.find('.timeline').size()==0){
-						_$target.append(data);
-					}else{
-						var _liEl = $(data).find('li');
-						_$target.find('.timeline').append(_liEl);
-					}
-				},
-				complete: function(){
-					_$liEl = _$target.find('li').eq(-1);
+		$.ajax({
+			type : "GET",
+			async : false,
+			url : _url,
+			success : function(data) {
+				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
+					_$target.append(data);
+					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
+				}else{
+					console.log('.date_'+_date);
+					var _liEl = $(data).find('li');
+					_$target.find('.date_'+_date+' .timeline').append(_liEl);
 				}
-			});
+			},
+			complete: function(){
+				_$liEl = _$target.find('.date_'+_date+' .timeline').find('li').eq(-1);
+			}
+		});
 
-			return _$liEl;
-		/*}else{
-
-		}*/
-		
+		return _$liEl;
 	};
 
 	_addTime = function (tTimes){
