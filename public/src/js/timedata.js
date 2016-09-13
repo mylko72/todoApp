@@ -113,6 +113,8 @@ $$.timeData = (function ($) {
 		_storedData = storedData;
 		_getTimeList('.todo-list', _storedData);
 
+		console.log(_storedData);
+
 		setTimeout(function(){
 			_showMsg('#msgBx');
 		}, 200);
@@ -163,6 +165,7 @@ $$.timeData = (function ($) {
 			_$liEl.find('.direction-r').removeClass().addClass('direction-l');
 		}*/
 
+	   	_$liEl.addClass('num_'+_storedData.no);
 		_$liEl.find('.title').text(_storedData.title);
 		_$liEl.find('.start-time').text(_storedData.startTime);
 		_$liEl.find('.end-time').text(_storedData.endTime);
@@ -273,14 +276,17 @@ $$.timeData = (function ($) {
 		return _timeStr;
 	};
 
-	_removeData = function (target){
-		var _idx = $('.del').index(target);
-		$('.bar').eq(_idx).remove();
-		$(target).remove();
+	_removeData = function (idx){
+		var _idx = idx;
+		//var _idx = $('.del').index(target);
+		//$('.bar').eq(_idx).remove();
+		//$(target).remove();
 
 		_storedData.removeElement(_idx);
 
-		$('.timeline').children().eq(_idx).remove();
+		console.log(_storedData);
+
+		$('.timeline').find('li.num_'+idx).remove();
 		setTimeout(function(){
 			_sortBy('.timeline');
 		}, 1000);

@@ -29,16 +29,14 @@ var TimeWorker = {
 
 		$bar.css('width', endoffsetx);
 
-		$del = $('<div class="btn btn-default btn-xs del" id="del'+idnum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>').appendTo($timeline);
-		$del.css({'left' : (startoffsetx+endoffsetx)-24});
+		$del = $('<div class="btn btn-default btn-xs del" id="del'+idnum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>');
 
-		//idnum++;
+		$bar.find('.inner').append($del);
 
-		//time.home.setTimeData._delTime();
-		
 		$del.bind('click', function(){
-			var self = this;
-			$$.timeData.removeData(self);
+			var _idx = idnum;
+			$(this).parents('.bar').remove();
+			$$.timeData.removeData(_idx);
 
 			return false;
 		});

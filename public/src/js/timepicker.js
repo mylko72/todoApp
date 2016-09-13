@@ -100,6 +100,10 @@ $$.timePicker= (function ($) {
 
 			$$.timeData.saveData(_storedData);
 
+			_$bar.data('set', _settings);
+
+			console.log(_$bar.data('set').startDate);
+
 			_tempData = '';
 			_saved = false;
 		}else{
@@ -168,7 +172,7 @@ $$.timePicker= (function ($) {
 			}
 		}
 
-		_$bar = $('<div class="bar progress" id="bar'+idNum+'"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div>').appendTo(_$timeline);	// Bar 객체 생성
+		_$bar = $('<div class="bar progress" id="bar'+idNum+'" data-set=""><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
 
 		_startPos = _$bar.offset();
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);

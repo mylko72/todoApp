@@ -279,10 +279,15 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	border-radius:15px;
 	box-shadow: 0px 1px 6px #aaa, inset 0px 2px 3px #fff;
 	border: solid 1px transparent;
+
+	.inner {
+		position:relative;
+	}
 }
 .btn-xs.del {
 	position:absolute; 
-	top:48px; 
+	top:0; 
+	right:2px;
 	z-index:20; 
 	padding:1px 2px; 
 	border-radius:10px; 
@@ -660,8 +665,8 @@ h3.years {font-size:18px; margin-bottom:10px;}
 /* DEMO 1 */
 
 .switch.demo1 {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   margin: 2px 0 0 2px;
 }
 
