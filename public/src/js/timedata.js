@@ -169,7 +169,7 @@ $$.timeData = (function ($) {
 		_$liEl.find('.title').text(_storedData.title);
 		_$liEl.find('.start-time').text(_storedData.startTime);
 		_$liEl.find('.end-time').text(_storedData.endTime);
-		_$liEl.find('.desc').text(_storedData.description);
+		_$liEl.find('.desc').html(_storedData.description);
 
 		_sortBy($('.date_'+_storedData.startDate).find('.timeline'));
 
@@ -277,7 +277,8 @@ $$.timeData = (function ($) {
 	};
 
 	_removeData = function (idx){
-		var _idx = idx;
+		var _idx = idx,
+			_$timeline;
 		//var _idx = $('.del').index(target);
 		//$('.bar').eq(_idx).remove();
 		//$(target).remove();
@@ -286,9 +287,11 @@ $$.timeData = (function ($) {
 
 		console.log(_storedData);
 
-		$('.timeline').find('li.num_'+idx).remove();
+		_$timeline = $('li.num_'+idx).parent('.timeline');
+		_$timeline.find('li.num_'+idx).remove();
+
 		setTimeout(function(){
-			_sortBy('.timeline');
+			_sortBy(_$timeline);
 		}, 1000);
 
 		//$('#object-info').children().eq(_idx).remove();

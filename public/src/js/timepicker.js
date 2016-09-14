@@ -82,7 +82,14 @@ $$.timePicker= (function ($) {
 
 		if(_saved){
 			var _title = _$todoModal.find('#todo-title').val();
-			var _desc = _$todoModal.find('#todo-desc').val();
+			var _$desc = _$todoModal.find('#todo-desc');
+
+			var _lines = _$desc.val().split("\n");
+			var _descStr = "<p>";
+			for (var i = 0; i < _lines.length; i++) {
+				_descStr += _lines[i] + "<br />";
+			}
+			_descStr += "</p>";
 
 			_settings = {
 				no: _idx,
@@ -93,7 +100,7 @@ $$.timePicker= (function ($) {
 				endTime: timeStr.endTime(),
 				endPoint: startOffsetX + endOffsetX, 
 				title: _title,
-				description: _desc 
+				description: _descStr 
 			};					
 			_tempData = TimeWorker.extend(_settings);
 			_storedData.push(_tempData);
@@ -101,8 +108,10 @@ $$.timePicker= (function ($) {
 			$$.timeData.saveData(_storedData);
 
 			_$bar.data('set', _settings);
-
-			console.log(_$bar.data('set').startDate);
+			var _$tooltip = _$bar.find('.tooltip');
+			_$tooltip.find('.title').text(_$bar.data('set').title);
+			_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
+			_$tooltip.find('.desc').html(_$bar.data('set').description);
 
 			_tempData = '';
 			_saved = false;

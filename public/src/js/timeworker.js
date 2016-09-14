@@ -25,13 +25,22 @@ var TimeWorker = {
 	drawBar: function(target1, target2, startoffsetx, endoffsetx, idnum){
 		var $timeline = target1,
 			$bar = target2,
-			$del;
+			$del,
+			tooltipStr;
 
 		$bar.css('width', endoffsetx);
 
 		$del = $('<div class="btn btn-default btn-xs del" id="del'+idnum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>');
 
 		$bar.find('.inner').append($del);
+
+		tooltipStr = String()+'<div class="tooltip">';
+		tooltipStr += '<span class="title"></span>';
+		tooltipStr += '<span class="time"></span>';
+		tooltipStr += '<span class="desc"></span>';
+		tooltipStr += '</div>';
+
+		$bar.append(tooltipStr);
 
 		$del.bind('click', function(){
 			var _idx = idnum;
