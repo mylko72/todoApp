@@ -1,10 +1,4 @@
-
-// 배열요소를 삭제하는 메소드 추가
-Array.prototype.removeElement = function(index) {
-	this.splice(index,1);     
-	return this; 
-}; 
-
+// 전역 네임스페이스 정의
 var $$ = {};
 
 (function ($) {
@@ -24,6 +18,8 @@ var $$ = {};
         function init() {
 			$$.timeLine.init();
 			$$.timePicker.init();
+			$$.util = new $.Util();
+			$$.util.init();
 			new $.Form().init();
 		}
 		

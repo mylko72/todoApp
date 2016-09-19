@@ -286,19 +286,28 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 		position:relative;
 	}
 	.tooltip {
-		right:20px;
-		bottom: 25px;
+		display:none;
+		width:130px;
+		//right:20px;
+		//bottom: 25px;
 		opacity:1;
 		border:1px solid #ddd; 
 		border-radius:5px;
-		background-color:#fff; 
+		background-color:rgba(255,255,255,.8); 
 		padding:2px 10px; 
 		font-size:11px; 
 		color:#b6893a;
 
 		span {
 			display:block;
-			&.desc p {
+			color:#666;
+			&.desc {
+				height:22px;
+				display:-webkit-box;
+				overflow:hidden;
+				text-overflow:ellipsis;
+				-webkit-line-clamp:2;
+				-webkit-box-orient:vertical;
 				line-height:1;
 				margin-bottom:0;
 			}
@@ -525,14 +534,43 @@ h3.years {font-size:18px; margin-bottom:10px;}
 }
 
 .timeline .desc {
+	position:relative;
 	margin: 1em 0.75em 0 0;
-
 	font-size: 0.77777em;
 	font-style: italic;
 	line-height: 1.5em;
 
 	p {
+		height:28px;
+		display:-webkit-box;
+		margin-left:-10px;
+		padding-left:20px;
+		overflow:hidden;
+		text-overflow:ellipsis;
+		-webkit-line-clamp:2;
+		-webkit-box-orient:vertical;
 		line-height:1.2em;
+
+		&.opened {
+			height:auto;
+			overflow:auto;
+			text-overflow:inherit;
+			-webkit-line-clamp:initial;
+		}
+
+		.txts {
+			position:relative;
+
+			.more {
+				position:absolute;
+				left:-20px;
+				top:0;
+				width:12px;
+				height:12px;
+				overflow:hidden;
+			}
+
+		}
 	}
   }
 

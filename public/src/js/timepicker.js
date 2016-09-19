@@ -1,6 +1,7 @@
 var startOffsetX = null,
 	endOffsetX = null,
 	clickCnt = 0,
+	idKey = 0,
 	idNum = 0;
 
 /**
@@ -65,19 +66,33 @@ $$.timePicker= (function ($) {
 		});
 
 		_$todoModal.find('#cancel').on('click', function(event){
+			$('#bar_'+idKey).remove();
 			_$todoModal.modal('hide')
+			idKey = '';
 		});
 
 		_$todoModal.on('hidden.bs.modal', function(){
 			_$todoModal.find('#todo-title').val('');
 			_$todoModal.find('#todo-desc').val('');
+			console.log('cancel');
 		});
+
+		$(document).on('click', '.timeline .more', function(e){
+			e.preventDefault();
+			if($(this).hasClass('glyphicon-chevron-up')){
+				$(this).parents('.desc').find('p').removeClass('opened');
+				$(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+				return false;
+			}
+			$(this).parents('.desc').find('p').addClass('opened');
+			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+		})
 	}
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
 	_saveData = function(){
-		var _idx = idNum-1,
+		var _idkey = idKey,
 			_settings = {};
 
 		if(_saved){
@@ -85,14 +100,14 @@ $$.timePicker= (function ($) {
 			var _$desc = _$todoModal.find('#todo-desc');
 
 			var _lines = _$desc.val().split("\n");
-			var _descStr = "<p>";
+			var _descStr = "";
 			for (var i = 0; i < _lines.length; i++) {
 				_descStr += _lines[i] + "<br />";
 			}
-			_descStr += "</p>";
+			//_descStr += "</p>";
 
 			_settings = {
-				no: _idx,
+				id: _idkey,
 				startDate: timeStr.startDate(),
 				startTime: timeStr.startTime(),
 				startPoint: startOffsetX,
@@ -108,6 +123,8 @@ $$.timePicker= (function ($) {
 			$$.timeData.saveData(_storedData);
 
 			_$bar.data('set', _settings);
+			_$bar.data('active', true);
+
 			var _$tooltip = _$bar.find('.tooltip');
 			_$tooltip.find('.title').text(_$bar.data('set').title);
 			_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
@@ -115,9 +132,10 @@ $$.timePicker= (function ($) {
 
 			_tempData = '';
 			_saved = false;
-		}else{
-			$('.del').eq(_idx).trigger('click');	
 		}
+		/*else{
+			$('.del').eq(_idx).trigger('click');	
+		}*/
 	};
 
 	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
@@ -135,7 +153,7 @@ $$.timePicker= (function ($) {
 			if(endOffsetX != null &&endOffsetX<(calToPx/2)){
 				alert('call 1');
 				alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
-				$('#bar'+idNum).remove();
+				$('#bar_'+idKey).remove();
 				clickCnt = 0;
 				_clicked = false;
 				return false;
@@ -149,10 +167,9 @@ $$.timePicker= (function ($) {
 
 			if(endOffsetX != null && _clicked){
 
-				timeStr = $$.timeData.getTime(clickCnt, idNum, startOffsetX, endOffsetX);	//할일 시간 설정
-				//$('#display-info span').eq(clickCnt-1).append(testStr);
+				timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
 
-				//_drawBar(_$timeline, _$bar);		//설정한 시간만큼 Bar를 타임시트에 생성
+				//설정한 시간만큼 Bar를 타임시트에 생성
 				TimeWorker.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
 
 				idNum++;
@@ -181,20 +198,20 @@ $$.timePicker= (function ($) {
 			}
 		}
 
-		_$bar = $('<div class="bar progress" id="bar'+idNum+'" data-set=""><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
+		idKey = $$.util.rKey();
+
+		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set="" data-active="false"><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
 
 		_startPos = _$bar.offset();
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
 
 		if(_storedData.length>0){ //데이터가 하나이상 등록되어 있다면
-
 			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
-
 		}
 
 		_$bar.css('left', startOffsetX).css('width','2px');
 
-		$$.timeData.getTime(clickCnt, idNum, startOffsetX);	//할일 시간 설정
+		$$.timeData.getTime(clickCnt, startOffsetX);	//할일 시간 설정
 		//$('#display-info span').eq(clickCnt-1).append(testStr);
 
 		_clicked = true;
@@ -223,7 +240,7 @@ $$.timePicker= (function ($) {
 		do{
 			if(locOfClick > _storedData[_idx]["startPoint"] &&  locOfClick < _storedData[_idx]["endPoint"]){
 				alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
-				$('#bar'+idNum).remove();
+				$('#bar_'+idKey).remove();
 				clickCnt = 0;
 				_clicked = false;
 				return false;

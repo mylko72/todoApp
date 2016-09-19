@@ -9,7 +9,7 @@ var objectCreate = function(arg){
 Object.create = Object.create || objectCreate;
 
 var TimeWorker = {
-	no: 0,
+	id: 0,
 	startDate: '0000-00-00',
 	startTime: '00:00',
 	startPoint: 0,
@@ -26,11 +26,13 @@ var TimeWorker = {
 		var $timeline = target1,
 			$bar = target2,
 			$del,
+			util = new $.Util(),
 			tooltipStr;
 
 		$bar.css('width', endoffsetx);
+		$bar.data('active', false);
 
-		$del = $('<div class="btn btn-default btn-xs del" id="del'+idnum+'" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>');
+		$del = $('<div class="btn btn-default btn-xs del" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>');
 
 		$bar.find('.inner').append($del);
 
@@ -42,10 +44,14 @@ var TimeWorker = {
 
 		$bar.append(tooltipStr);
 
+		util.tooltip($bar, false, 'mousemove');
+
 		$del.bind('click', function(){
-			var _idx = idnum;
+			var _idx = idnum,
+				_idkey = $(this).parents('.bar').data('set').id;
+
 			$(this).parents('.bar').remove();
-			$$.timeData.removeData(_idx);
+			$$.timeData.removeData(_idx, _idkey);
 
 			return false;
 		});

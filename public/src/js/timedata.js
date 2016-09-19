@@ -72,7 +72,7 @@ $$.timeData = (function ($) {
 		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
 	};
 
-	_getTime = function (clickcnt, idnum, startoffsetx, endoffsetx){
+	_getTime = function (clickcnt, startoffsetx, endoffsetx){
 		
 		var _self = this;
 
@@ -152,8 +152,9 @@ $$.timeData = (function ($) {
 		var _$todoList = $(target),
 			_url = _$todoList.data('template'),
 			_storedData = storedData[storedData.length-1],
-			_idx = _storedData.no,
-			_$liEl;
+			_id = _storedData.id,
+			_$liEl,
+			_$moreBtn;
 
 		_$todoList.find('.nolist').hide();
 		_$liEl = _renderHtml(_$todoList, _storedData.startDate, _url);
@@ -165,11 +166,17 @@ $$.timeData = (function ($) {
 			_$liEl.find('.direction-r').removeClass().addClass('direction-l');
 		}*/
 
-	   	_$liEl.addClass('num_'+_storedData.no);
+	   	_$liEl.addClass('time_'+_storedData.id);
 		_$liEl.find('.title').text(_storedData.title);
 		_$liEl.find('.start-time').text(_storedData.startTime);
 		_$liEl.find('.end-time').text(_storedData.endTime);
-		_$liEl.find('.desc').html(_storedData.description);
+		_$liEl.find('.desc .txts').html(_storedData.description);
+
+
+		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc p').height()){
+			_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+			_$liEl.find('.desc .txts').append(_$moreBtn);
+		} 
 
 		_sortBy($('.date_'+_storedData.startDate).find('.timeline'));
 
@@ -271,13 +278,14 @@ $$.timeData = (function ($) {
 
 		var _minute = Math.floor(tTimes%60);
 
-		var _timeStr = (_hour < 10 ? "0": "") + _hour+' : ' + (_minute < 10 ? "0": "") + _minute;
+		var _timeStr = (_hour < 10 ? "0": "") + _hour+':' + (_minute < 10 ? "0": "") + _minute;
 
 		return _timeStr;
 	};
 
-	_removeData = function (idx){
+	_removeData = function (idx, idkey){
 		var _idx = idx,
+			_idkey = idkey,
 			_$timeline;
 		//var _idx = $('.del').index(target);
 		//$('.bar').eq(_idx).remove();
@@ -287,8 +295,8 @@ $$.timeData = (function ($) {
 
 		console.log(_storedData);
 
-		_$timeline = $('li.num_'+idx).parent('.timeline');
-		_$timeline.find('li.num_'+idx).remove();
+		_$timeline = $('li.time_'+idkey).parent('.timeline');
+		_$timeline.find('li.time_'+idkey).remove();
 
 		setTimeout(function(){
 			_sortBy(_$timeline);
