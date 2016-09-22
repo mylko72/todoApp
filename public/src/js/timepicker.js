@@ -1,42 +1,40 @@
-var startOffsetX = null,
-	endOffsetX = null,
-	clickCnt = 0,
-	idKey = 0,
-	idNum = 0;
-
 /**
   @module $$.timePicker
  **/
 $$.timePicker= (function ($) {
 	//--- 모듈 스코프 변수 시작 ---
-	var _startPos = null,
-		_endPos = null,
+	var startOffsetX = null,
+		endOffsetX = null,
+		clickCnt = 0,
+		idKey = 0,
+		idNum = 0,
+
 		_clicked = false,
 		_saved = false,
 		_$bar = null,
-		_$del = null,
 		_$timeline = $('#time-line'),
 		_$todoModal = $('#todoModal');
-		_storedData = [],
-		_tempData = null;
 		config = null,
-		calToPx = null,
 		timeStr = null;
 		
 	var _init,
 		_bindEvents,
-		_saveData,
+		_getData,
+		_setData,
 		_getStartPoint,
 		_getEndPoint,
 		_getChkPoint,
 		_getRange,
-		_drawBar;
+		_showTimeList,
+		_renderHtml,
+		_showMsg,
+		_hideMsg,
+		_sortBy;
 	//--- 모듈 스코프 변수 끝 ---
 
 	//--- 초기화 메서드 시작 ---
 	_init = function (timeline) {
 
-		calToPx = $$.timeLine.calToPx();
 		config = $$.timeLine.config;
 
 		_bindEvents();
@@ -60,9 +58,18 @@ $$.timePicker= (function ($) {
 		});
 
 		_$todoModal.find('#save').on('click', function(event){
+			var _dataSet,
+				_storedData;
+
 			_saved = true;
 			_$todoModal.modal('hide')
-			_saveData();
+			_dataSet = _getData();
+			_setData(_dataSet);
+
+			_storedData = $$.timeData.saveData(_dataSet);
+			_showTimeList('.todo-list', _storedData);
+		
+			_saved = false;
 		});
 
 		_$todoModal.find('#cancel').on('click', function(event){
@@ -74,7 +81,6 @@ $$.timePicker= (function ($) {
 		_$todoModal.on('hidden.bs.modal', function(){
 			_$todoModal.find('#todo-title').val('');
 			_$todoModal.find('#todo-desc').val('');
-			console.log('cancel');
 		});
 
 		$(document).on('click', '.timeline .more', function(e){
@@ -91,9 +97,11 @@ $$.timePicker= (function ($) {
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
-	_saveData = function(){
+	
+	/* 입력 데이타 가져오기 */
+	_getData = function(){
 		var _idkey = idKey,
-			_settings = {};
+			_dataSet= {};
 
 		if(_saved){
 			var _title = _$todoModal.find('#todo-title').val();
@@ -104,9 +112,8 @@ $$.timePicker= (function ($) {
 			for (var i = 0; i < _lines.length; i++) {
 				_descStr += _lines[i] + "<br />";
 			}
-			//_descStr += "</p>";
 
-			_settings = {
+			_dataSet = {
 				id: _idkey,
 				startDate: timeStr.startDate(),
 				startTime: timeStr.startTime(),
@@ -117,31 +124,30 @@ $$.timePicker= (function ($) {
 				title: _title,
 				description: _descStr 
 			};					
-			_tempData = TimeWorker.extend(_settings);
-			_storedData.push(_tempData);
 
-			$$.timeData.saveData(_storedData);
 
-			_$bar.data('set', _settings);
-			_$bar.data('active', true);
-
-			var _$tooltip = _$bar.find('.tooltip');
-			_$tooltip.find('.title').text(_$bar.data('set').title);
-			_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
-			_$tooltip.find('.desc').html(_$bar.data('set').description);
-
-			_tempData = '';
-			_saved = false;
+			return _dataSet;
 		}
-		/*else{
-			$('.del').eq(_idx).trigger('click');	
-		}*/
+	};
+
+	_setData = function(dataSet){
+		var _dataSet = dataSet;
+
+		_$bar.data('set', _dataSet);
+
+		var _$tooltip = _$bar.find('.tooltip');
+		_$tooltip.find('.title').text(_$bar.data('set').title);
+		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
+		_$tooltip.find('.desc').html(_$bar.data('set').description);
 	};
 
 	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
 
 		var _self = this, 
 			e = event,
+			_startPos,
+			_calToPx = $$.timeLine.calToPx();
+			_storedData = $$.timeData.getStoredData();
 			_$timeline = target;
 
 		clickCnt++;
@@ -150,7 +156,7 @@ $$.timePicker= (function ($) {
 
 			_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
 
-			if(endOffsetX != null &&endOffsetX<(calToPx/2)){
+			if(endOffsetX != null &&endOffsetX<(_calToPx/2)){
 				alert('call 1');
 				alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
 				$('#bar_'+idKey).remove();
@@ -170,7 +176,7 @@ $$.timePicker= (function ($) {
 				timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
 
 				//설정한 시간만큼 Bar를 타임시트에 생성
-				TimeWorker.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
+				TimeModel.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
 
 				idNum++;
 
@@ -200,12 +206,12 @@ $$.timePicker= (function ($) {
 
 		idKey = $$.util.rKey();
 
-		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set="" data-active="false"><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
+		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set=""><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
 
 		_startPos = _$bar.offset();
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
 
-		if(_storedData.length>0){ //데이터가 하나이상 등록되어 있다면
+		if(_storedData.length>0){ //데이터가 하나이상 저장되어 있다면
 			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
 		}
 
@@ -218,8 +224,9 @@ $$.timePicker= (function ($) {
 	}
 
 	_getEndPoint = function (event, target){	// 할일 종료를 위한 End 함수
-		var e = event;
-		var _$bar = target;
+		var e = event,
+			_endPos,
+			_$bar = target;
 
 		_endPos = _$bar.offset();
 		endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
@@ -233,7 +240,9 @@ $$.timePicker= (function ($) {
 	}
 
 	_getChkPoint = function (locOfClick, callback){
-		var _idx = 0;
+		var _idx = 0,
+			_storedData = $$.timeData.getStoredData();
+
 		if(callback && typeof (callback) === 'fuction'){
 			callback();
 		}
@@ -260,12 +269,126 @@ $$.timePicker= (function ($) {
 			_$bar.css('width', _tempOffsetX+2);
 		}
 	}
+	/* 할일 리스트 출력 */
+	_showTimeList = function(target, storedData){
+		var _$todoList = $(target),
+			_url = _$todoList.data('template'),
+			_storedData = storedData[storedData.length-1],
+			_id = _storedData.id,
+			_$liEl,
+			_$moreBtn;
+
+		_$todoList.find('.nolist').hide();
+		_$liEl = _renderHtml(_$todoList, _storedData.startDate, _url);
+
+		$('.date_'+_storedData.startDate).find('.time-tit').text(_storedData.startDate);
+
+	   	_$liEl.addClass('time_'+_storedData.id);
+		_$liEl.find('.title').text(_storedData.title);
+		_$liEl.find('.start-time').text(_storedData.startTime);
+		_$liEl.find('.end-time').text(_storedData.endTime);
+		_$liEl.find('.desc .txts').html(_storedData.description);
+
+
+		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc p').height()){
+			_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+			_$liEl.find('.desc .txts').append(_$moreBtn);
+		} 
+
+		_sortBy($('.date_'+_storedData.startDate).find('.timeline'));
+
+		_nowStr = _storedData.startDate;
+	};
+	/* 할일 리스트 삭제 */
+	_delTimeList = function(idKey){
+		var _idKey = idKey,
+			_$timeline;
+
+		_$timeline = $('li.time_'+_idKey).parent('.timeline');
+		_$timeline.find('li.time_'+_idKey).remove();
+
+		setTimeout(function(){
+			_sortBy(_$timeline);
+		}, 1000);
+	};
+
+	/* Html(목록) 렌더링 */
+	_renderHtml = function(target, date, url){
+		var _$target = target,
+			_date = date,
+			_url = url,
+			_$liEl;
+	
+		$.ajax({
+			type : "GET",
+			async : false,
+			url : _url,
+			success : function(data) {
+				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
+					_$target.append(data);
+					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
+				}else{
+					console.log('.date_'+_date);
+					var _liEl = $(data).find('li');
+					_$target.find('.date_'+_date+' .timeline').append(_liEl);
+				}
+			},
+			complete: function(){
+				_$liEl = _$target.find('.date_'+_date+' .timeline').find('li').eq(-1);
+			}
+		});
+
+		return _$liEl;
+	};
+
+	/* 등록 메시지 show */
+	_showMsg = function (target){
+		$(target).addClass(function(index){
+			var _addClass;
+			if($(target).is(':hidden')){
+				$(target).css('display', 'block');
+				_addClass = 'in';
+			}
+			var _top = parseInt($(this).css('top'));
+			$(target).css('transform', 'translateY(30px)');
+
+			return _addClass;
+		});
+
+		setTimeout(function(){
+			_hideMsg(target);
+		}, 1000);
+	};
+
+	/* 등록 메시지 hide */
+	_hideMsg = function (target){
+		var _top = parseInt($(target).css('top'));
+		$(target).css('transform', 'translateY(-30px)');
+		$(target).removeClass('in')
+		setTimeout(function(){
+			$(target).css('display', 'none');	
+		}, 1000);
+	};
+
+	_sortBy = function(target){
+		var _$liEl = $(target).find('li');
+		_$liEl.each(function(){
+			var _idx = $(target).find('li').index(this);	
+			if(_idx%2 == 1){
+				$(this).find('.direction-l').removeClass().addClass('direction-r');
+			}else{
+				$(this).find('.direction-r').removeClass().addClass('direction-l');
+			}
+		});
+	};
 
 	//---  DOM 메서드 끝 ---
 
 	//---  공개 api ---
 	return {
-		init : _init
+		init : _init,
+		showMsg : _showMsg,
+		delTimeList : _delTimeList
 	};
 
 }(jQuery));

@@ -8,7 +8,7 @@ var objectCreate = function(arg){
 
 Object.create = Object.create || objectCreate;
 
-var TimeWorker = {
+var TimeModel = {
 	id: 0,
 	startDate: '0000-00-00',
 	startTime: '00:00',
@@ -51,7 +51,7 @@ var TimeWorker = {
 				_idkey = $(this).parents('.bar').data('set').id;
 
 			$(this).parents('.bar').remove();
-			$$.timeData.removeData(_idx, _idkey);
+			$$.timeData.removeData(_idkey);
 
 			return false;
 		});

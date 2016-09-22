@@ -14,6 +14,16 @@
 				this.splice(index,1);     
 				return this; 
 			}; 
+			
+			if (!Array.indexOf) {
+				Array.prototype.indexOf = function (obj, start) {
+					for (var i = (start || 0); i < this.length; i++) {
+						if (this[i] == obj) {
+							return i;
+						}
+					}
+				}
+			}
 		}
 
 		//랜덤키 생성
@@ -42,7 +52,7 @@
 				'mousemove': function(e){
 					var evnt = e;
 					showTooltip(evnt);
-					console.log('mousemove');
+					//console.log('mousemove');
 				},
 				'mouseleave': function(e){
 					hideTooltip();
@@ -82,7 +92,7 @@
 				$tooltip.show();	//$tooltip를 화면에 보여준다.
 
 				if(eventType=='mouseover'||eventType=='mousemove'){
-					$tooltip.css({ 'left' : offsetX, 'top' : offsetY-height-10 });	//이벤트가 발생한 좌표를 $tooltip의 좌표로 설정한다.
+					$tooltip.css({ 'left' : offsetX-20, 'top' : offsetY-height-10 });	//이벤트가 발생한 좌표를 $tooltip의 좌표로 설정한다.
 				}
 
 			}
