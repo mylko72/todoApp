@@ -76,7 +76,7 @@
 					var offsetX = ex - offset.left;		// 이벤트가 발생한 x좌표에서 $container요소의 오프셋좌표의 x좌표를 뺀 값을 변수에 저장 ($container요소의 position이 relatvie일때 유효함)
 					var offsetY = ey - offset.top;		// 이벤트가 발생한 y좌표에서 $container요소의 오프셋좌표의 y좌표를 뺀 값을 변수에 저장 ($container요소의 position이 relatvie일때 유효함)
 
-					console.log(ex);
+					//console.log(ex);
 				}
 
 				if(title){

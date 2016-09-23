@@ -8,7 +8,7 @@
 		<li>
 			<div class="direction-r">
 				<div class="flag-wrapper">
-					<span class="flag title">Freelancer</span>
+					<span class="flag title" draggable="true">Freelancer</span>
 					<div class="time-wrapper"><span class="time"><span class="start-time">2013</span> - <span class="end-time">present</span></span></div>
 				</div>
 				<div class="desc">

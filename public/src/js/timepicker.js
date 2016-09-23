@@ -21,6 +21,7 @@ $$.timePicker= (function ($) {
 		_bindEvents,
 		_getData,
 		_setData,
+		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
 		_getChkPoint,
@@ -92,13 +93,42 @@ $$.timePicker= (function ($) {
 			}
 			$(this).parents('.desc').find('p').addClass('opened');
 			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-		})
+		});
+
+		$(document).on('click', '.bar input:checkbox', _chkToDone);
+
+		$(document).on('dragover', '#dropzone, .flag.title', function(event){
+			event.preventDefault();
+		});
+
+		$(document).on('dragstart', '.timeline .flag.title', function(event){
+			var _class = $(this).attr('class');
+			_class = _class.split(' ')[1];
+			console.log('drag가 시작되었음');
+			console.log(_class);
+			event.originalEvent.dataTransfer.setData('Text', _class);
+		});
+
+		$(document).on('drop', '#dropzone, .flag.title', function(event){
+			
+			var id = event.target.getAttribute('id');
+			var data = event.originalEvent.dataTransfer.getData('Text');
+			//console.log('id :' + id);
+			//console.log('data :' + data);
+			event.target.appendChild($('.'+data)[0]);
+			if(id == 'dropzone'){
+				alert('휴지통에 담았습니다. 데이타가 삭제됩니다.');
+				$$.timeData.removeData(_idkey);
+			}
+			event.preventDefault();
+		});
+
 	}
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
 	
-	/* 입력 데이타 가져오기 */
+	/* 등록 데이타 가져오기 */
 	_getData = function(){
 		var _idkey = idKey,
 			_dataSet= {};
@@ -122,7 +152,8 @@ $$.timePicker= (function ($) {
 				endTime: timeStr.endTime(),
 				endPoint: startOffsetX + endOffsetX, 
 				title: _title,
-				description: _descStr 
+				description: _descStr,
+				done: false
 			};					
 
 
@@ -130,16 +161,35 @@ $$.timePicker= (function ($) {
 		}
 	};
 
+	/* 데이타 설정 */
 	_setData = function(dataSet){
 		var _dataSet = dataSet;
 
 		_$bar.data('set', _dataSet);
+		_$bar.find('.switch input:checkbox').prop('checked', true);
+		_$bar.appendTo($('#time-sheet'));
 
 		var _$tooltip = _$bar.find('.tooltip');
 		_$tooltip.find('.title').text(_$bar.data('set').title);
 		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
 		_$tooltip.find('.desc').html(_$bar.data('set').description);
 	};
+
+	/* 할일 상태(진행/완료) 전환 */
+	_chkToDone = function(){
+		var _idKey,
+			_storedData = $$.timeData.getStoredData();
+			_idKey = $(this).parents('.bar').data('set').id;
+
+			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
+
+			for(var i=0;i<_storedData.length;i++){
+				if(_storedData[i].id === _idKey){
+					_storedData[i].done = $(this).is(':checked') ? false : true;
+				}
+			}
+			console.log(_storedData);
+	},
 
 	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
 
@@ -168,7 +218,7 @@ $$.timePicker= (function ($) {
 			if(endOffsetX != null && _storedData.length>0){
 				var _lastPoint = startOffsetX+endOffsetX;
 
-				_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
+				//_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
 			}
 
 			if(endOffsetX != null && _clicked){
@@ -212,7 +262,7 @@ $$.timePicker= (function ($) {
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
 
 		if(_storedData.length>0){ //데이터가 하나이상 저장되어 있다면
-			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
+			//_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
 		}
 
 		_$bar.css('left', startOffsetX).css('width','2px');
@@ -247,7 +297,7 @@ $$.timePicker= (function ($) {
 			callback();
 		}
 		do{
-			if(locOfClick > _storedData[_idx]["startPoint"] &&  locOfClick < _storedData[_idx]["endPoint"]){
+			if(locOfClick > _storedData[_idx]["startPoint"]+30 &&  locOfClick < _storedData[_idx]["endPoint"]){
 				alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
 				$('#bar_'+idKey).remove();
 				clickCnt = 0;

@@ -61,7 +61,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 
 	h2 {
 		display:inline-block;
-		margin:-20px 0 0 70px;
+		margin:10px 0 0 5px;
 		background-color:#fff;
 	}
 }
@@ -213,11 +213,11 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 		border-radius:10px;
 	}
 }
-#time-sheet {position:absolute; left:0; top:4px; width:3000px; height:120px;}
+#time-sheet {position:absolute; left:0; top:20px; width:3000px; height:100px;}
 #time-line {
 	position:relative; 
 	left:1px; 
-	top:20px; 
+	top:0; 
 	cursor:pointer; 
 	z-index:10;
 	background:#f7f7f7 url(http://css-tricks.com/examples/RoundButtons/images/bg.png) repeat center top;
@@ -245,8 +245,8 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 #time-list {
 	position:relative; 
 	width:3720px; 
-	left:1px; 
-	top:-104px; 
+	left:-1px; 
+	top:-124px; 
 	z-index:5;
 
 	li {
