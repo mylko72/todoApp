@@ -58,6 +58,18 @@ $$.timePicker= (function ($) {
 			_getRange(e, _$bar);	//시간설정(bar생성)을 위한 end point
 		});
 
+		$(document).on('keydown', function(event){
+			var e = event;
+			
+			if(_clicked && e.keyCode === 27){
+				console.log('취소되었습니다!');
+				$('#bar_'+idKey).remove();
+				clickCnt = 0;
+				_clicked = false;
+				return false;
+			}
+		});
+
 		_$todoModal.find('#save').on('click', function(event){
 			var _dataSet,
 				_storedData;
@@ -77,6 +89,30 @@ $$.timePicker= (function ($) {
 			$('#bar_'+idKey).remove();
 			_$todoModal.modal('hide')
 			idKey = '';
+		});
+
+		_$todoModal.on('keydown', function(event){
+			var e = event,
+				_$targetId = e.target.getAttribute('id');
+
+			if(_$targetId == 'todoModal'||_$targetId == 'todo-title'||_$targetId == 'todo-desc'){
+				if(e.keyCode === 27){
+					console.log('취소되었습니다!');
+					_$todoModal.find('#cancel').trigger('click');
+				}
+			}
+		});
+
+		_$todoModal.on('shown.bs.modal', function(event){
+			var e = event,
+				_$time = $('#todoModal').find('.txt-time');
+
+			_$time.find('#startDate').empty().append(timeStr.startDate());
+			_$time.find('#endDate').empty().append(timeStr.endDate());
+			_$time.find('#startTime').empty().append(timeStr.startTime());
+			_$time.find('#endTime').empty().append(timeStr.endTime());
+
+			$(this).find('#todo-title').focus();
 		});
 
 		_$todoModal.on('hidden.bs.modal', function(){
@@ -182,6 +218,7 @@ $$.timePicker= (function ($) {
 			_idKey = $(this).parents('.bar').data('set').id;
 
 			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
+			$('.timeline').find('.time_'+_idKey).toggleClass('done');
 
 			for(var i=0;i<_storedData.length;i++){
 				if(_storedData[i].id === _idKey){
@@ -207,7 +244,6 @@ $$.timePicker= (function ($) {
 			_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
 
 			if(endOffsetX != null &&endOffsetX<(_calToPx/2)){
-				alert('call 1');
 				alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
 				$('#bar_'+idKey).remove();
 				clickCnt = 0;
@@ -236,17 +272,6 @@ $$.timePicker= (function ($) {
 					timeStr: timeStr
 				});
 
-				$('#todoModal').on('shown.bs.modal', function(){
-					var _$time = $('#todoModal').find('.txt-time');
-
-					_$time.find('#startDate').empty().append(timeStr.startDate());
-					_$time.find('#endDate').empty().append(timeStr.endDate());
-					_$time.find('#startTime').empty().append(timeStr.startTime());
-					_$time.find('#endTime').empty().append(timeStr.endTime());
-
-					$(this).find('#todo-title').focus();
-				});
-
 				clickCnt = 0;
 				_clicked = false;
 
@@ -260,10 +285,11 @@ $$.timePicker= (function ($) {
 
 		_startPos = _$bar.offset();
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
-
-		if(_storedData.length>0){ //데이터가 하나이상 저장되어 있다면
-			//_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
-		}
+		
+		/*데이터가 하나이상 저장되어 있다면
+		if(_storedData.length>0){ 
+			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
+		}*/
 
 		_$bar.css('left', startOffsetX).css('width','2px');
 
@@ -317,6 +343,10 @@ $$.timePicker= (function ($) {
 			var _tempOffsetX = e.pageX-_tempPos.left;
 
 			_$bar.css('width', _tempOffsetX+2);
+
+			if(e.keyCode==27){
+				console.log('ESC키가 눌렸습니다');
+			}
 		}
 	}
 	/* 할일 리스트 출력 */
@@ -400,7 +430,7 @@ $$.timePicker= (function ($) {
 				_addClass = 'in';
 			}
 			var _top = parseInt($(this).css('top'));
-			$(target).css('transform', 'translateY(30px)');
+			//$(target).css('transform', 'translateY(30px)');
 
 			return _addClass;
 		});
@@ -413,8 +443,9 @@ $$.timePicker= (function ($) {
 	/* 등록 메시지 hide */
 	_hideMsg = function (target){
 		var _top = parseInt($(target).css('top'));
-		$(target).css('transform', 'translateY(-30px)');
+		//$(target).css('transform', 'translateY(-30px)');
 		$(target).removeClass('in')
+		$(target).css('opacity', 0);	
 		setTimeout(function(){
 			$(target).css('display', 'none');	
 		}, 1000);
