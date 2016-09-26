@@ -50,17 +50,30 @@ $$.timePicker= (function ($) {
 		
 		var _self = this;
 
+		/* 할일 설정과 종료 이벤트 */
 		_$timeline.on('click', function(event){
 			var e = event;
 			e.stopPropagation();
-			_getStartPoint(e, $(this));	//시간설정(bar생성)을 위한 start point
+
+			clickCnt++;
+
+			if(clickCnt>=2){
+				_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+				clickCnt = 0;
+				_clicked = false;
+			}else{
+				_getStartPoint(e, $(this));	//할일 설정을 위한 함수 호출
+				_clicked = true;
+			}
 		});
 
+		/* 할일 설정 범위 이벤트 */
 		_$timeline.on('mousemove', function(event){
 			var e = event;
-			_getRange(e, _$bar);	//시간설정(bar생성)을 위한 end point
+			_getRange(e, _$bar);	
 		});
 
+		/* 취소를 위한 ESC키 바인드 */
 		$(document).on('keydown', function(event){
 			var e = event;
 
@@ -73,6 +86,7 @@ $$.timePicker= (function ($) {
 			}
 		});
 
+		/* 할일 등록 저장 */
 		_$todoModal.find('#save').on('click', function(event){
 			var _dataSet,
 				_storedData;
@@ -88,12 +102,14 @@ $$.timePicker= (function ($) {
 			_saved = false;
 		});
 
+		/* 할일 등록 취소 */
 		_$todoModal.find('#cancel').on('click', function(event){
 			$('#bar_'+idKey).remove();
 			_$todoModal.modal('hide')
 			idKey = '';
 		});
 
+		/* 할일 등록 취소를 위한 ESC키 바인드 */
 		_$todoModal.on('keydown', function(event){
 			var e = event,
 				_$targetId = e.target.getAttribute('id');
@@ -246,48 +262,6 @@ $$.timePicker= (function ($) {
 			_storedData = $$.timeData.getStoredData();
 			_$timeline = target;
 
-		clickCnt++;
-
-		if(clickCnt>=2){
-
-			_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
-
-			if(endOffsetX != null &&endOffsetX<(_calToPx/2)){
-				alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
-				$('#bar_'+idKey).remove();
-				clickCnt = 0;
-				_clicked = false;
-				return false;
-			}
-
-			if(endOffsetX != null && _storedData.length>0){
-				var _lastPoint = startOffsetX+endOffsetX;
-
-				//_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
-			}
-
-			if(endOffsetX != null && _clicked){
-
-				timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
-
-				//설정한 시간만큼 Bar를 타임시트에 생성
-				TimeModel.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
-
-				idNum++;
-
-				// Modal popup open
-				$('#todoModal').modal({
-					keyboard: true,
-					timeStr: timeStr
-				});
-
-				clickCnt = 0;
-				_clicked = false;
-
-				return false;
-			}
-		}
-
 		idKey = $$.util.rKey();
 
 		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set="">'
@@ -315,23 +289,54 @@ $$.timePicker= (function ($) {
 		$$.timeData.getTime(clickCnt, startOffsetX);	//할일 시간 설정
 		//$('#display-info span').eq(clickCnt-1).append(testStr);
 
-		_clicked = true;
 	}
 
 	_getEndPoint = function (event, target){	// 할일 종료를 위한 End 함수
 		var e = event,
 			_endPos,
+			_calToPx = $$.timeLine.calToPx();
 			_$bar = target;
 
 		_endPos = _$bar.offset();
 		endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
 
+		if(endOffsetX != null &&endOffsetX<(_calToPx/2)){
+			alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
+			$('#bar_'+idKey).remove();
+			clickCnt = 0;
+			_clicked = false;
+			return false;
+		}
+
+		/*if(endOffsetX != null && _storedData.length>0){
+			var _lastPoint = startOffsetX+endOffsetX;
+
+			_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
+		}*/
+
+		if(endOffsetX != null && _clicked){
+
+			timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
+
+			//설정한 시간만큼 Bar를 타임시트에 생성
+			TimeModel.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
+
+			idNum++;
+
+			// Modal popup open
+			$('#todoModal').modal({
+				keyboard: true,
+				timeStr: timeStr
+			});
+
+			return false;
+		}
 		/*if(endOffsetX>($.timeline._getAnHour()*2)){
 			alert("할일은 최대 2시간까지 가능합니다");
 			endOffsetX = 240;	//할일시간이 2시간(240px)이 넘어가지 않도록 설정
 		}*/
 
-		return endOffsetX;
+		//return endOffsetX;
 	}
 
 	_getChkPoint = function (locOfClick, callback){
