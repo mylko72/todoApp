@@ -32,7 +32,8 @@ var TimeModel = {
 		$bar.css('width', endoffsetx);
 		$bar.data('active', false);
 
-		$del = $('<div class="btn btn-default btn-xs del" role="group" aria-label="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div>');
+		$del = $('<div class="btn btn-default btn-xs tool" role="group" aria-label="Delete"><a href="#" class="edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a href="#" class="del"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>');
+		//$edit = $('<div class="btn btn-default btn-xs del" role="group" aria-label="Delete"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></div>');
 
 		$bar.find('.inner').append($del);
 

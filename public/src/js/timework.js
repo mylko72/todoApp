@@ -52,17 +52,27 @@ $$.timePicker= (function ($) {
 
 		/* 할일 설정과 종료 이벤트 */
 		_$timeline.on('click', function(event){
-			var e = event;
+			var e = event,
+				_timeStr;
+
 			e.stopPropagation();
 
 			clickCnt++;
 
 			if(clickCnt>=2){
-				_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+				_timeStr = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+				
+				// 할일 등록 팝업 Open
+				$('#todoModal').modal({
+					keyboard: true,
+					timeStr: _timeStr
+				});
+
 				clickCnt = 0;
 				_clicked = false;
 			}else{
 				_getStartPoint(e, $(this));	//할일 설정을 위한 함수 호출
+
 				_clicked = true;
 			}
 		});
@@ -253,7 +263,8 @@ $$.timePicker= (function ($) {
 			_countDone(_cntDone);
 	},
 
-	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
+   	/* 할일설정(bar생성)을 위한 Start 함수 */
+	_getStartPoint = function (event, target){	
 
 		var _self = this, 
 			e = event,
@@ -287,11 +298,10 @@ $$.timePicker= (function ($) {
 		_$bar.css('left', startOffsetX).css('width','2px');
 
 		$$.timeData.getTime(clickCnt, startOffsetX);	//할일 시간 설정
-		//$('#display-info span').eq(clickCnt-1).append(testStr);
-
 	}
 
-	_getEndPoint = function (event, target){	// 할일 종료를 위한 End 함수
+	/* 할일 종료를 위한 End 함수 */
+	_getEndPoint = function (event, target){	
 		var e = event,
 			_endPos,
 			_calToPx = $$.timeLine.calToPx();
@@ -308,12 +318,6 @@ $$.timePicker= (function ($) {
 			return false;
 		}
 
-		/*if(endOffsetX != null && _storedData.length>0){
-			var _lastPoint = startOffsetX+endOffsetX;
-
-			_getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
-		}*/
-
 		if(endOffsetX != null && _clicked){
 
 			timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
@@ -323,14 +327,16 @@ $$.timePicker= (function ($) {
 
 			idNum++;
 
-			// Modal popup open
-			$('#todoModal').modal({
-				keyboard: true,
-				timeStr: timeStr
-			});
-
-			return false;
+			return timeStr;
 		}
+
+		/*if(endOffsetX != null && _storedData.length>0){
+		  var _lastPoint = startOffsetX+endOffsetX;
+
+		  _getChkPoint(_lastPoint); // 등록시간 중복오류 체크 
+		  }*/
+
+
 		/*if(endOffsetX>($.timeline._getAnHour()*2)){
 			alert("할일은 최대 2시간까지 가능합니다");
 			endOffsetX = 240;	//할일시간이 2시간(240px)이 넘어가지 않도록 설정
