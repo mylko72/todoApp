@@ -11,6 +11,7 @@ $$.timePicker= (function ($) {
 
 		_clicked = false,
 		_saved = false,
+		_cntDone = 0,
 		_$bar = null,
 		_$timeline = $('#time-line'),
 		_$todoModal = $('#todoModal');
@@ -26,6 +27,8 @@ $$.timePicker= (function ($) {
 		_getEndPoint,
 		_getChkPoint,
 		_getRange,
+		_countTotal,
+		_countDone,
 		_showTimeList,
 		_renderHtml,
 		_showMsg,
@@ -60,7 +63,7 @@ $$.timePicker= (function ($) {
 
 		$(document).on('keydown', function(event){
 			var e = event;
-			
+
 			if(_clicked && e.keyCode === 27){
 				console.log('취소되었습니다!');
 				$('#bar_'+idKey).remove();
@@ -131,7 +134,7 @@ $$.timePicker= (function ($) {
 			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
 		});
 
-		$(document).on('click', '.bar input:checkbox', _chkToDone);
+		$(document).on('click', '.bar input:checkbox', _chkToDone); 
 
 		$(document).on('dragover', '#dropzone, .flag.title', function(event){
 			event.preventDefault();
@@ -214,18 +217,24 @@ $$.timePicker= (function ($) {
 	/* 할일 상태(진행/완료) 전환 */
 	_chkToDone = function(){
 		var _idKey,
-			_storedData = $$.timeData.getStoredData();
+			_storedData = $$.timeData.getStoredData(),
+			_idKey;
+
 			_idKey = $(this).parents('.bar').data('set').id;
 
 			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
+
 			$('.timeline').find('.time_'+_idKey).toggleClass('done');
 
 			for(var i=0;i<_storedData.length;i++){
 				if(_storedData[i].id === _idKey){
 					_storedData[i].done = $(this).is(':checked') ? false : true;
+					_storedData[i].done ? _cntDone++ : _cntDone--;
 				}
 			}
 			console.log(_storedData);
+
+			_countDone(_cntDone);
 	},
 
 	_getStartPoint = function (event, target){	// 할일설정(bar생성)을 위한 Start 함수
@@ -281,7 +290,17 @@ $$.timePicker= (function ($) {
 
 		idKey = $$.util.rKey();
 
-		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set=""><div class="inner"><div class="switch demo1"><input type="checkbox"><label><i></i></label></div></div></div>').appendTo(_$timeline);	// Bar 객체 생성
+		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set="">'
+			+ '<div class="wrapper">'
+				+ '<div class="inner">'
+					+ '<div class="switch demo1">'
+						+ '<input type="checkbox"><label><i></i></label>'
+					+ '</div>'
+				+ '</div>'
+			+ '</div>'
+			+ '</div>');
+			
+		_$timeline.append(_$bar);	// Bar 객체 생성
 
 		_startPos = _$bar.offset();
 		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
@@ -333,8 +352,9 @@ $$.timePicker= (function ($) {
 			_idx++;
 		}while (_idx<_storedData.length);
 	};
-
-	_getRange = function (event, target){	// 시간 범위 설정
+	
+	/* 할일 범위 설정 */
+	_getRange = function (event, target){	
 		var e = event;
 		var _$bar = target;
 
@@ -348,7 +368,24 @@ $$.timePicker= (function ($) {
 				console.log('ESC키가 눌렸습니다');
 			}
 		}
-	}
+	};
+
+	_countTotal = function(){
+		var _len = $$.timeData.getStoredData().length,
+			_$total = $('.panel-info').find('.total');
+
+		_$total.find('.badge').text(_len);
+	};
+
+	_countDone = function(cntDone){
+		var _cnt = cntDone,
+			_$done = $('.panel-info').find('.done');
+
+		_cntDone = _cnt;
+
+		_$done.find('.badge').text(_cntDone);
+	};
+
 	/* 할일 리스트 출력 */
 	_showTimeList = function(target, storedData){
 		var _$todoList = $(target),
@@ -427,25 +464,26 @@ $$.timePicker= (function ($) {
 			var _addClass;
 			if($(target).is(':hidden')){
 				$(target).css('display', 'block');
-				_addClass = 'in';
+				_addClass = 'show-in';
 			}
 			var _top = parseInt($(this).css('top'));
-			//$(target).css('transform', 'translateY(30px)');
+			//$(target).css('opacity', 1);	
+			$(target).css('transform', 'translateY(50px)');
 
 			return _addClass;
 		});
 
 		setTimeout(function(){
 			_hideMsg(target);
-		}, 1000);
+		}, 1500);
 	};
 
 	/* 등록 메시지 hide */
 	_hideMsg = function (target){
 		var _top = parseInt($(target).css('top'));
-		//$(target).css('transform', 'translateY(-30px)');
-		$(target).removeClass('in')
-		$(target).css('opacity', 0);	
+		$(target).css('transform', 'translateY(-50px)');
+		$(target).removeClass('show-in')
+		//$(target).css('opacity', 0);	
 		setTimeout(function(){
 			$(target).css('display', 'none');	
 		}, 1000);
@@ -469,7 +507,12 @@ $$.timePicker= (function ($) {
 	return {
 		init : _init,
 		showMsg : _showMsg,
-		delTimeList : _delTimeList
+		delTimeList : _delTimeList,
+		countTotal : _countTotal,
+		countDone : _countDone,
+		getDoneCnt : function(){
+			return _cntDone;
+		}
 	};
 
 }(jQuery));

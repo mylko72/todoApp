@@ -112,6 +112,7 @@ $$.timeData = (function ($) {
 
 		setTimeout(function(){
 			$$.timePicker.showMsg('#msgBx');
+			$$.timePicker.countTotal();
 		}, 200);
 
 		return _storedData;
@@ -137,7 +138,7 @@ $$.timeData = (function ($) {
 			_hour = Math.floor(tTimes/60) + _now,
 			_day =  24;
 
-		console.log(_now);
+		//console.log(_now);
 
 		if(_hour>=_day){
 			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
@@ -156,7 +157,8 @@ $$.timeData = (function ($) {
 	/* 데이타 삭제 */
 	_removeData = function (idKey){
 		var _idx,
-			_idKey = idKey;
+			_idKey = idKey,
+			_cntDone;
 		
 		for(var i=0;i<_storedData.length;i++){
 			if(_storedData[i].id === _idKey){
@@ -164,8 +166,15 @@ $$.timeData = (function ($) {
 			}
 		}
 
+		if(_storedData[_idx].done){
+			_cntDone = $$.timePicker.getDoneCnt();
+			_cntDone--;
+			$$.timePicker.countDone(_cntDone);
+		}
+
 		_storedData.removeElement(_idx);
 
+		$$.timePicker.countTotal();
 		$$.timePicker.delTimeList(_idKey);
 
 		console.log(_storedData);
