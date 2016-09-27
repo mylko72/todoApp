@@ -25,17 +25,21 @@ var TimeModel = {
 	drawBar: function(target1, target2, startoffsetx, endoffsetx, idnum){
 		var $timeline = target1,
 			$bar = target2,
+			$mytool,
 			$del,
+			$edit,
 			util = new $.Util(),
 			tooltipStr;
 
 		$bar.css('width', endoffsetx);
 		$bar.data('active', false);
 
-		$del = $('<div class="btn btn-default btn-xs tool" role="group" aria-label="Delete"><a href="#" class="edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a><a href="#" class="del"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>');
-		//$edit = $('<div class="btn btn-default btn-xs del" role="group" aria-label="Delete"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></div>');
+		$mytool = $('<div class="btn btn-default btn-xs mytool" role="group" aria-label="MY Tool">'
+				+ '<a href="#" class="edit" data-toggle="modal" data-target="#todoModal" data-mode="EDIT"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+				+ '<a href="#" class="del"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>');
 
-		$bar.find('.inner').append($del);
+		$bar.find('.inner').append($mytool);
+		$del = $bar.find('.del'); 
 
 		tooltipStr = String()+'<div class="tooltip">';
 		tooltipStr += '<span class="title"></span>';
@@ -46,8 +50,9 @@ var TimeModel = {
 		$bar.append(tooltipStr);
 
 		util.tooltip($bar, false, 'mousemove');
+		//util.tooltip($del, true, 'mousemove');
 
-		$del.bind('click', function(){
+		$mytool.on('click', '.del', function(){
 			var _idx = idnum,
 				_idkey = $(this).parents('.bar').data('set').id;
 

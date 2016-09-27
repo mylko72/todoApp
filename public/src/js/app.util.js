@@ -31,17 +31,29 @@
 			return 'f' + (Math.random() * (1 << 30)).toString(16).replace('.', '');
 		};
 
+		var returnBr = function (value){
+			var lines = value.split("\n");
+			var descStr = "";
+			for (var i = 0; i < lines.length; i++) {
+				descStr += lines[i] + "<br />";
+			}
+
+			return descStr; 
+		};
+
 		//툴팁 레이어
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
-			var $tooltip = $target.find('.tooltip');
+			var $tooltip;
 
 			var title = titleVar; // 'title'속성을 툴팁 텍스트로 설정시 true로 설정하다.
 			var eventType = event;	// 이벤트 type 설정
 			var text ='';
 
 			if(title){
-				text = $tartet.attr('title');	//title변수가 true이면 'a'태그의 'title'속성에서 텍스트를 가져와 text변수에 저장한다.
+				text = $target.attr('title');	//title변수가 true이면 'a'태그의 'title'속성에서 텍스트를 가져와 text변수에 저장한다.
+			}else{
+				$tooltip = $target.find('.tooltip');
 			}
 
 			$target.bind({
@@ -80,7 +92,7 @@
 				}
 
 				if(title){
-					$link.attr('title','');	// 'a'태그의 'title'속성의 텍스트를 지운다.
+					$target.attr('title','');	// 'a'태그의 'title'속성의 텍스트를 지운다.
 					$tooltip.html(text);	// text변수에 저장된 텍스트를 $tooltip 텍스트로 설정한다.
 				}
 
@@ -113,6 +125,7 @@
 		return {
 			init : init,
 			rKey : randomKey,
+			returnBr : returnBr,
 			tooltip: tooltip
 		};
 	};
