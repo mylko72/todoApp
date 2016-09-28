@@ -20,7 +20,22 @@ var $$ = $$ || {};
 			$$.timePicker.init();
 			$$.util = new $.Util();
 			$$.util.init();
-			new $.Form().init();
+			//new $.Form().init();
+			
+			updateClock();
+			setInterval (updateClock, 1000);
+		}
+		
+		function updateClock(){
+			var $clock = $("#clock");
+			var now = new Date();
+			var year = now.getFullYear();
+			var month = now.getMonth()+1;
+			var date = now.getDate();
+
+			//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
+			$clock.find('.date')[0].innerHTML = year + '-' + month + '-' + date;
+			$clock.find('.time')[0].innerHTML = now.toLocaleTimeString('en-US');
 		}
 		
 		init();

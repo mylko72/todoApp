@@ -31,6 +31,7 @@
 			return 'f' + (Math.random() * (1 << 30)).toString(16).replace('.', '');
 		};
 
+		//개행문자를 br태그로 변환
 		var returnBr = function (value){
 			var lines = value.split("\n");
 			var descStr = "";
@@ -41,6 +42,27 @@
 			return descStr; 
 		};
 
+		//br태그를 개행문자로 변환
+		var returnLine = function (value){
+			var lines = value.split("<br />");
+			var descStr = "";
+			for (var i = 0; i < lines.length-1; i++) {
+				descStr += lines[i] + "\n";
+			}
+
+			return descStr;
+		};
+
+		//비교함수
+		var comparator = function(a, b){
+			if (a > b) {
+				return 1;
+			} else if(a < b) {
+				return -1;
+			}
+			return 0;
+		};
+		
 		//툴팁 레이어
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
@@ -126,6 +148,8 @@
 			init : init,
 			rKey : randomKey,
 			returnBr : returnBr,
+			returnLine : returnLine,
+			comparator : comparator,
 			tooltip: tooltip
 		};
 	};

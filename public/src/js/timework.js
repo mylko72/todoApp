@@ -21,7 +21,7 @@ $$.timePicker= (function ($) {
 		
 	var _init,
 		_bindEvents,
-		_getData,
+		_getFormData,
 		_setData,
 		_chkToDone,
 		_getStartPoint,
@@ -97,7 +97,7 @@ $$.timePicker= (function ($) {
 				_clicked = false;
 			}
 
-			_mode = '';
+			//_mode = '';
 		});
 
 		/* 할일 등록 저장 */
@@ -106,48 +106,64 @@ $$.timePicker= (function ($) {
 				_storedData;
 
 			_saved = true;
-			_$todoModal.modal('hide')
-			_dataSet = _getData();
+			_dataSet = _getFormData();
 			_setData(_dataSet);
 
 			_storedData = $$.timeData.saveData(_dataSet);
+			console.log(_storedData);
 			_showTimeList('.todo-list', _storedData);
 	
+			_$todoModal.modal('hide')
+
 			idKey = '';
+			_mode = '';
 			_saved = false;
 		});
 
 		/* 할일 수정 */
 		_$todoModal.find('#edit').on('click', function(event){
 			var _idKey = idKey,
+				_dataSet,
 				_storedData = $$.timeData.getStoredData();
 
-			//if(_mode == 'EDIT'){
-				var _title = _$todoModal.find('#todo-title').val();
-				var _$desc = _$todoModal.find('#todo-desc');
+			if(_mode == 'EDIT'){
 
-				var _lines = _$desc.val().split("\n");
-				var _descStr = "";
-				for (var i = 0; i < _lines.length; i++) {
-					_descStr += _lines[i] + "<br />";
-				}
+				_dataSet = _getFormData();
+				_setData(_dataSet);
+				/*var _title = _$todoModal.find('#todo-title').val();
+				var _desc = _$todoModal.find('#todo-desc').val();
+				var _descStr;
+
+				_descStr = $$.util.returnBr(_desc);*/
 
 				for(var i=0;i<_storedData.length;i++){
 					if(_storedData[i].id === _idKey){
-						_storedData[i].title = _title;
-						_storedData[i].description = _descStr;
+						_storedData[i].title = _dataSet.title;
+						_storedData[i].description = _dataSet.description;
 					}
 				}
 
-				_$todoModal.modal('hide')
+				/*_dataSet = {
+					id: _idKey,
+					title: _title,
+					description: _descStr
+				}*/
+				//bar data-set 수정
+				//_setData(_dataSet);
+
+				//타임리스트 수정
+				_updateTimeList('.todo-list', _dataSet);
 
 				//tooltip 데이타수정
-				//bar data-set 수정
-				//타임리스트 수정
+				
+				
+				_$todoModal.modal('hide')
+
+				console.log(_storedData);
 
 				_mode = '';
 				idKey = '';
-			//}
+			}
 		});
 
 		/* 할일 등록 취소 */
@@ -180,19 +196,17 @@ $$.timePicker= (function ($) {
 				_$button = $(event.relatedTarget),
 				_$bar = _$button.parents('.bar'),
 				_$time = $('#todoModal').find('.txt-time');
+
+			_mode = _$button.data('mode');
 	
-			if(_$button.data('mode')=='EDIT'){
+			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
-				console.log('edit');
 
 				console.log(_dataSet);
 				var _desc = _dataSet.description;
+				var _descStr;
 
-				var _lines = _desc.split("<br />");
-				var _descStr = "";
-				for (var i = 0; i < _lines.length; i++) {
-					_descStr += _lines[i] + "\n";
-				}
+				_descStr = $$.util.returnLine(_desc);
 
 				_$todoModal.find('#todo-title').empty().val(_dataSet.title);
 				_$todoModal.find('#todo-desc').empty().val(_descStr);
@@ -205,12 +219,11 @@ $$.timePicker= (function ($) {
 				_$todoModal.find('#save').hide();
 				_$todoModal.find('#edit').show();
 
-				_mode = _$button.data('mode');
-
 				idKey = _dataSet.id;
 
+				console.log(_mode);
+
 			}else{
-				console.log('save');
 				_$time.find('#startDate').empty().append(timeStr.startDate());
 				_$time.find('#endDate').empty().append(timeStr.endDate());
 				_$time.find('#startTime').empty().append(timeStr.startTime());
@@ -220,6 +233,8 @@ $$.timePicker= (function ($) {
 				_$todoModal.find('#edit').hide();
 
 				_mode = 'SAVE';
+
+				console.log(_mode);
 			}
 
 			_$todoModal.find('#todo-title').focus();
@@ -264,7 +279,7 @@ $$.timePicker= (function ($) {
 			event.target.appendChild($('.'+data)[0]);
 			if(id == 'dropzone'){
 				alert('휴지통에 담았습니다. 데이타가 삭제됩니다.');
-				$$.timeData.removeData(_idkey);
+				$$.timeData.removeData(_idKey);
 			}
 			event.preventDefault();
 		});
@@ -275,39 +290,34 @@ $$.timePicker= (function ($) {
 	//---  DOM 메서드 시작 ---
 	
 	/* 등록 데이타 가져오기 */
-	_getData = function(){
-		var _idkey = idKey,
-			_dataSet= {};
+	_getFormData = function(){
+		var _idKey = idKey,
+			_$bar = $('#bar_'+_idKey),
+			_dataSet= {},
+			_saveMode = _mode=='SAVE' ? true : false;
 
-		if(_saved){
+		//if(_saved){
 			var _title = _$todoModal.find('#todo-title').val();
-			var _$desc = _$todoModal.find('#todo-desc');
+			var _desc = _$todoModal.find('#todo-desc').val();
 			var _descStr;
 
-			/*var _lines = _$desc.val().split("\n");
-			var _descStr = "";
-			for (var i = 0; i < _lines.length; i++) {
-				_descStr += _lines[i] + "<br />";
-			}*/
-
-			_descStr = $$.util.returnBr(_$desc.val());
+			_descStr = $$.util.returnBr(_desc);
 
 			_dataSet = {
-				id: _idkey,
-				startDate: timeStr.startDate(),
-				startTime: timeStr.startTime(),
-				startPoint: startOffsetX,
-				endDate: timeStr.endDate(),
-				endTime: timeStr.endTime(),
-				endPoint: startOffsetX + endOffsetX, 
+				id: _idKey,
+				startDate: _saveMode ? timeStr.startDate() : _$bar.data('set').startDate,
+				startTime: _saveMode ? timeStr.startTime() : _$bar.data('set').startTime,
+				startPoint: _saveMode ?  startOffsetX : _$bar.data('set').startPoint,
+				endDate: _saveMode ? timeStr.endDate() : _$bar.data('set').endDate,
+				endTime: _saveMode ? timeStr.endTime() : _$bar.data('set').endTime,
+				endPoint: _saveMode ? startOffsetX+endOffsetX : _$bar.data('set').endPoint,
 				title: _title,
 				description: _descStr,
-				done: false
+				done: _saveMode ? false : _$bar.data('set').done
 			};					
 
-
 			return _dataSet;
-		}
+		//}
 	};
 
 	/* 데이타 설정 */
@@ -315,23 +325,30 @@ $$.timePicker= (function ($) {
 		var _dataSet = dataSet,
 			_$tooltip;
 
+		console.log(_mode);
+
+		if(_mode == 'SAVE'){
+			_$bar.find('.switch input:checkbox').prop('checked', true);
+			_$bar.appendTo($('#time-sheet'));
+		}
 		_$bar.data('set', _dataSet);
-		_$bar.find('.switch input:checkbox').prop('checked', true);
-		_$bar.appendTo($('#time-sheet'));
 
 		_$tooltip = _$bar.find('.tooltip');
 		_$tooltip.find('.title').text(_$bar.data('set').title);
 		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
 		_$tooltip.find('.desc').html(_$bar.data('set').description);
+
+		console.log(_$bar.data('set'));
 	};
 
 	/* 할일 상태(진행/완료) 전환 */
 	_chkToDone = function(){
 		var _idKey,
 			_storedData = $$.timeData.getStoredData(),
-			_idKey;
+			_idKey = $(this).parents('.bar').data('set').id,
+			_done = $(this).parents('.bar').data('set').done;
 
-			_idKey = $(this).parents('.bar').data('set').id;
+			$(this).parents('.bar').data('set').done = !_done;
 
 			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
 
@@ -512,6 +529,15 @@ $$.timePicker= (function ($) {
 
 		_nowStr = _storedData.startDate;
 	};
+
+	_updateTimeList = function(target, dataset){
+		var _dataSet = dataset,
+			_$liEl = $(target).find('.time_' + _dataSet.id);
+
+		_$liEl.find('.title').text(_dataSet.title);
+		_$liEl.find('.desc .txts').html(_dataSet.description);
+	};
+
 	/* 할일 리스트 삭제 */
 	_delTimeList = function(idkey){
 		var _idKey = idkey,

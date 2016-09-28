@@ -18,6 +18,7 @@ $$.timeData = (function ($) {
 		_getTime,
 		_getTimeInfo,
 		_renderHtml,
+		_comparator,
 		_addTime,
 		_removeData,
 		_saveData,
@@ -107,8 +108,10 @@ $$.timeData = (function ($) {
 
 		_tempData = TimeModel.extend(_dataSet);
 		_storedData.push(_tempData);
+		
+		//_storedData.sort(_comparator);
 
-		console.log(_storedData);
+		//console.log(_storedData);
 
 		setTimeout(function(){
 			$$.timePicker.showMsg('#msgBx');
@@ -116,8 +119,16 @@ $$.timeData = (function ($) {
 		}, 200);
 
 		return _storedData;
-	}
+	};
 
+	_comparator = function(a, b){
+		if (a > b) {
+			return 1;
+		} else if(a < b) {
+			return -1;
+		}
+		return 0;
+	};
 
 	_getTimeInfo = function (target, idx){
 		var _$objInfo = $(target),
