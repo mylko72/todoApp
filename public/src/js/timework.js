@@ -107,17 +107,20 @@ $$.timePicker= (function ($) {
 
 			_saved = true;
 			_dataSet = _getFormData();
-			_setData(_dataSet);
 
-			_storedData = $$.timeData.saveData(_dataSet);
-			console.log(_storedData);
-			_showTimeList('.todo-list', _storedData);
-	
-			_$todoModal.modal('hide')
+			if(_dataSet){
+				_setData(_dataSet);
 
-			idKey = '';
-			_mode = '';
-			_saved = false;
+				_storedData = $$.timeData.saveData(_dataSet);
+				console.log(_storedData);
+				_showTimeList('.todo-list', _storedData);
+		
+				_$todoModal.modal('hide')
+
+				idKey = '';
+				_mode = '';
+				_saved = false;
+			}
 		});
 
 		/* 할일 수정 */
@@ -129,40 +132,31 @@ $$.timePicker= (function ($) {
 			if(_mode == 'EDIT'){
 
 				_dataSet = _getFormData();
-				_setData(_dataSet);
-				/*var _title = _$todoModal.find('#todo-title').val();
-				var _desc = _$todoModal.find('#todo-desc').val();
-				var _descStr;
 
-				_descStr = $$.util.returnBr(_desc);*/
 
-				for(var i=0;i<_storedData.length;i++){
-					if(_storedData[i].id === _idKey){
-						_storedData[i].title = _dataSet.title;
-						_storedData[i].description = _dataSet.description;
+				if(_dataSet){
+					_setData(_dataSet);
+
+					for(var i=0;i<_storedData.length;i++){
+						if(_storedData[i].id === _idKey){
+							_storedData[i].title = _dataSet.title;
+							_storedData[i].description = _dataSet.description;
+						}
 					}
+
+
+					//타임리스트 수정
+					_updateTimeList('.todo-list', _dataSet);
+
+					//tooltip 데이타수정
+					
+					_$todoModal.modal('hide')
+
+					console.log(_storedData);
+
+					_mode = '';
+					idKey = '';
 				}
-
-				/*_dataSet = {
-					id: _idKey,
-					title: _title,
-					description: _descStr
-				}*/
-				//bar data-set 수정
-				//_setData(_dataSet);
-
-				//타임리스트 수정
-				_updateTimeList('.todo-list', _dataSet);
-
-				//tooltip 데이타수정
-				
-				
-				_$todoModal.modal('hide')
-
-				console.log(_storedData);
-
-				_mode = '';
-				idKey = '';
 			}
 		});
 
@@ -237,7 +231,7 @@ $$.timePicker= (function ($) {
 				console.log(_mode);
 			}
 
-			_$todoModal.find('#todo-title').focus();
+			_$todoModal.find('#todo-title').focusin();
 		});
 
 		_$todoModal.on('hidden.bs.modal', function(){
@@ -293,13 +287,19 @@ $$.timePicker= (function ($) {
 	_getFormData = function(){
 		var _idKey = idKey,
 			_$bar = $('#bar_'+_idKey),
-			_dataSet= {},
+			_dataSet= null,
 			_saveMode = _mode=='SAVE' ? true : false;
 
 		//if(_saved){
 			var _title = _$todoModal.find('#todo-title').val();
 			var _desc = _$todoModal.find('#todo-desc').val();
 			var _descStr;
+
+			if(!_title){
+				alert('할일 제목을 입력해주세요!');
+				_$todoModal.find('#todo-title').focus();
+				return false;
+			}
 
 			_descStr = $$.util.returnBr(_desc);
 
