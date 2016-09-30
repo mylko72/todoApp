@@ -1,7 +1,7 @@
 /**
-  @module $$.timePicker
+  @module $$.timeWork
  **/
-$$.timePicker= (function ($) {
+$$.timeWork= (function ($) {
 	//--- 모듈 스코프 변수 시작 ---
 	var startOffsetX = null,
 		endOffsetX = null,
@@ -88,8 +88,6 @@ $$.timePicker= (function ($) {
 		$(document).on('keydown', function(event){
 			var e = event;
 
-			console.log(_clicked);
-
 			if(_clicked && e.keyCode === 27){
 				console.log('취소되었습니다!');
 				$('#bar_'+idKey).remove();
@@ -103,7 +101,7 @@ $$.timePicker= (function ($) {
 		/* 할일 등록 저장 */
 		_$todoModal.find('#save').on('click', function(event){
 			var _dataSet,
-				_storedData;
+				_idx;
 
 			_saved = true;
 			_dataSet = _getFormData();
@@ -111,9 +109,9 @@ $$.timePicker= (function ($) {
 			if(_dataSet){
 				_setData(_dataSet);
 
-				_storedData = $$.timeData.saveData(_dataSet);
-				console.log(_storedData);
-				_showTimeList('.todo-list', _storedData);
+				_idx = $$.timeData.saveData(_dataSet);
+				//console.log(_storedData);
+				_showTimeList('.todo-list', _idx);
 		
 				_$todoModal.modal('hide')
 
@@ -136,6 +134,13 @@ $$.timePicker= (function ($) {
 
 				if(_dataSet){
 					_setData(_dataSet);
+					
+					//var _idx = $.inArray(_idKey, _storedData.id);
+					var newArr = _storedData.filter(function(data){
+						return data.id === _idKey
+					});
+					//console.log('idx :' + _idx);
+					console.log('newArr :' + newArr);
 
 					for(var i=0;i<_storedData.length;i++){
 						if(_storedData[i].id === _idKey){
@@ -377,8 +382,8 @@ $$.timePicker= (function ($) {
 
 		idKey = $$.util.rKey();
 
-		_$bar = $('<div class="bar progress" id="bar_'+idKey+'" data-set="">'
-			+ '<div class="wrapper">'
+		_$bar = $('<div class="bar" id="bar_'+idKey+'" data-set="">'
+			+ '<div class="wrapper progress">'
 				+ '<div class="inner">'
 					+ '<div class="switch demo1">'
 						+ '<input type="checkbox"><label><i></i></label>'
@@ -500,24 +505,24 @@ $$.timePicker= (function ($) {
 	};
 
 	/* 할일 리스트 출력 */
-	_showTimeList = function(target, storedData){
+	_showTimeList = function(target, idx){
 		var _$todoList = $(target),
 			_url = _$todoList.data('template'),
-			_storedData = storedData[storedData.length-1],
-			_id = _storedData.id,
+			_storedData = $$.timeData.getStoredData(), 
+			_idx = idx,
 			_$liEl,
 			_$moreBtn;
 
 		_$todoList.find('.nolist').hide();
-		_$liEl = _renderHtml(_$todoList, _storedData.startDate, _url);
+		_$liEl = _renderHtml(_$todoList, _idx, _storedData, _url);
 
-		$('.date_'+_storedData.startDate).find('.time-tit').text(_storedData.startDate);
+		$('.date_'+_storedData[_idx].startDate).find('.time-tit').text(_storedData[_idx].startDate);
 
-	   	_$liEl.addClass('time_'+_storedData.id);
-		_$liEl.find('.title').text(_storedData.title);
-		_$liEl.find('.start-time').text(_storedData.startTime);
-		_$liEl.find('.end-time').text(_storedData.endTime);
-		_$liEl.find('.desc .txts').html(_storedData.description);
+	   	_$liEl.addClass('time_'+_storedData[_idx].id);
+		_$liEl.find('.title').text(_storedData[_idx].title);
+		_$liEl.find('.start-time').text(_storedData[_idx].startTime);
+		_$liEl.find('.end-time').text(_storedData[_idx].endTime);
+		_$liEl.find('.desc .txts').html(_storedData[_idx].description);
 
 
 		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc p').height()){
@@ -525,9 +530,9 @@ $$.timePicker= (function ($) {
 			_$liEl.find('.desc .txts').append(_$moreBtn);
 		} 
 
-		_sortBy($('.date_'+_storedData.startDate).find('.timeline'));
+		_sortBy($('.date_'+_storedData[_idx].startDate).find('.timeline'));
 
-		_nowStr = _storedData.startDate;
+		_nowStr = _storedData[_idx].startDate;
 	};
 
 	_updateTimeList = function(target, dataset){
@@ -552,28 +557,42 @@ $$.timePicker= (function ($) {
 	};
 
 	/* Html(목록) 렌더링 */
-	_renderHtml = function(target, date, url){
+	_renderHtml = function(target, idx, storedData, url){
 		var _$target = target,
-			_date = date,
+			_idx = idx,
+			_date = storedData[_idx].startDate,
+			_length = storedData.length,
 			_url = url,
+			_$timelist,
 			_$liEl;
 	
 		$.ajax({
 			type : "GET",
 			async : false,
 			url : _url,
-			success : function(data) {
+			success : function(template) {
 				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
-					_$target.append(data);
+					_$target.append(template);
+					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
+
 					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
 				}else{
-					console.log('.date_'+_date);
-					var _liEl = $(data).find('li');
-					_$target.find('.date_'+_date+' .timeline').append(_liEl);
+					_liEl = $(template).find('li');
+					_$timelist = _$target.find('.timeline');
+
+					if(_idx == 0){
+						_liEl.insertBefore(_$timelist.find('li').eq(_idx));
+					}else{
+						if(_idx == _length-1){
+							_liEl.insertAfter(_$timelist.find('li').eq(_idx-1));
+						}else{
+							_liEl.insertBefore(_$timelist.find('li').eq(_idx));
+						}
+					}
 				}
 			},
 			complete: function(){
-				_$liEl = _$target.find('.date_'+_date+' .timeline').find('li').eq(-1);
+				_$liEl = _$target.find('.timeline').find('li').eq(_idx);
 			}
 		});
 

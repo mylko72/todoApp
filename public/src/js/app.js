@@ -17,7 +17,7 @@ var $$ = $$ || {};
 		**/
         function init() {
 			$$.timeLine.init();
-			$$.timePicker.init();
+			$$.timeWork.init();
 			$$.util = new $.Util();
 			$$.util.init();
 			//new $.Form().init();

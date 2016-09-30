@@ -35,8 +35,8 @@ var TimeModel = {
 		$bar.data('active', false);
 
 		$mytool = $('<div class="btn btn-default btn-xs mytool" role="group" aria-label="MY Tool">'
-				+ '<a href="#" class="edit" data-toggle="modal" data-target="#todoModal" data-mode="EDIT"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
-				+ '<a href="#" class="del"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a></div>');
+				+ '<a href="#" class="edit" data-toggle="modal" data-target="#todoModal" data-mode="EDIT" title="EDIT"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+				+ '<a href="#" class="del" title="DELETE"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><p class="bubble"></p></a></div>');
 
 		$bar.find('.inner').append($mytool);
 		$del = $bar.find('.del'); 
@@ -47,10 +47,10 @@ var TimeModel = {
 		tooltipStr += '<span class="desc"></span>';
 		tooltipStr += '</div>';
 
-		$bar.append(tooltipStr);
+		$bar.find('.wrapper').append(tooltipStr);
 
-		util.tooltip($bar, false, 'mousemove');
-		//util.tooltip($del, true, 'mousemove');
+		util.tooltip($('.wrapper', $bar), false, 'mousemove');
+		util.tooltip($del, true, 'mousemove');
 
 		$mytool.on('click', '.del', function(){
 			var _idx = idnum,

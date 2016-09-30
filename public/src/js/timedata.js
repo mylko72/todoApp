@@ -17,7 +17,6 @@ $$.timeData = (function ($) {
 	var _getNToday,
 		_getTime,
 		_getTimeInfo,
-		_renderHtml,
 		_comparator,
 		_addTime,
 		_removeData,
@@ -104,21 +103,30 @@ $$.timeData = (function ($) {
 	//데이타저장
 	_saveData = function(dataSet){
 		var _dataSet = dataSet,
+			_idx,
 			_tempData;
 
 		_tempData = TimeModel.extend(_dataSet);
 		_storedData.push(_tempData);
 		
-		//_storedData.sort(_comparator);
+		_storedData.sort(_comparator);
+		
+		for(var i=0;i<_storedData.length;i++){
+			if(_storedData[i].id === _dataSet.id){
+				_idx = _storedData.indexOf(_storedData[i]);
+			}
+		}
 
-		//console.log(_storedData);
+		console.log('_idx :' + _idx);
+
+		console.log(_storedData);
 
 		setTimeout(function(){
-			$$.timePicker.showMsg('#msgBx');
-			$$.timePicker.countTotal();
+			$$.timeWork.showMsg('#msgBx');
+			$$.timeWork.countTotal();
 		}, 200);
 
-		return _storedData;
+		return _idx;
 	};
 
 	_comparator = function(a, b){
@@ -178,15 +186,15 @@ $$.timeData = (function ($) {
 		}
 
 		if(_storedData[_idx].done){
-			_cntDone = $$.timePicker.getDoneCnt();
+			_cntDone = $$.timeWork.getDoneCnt();
 			_cntDone--;
-			$$.timePicker.countDone(_cntDone);
+			$$.timeWork.countDone(_cntDone);
 		}
 
 		_storedData.removeElement(_idx);
 
-		$$.timePicker.countTotal();
-		$$.timePicker.delTimeList(_idKey);
+		$$.timeWork.countTotal();
+		$$.timeWork.delTimeList(_idKey);
 
 		console.log(_storedData);
 

@@ -67,13 +67,18 @@
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
 			var $tooltip;
+			var $bubble;
 
 			var title = titleVar; // 'title'속성을 툴팁 텍스트로 설정시 true로 설정하다.
 			var eventType = event;	// 이벤트 type 설정
 			var text ='';
 
+			console.log('title : ' + title);
+
 			if(title){
 				text = $target.attr('title');	//title변수가 true이면 'a'태그의 'title'속성에서 텍스트를 가져와 text변수에 저장한다.
+				$bubble = $target.find('.bubble');
+				console.log(text);
 			}else{
 				$tooltip = $target.find('.tooltip');
 			}
@@ -89,7 +94,8 @@
 					//console.log('mousemove');
 				},
 				'mouseleave': function(e){
-					hideTooltip();
+					var evnt = e;
+					hideTooltip(evnt);
 				}
 			});
 
@@ -100,6 +106,10 @@
 			function showTooltip(evnt){
 
 				var e = evnt;	//이벤트 객체를 변수로 저장
+				var src = e.currentTarget;
+
+				if (e.cancelBubble) e.cancelBubble = true;
+				else if (e.stopPropagation) e.stopPropagation();
 
 				if(eventType=='mouseover'||eventType=='mousemove'){	//이벤트 type이 'mouseover'이거나 'mousemove'이면 실행될 공통 구문 (이벤트 좌표를 구하는 구문)
 
@@ -115,28 +125,40 @@
 
 				if(title){
 					$target.attr('title','');	// 'a'태그의 'title'속성의 텍스트를 지운다.
-					$tooltip.html(text);	// text변수에 저장된 텍스트를 $tooltip 텍스트로 설정한다.
+					$bubble.html(text);	// text변수에 저장된 텍스트를 $bubble 텍스트로 설정한다.
 				}
+
+				console.log(src.nodeName);
 
 				if(eventType=='mouseover'||eventType=='mousemove'){		//$tooltip의 넓이와 높이값을 변수에 저장한다.
-					var width = $tooltip.outerWidth();		
-					var height = $tooltip.outerHeight();
+					var width = (src.nodeName == 'A') ? $bubble.outerWidth() : $tooltip.outerWidth();		
+					var height = (src.nodeName == 'A') ? $bubble.outerHeight() : $tooltip.outerHeight();
 				}
 
-				$tooltip.show();	//$tooltip를 화면에 보여준다.
+				if(src.nodeName == 'A'){
+					if($tooltip != undefined) $tooltip.hide();
+					$bubble.show();
+				}else{
+				 	if($bubble != undefined) $bubble.hide();
+					$tooltip.show();	//$tooltip를 화면에 보여준다.
+				}
 
 				if(eventType=='mouseover'||eventType=='mousemove'){
-					$tooltip.css({ 'left' : offsetX-20, 'top' : offsetY-height-10 });	//이벤트가 발생한 좌표를 $tooltip의 좌표로 설정한다.
+					(src.nodeName == 'A') ? $bubble.css({ 'left' : offsetX-20, 'top' : offsetY-height-10 }) : $tooltip.css({ 'left' : offsetX-20, 'top' : offsetY-height-10 });	//이벤트가 발생한 좌표를 $tooltip의 좌표로 설정한다.
 				}
 
 			}
 
-			function hideTooltip(){
+			function hideTooltip(evnt){
+				var e = evnt;	
+				var src = e.currentTarget;
 
-				$tooltip.hide();
+				console.log('call hide');
+
+				(src.nodeName == 'A') ? $bubble.hide() : $tooltip.hide();
 
 				if(title){
-					$tooltip.html('');
+					$bubble.html('');
 					$(this).attr('title',text);
 				}
 			}
