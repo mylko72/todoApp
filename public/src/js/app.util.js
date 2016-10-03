@@ -3,6 +3,9 @@
 
 	$.Util = function(){
 	
+		var $tooltip;
+		var $bubble;
+
         /** 
 		Init function will check for specific body classes and create the necessary page object.
 		@function init
@@ -66,19 +69,14 @@
 		//툴팁 레이어
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
-			var $tooltip;
-			var $bubble;
 
 			var title = titleVar; // 'title'속성을 툴팁 텍스트로 설정시 true로 설정하다.
 			var eventType = event;	// 이벤트 type 설정
 			var text ='';
 
-			console.log('title : ' + title);
-
 			if(title){
 				text = $target.attr('title');	//title변수가 true이면 'a'태그의 'title'속성에서 텍스트를 가져와 text변수에 저장한다.
 				$bubble = $target.find('.bubble');
-				console.log(text);
 			}else{
 				$tooltip = $target.find('.tooltip');
 			}
@@ -139,7 +137,6 @@
 					if($tooltip != undefined) $tooltip.hide();
 					$bubble.show();
 				}else{
-				 	if($bubble != undefined) $bubble.hide();
 					$tooltip.show();	//$tooltip를 화면에 보여준다.
 				}
 
