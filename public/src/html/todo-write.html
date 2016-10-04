@@ -21,7 +21,7 @@
 				<div class="container">
 					<div class="carousel-caption">
 						<h1>To do List</h1>
-						<p>- 할 일을 기록하세요 -</p>
+						<p>Record what you can do</p>
 					</div>
 				</div>
 			</div>
@@ -63,8 +63,8 @@
 			</div>
 			<div class="panel-info">
 				<ul>
-					<li><a href="#" class="total">할일 <span class="badge">0</span></a></li>
-					<li><a href="#" class="done">완료 <span class="badge">0</span></a></li>
+					<li><a href="#" class="total">To-do <span class="badge">0</span></a></li>
+					<li><a href="#" class="done">Done <span class="badge">0</span></a></li>
 				</ul>
 			</div>
 		</div>
@@ -72,16 +72,16 @@
 		<section class="content">
 			<form>
 			<fieldset class="form">
-				<legend>할일 목록</legend>
-				<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 할 일 목록</h2>
+				<legend>To-do List</legend>
+				<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> To-do List</h2>
 				<div class="todo-list" data-template="./html/time-list.tpl">
-					<p class="nolist">등록한 할일 목록이 없습니다.</p>
+					<p class="nolist">It is not registered to do.</p>
 				</div>
 			</fieldset>
 			</form>
-			<div class="trash" id="dropzone">
+			<!--<div class="trash" id="dropzone">
 				<h2><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></h2>
-			</div>
+			</div>-->
 		</section>
 
 		<!--<ul class="list-group col-md-6 pull-right" id="object-info">
@@ -91,7 +91,7 @@
 	<div id="msgBx" class="panel panel-default fade">
 		<div class="text-center">
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-			<p>할 일이 등록되었습니다.</p>
+			<p>It was registered to do.</p>
 		</div>
 	</div>
 
@@ -100,17 +100,17 @@
 		<div class="modal-content">
 		  <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title" id="exampleModalLabel">Step2. 할 일을 등록하세요.</h4>
+			<h4 class="modal-title" id="exampleModalLabel">Step2. Register you can do.</h4>
 		  </div>
 		  <div class="modal-body">
 			<div class="container-fluid">
 				<form>
 				  <div class="form-group">
-					<label for="todo-title" class="control-label">할 일 :</label>
+					<label for="todo-title" class="control-label">Work to do :</label>
 					<input type="text" class="form-control" id="todo-title">	
 				  </div>
 				  <div class="form-group">
-					<p class="b">일시 :</p>
+					<p class="b">Date :</p>
 					<p class="txt-time">
 						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
 						<span id="startDate">0000-00-00</span>
@@ -120,20 +120,20 @@
 						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
 						<span id="endDate">0000-00-00</span>
 						<span class="glyphicon glyphicon-time ml5" aria-hidden="true"></span>
-						<span id="endTime">00:00</span>시 까지
+						<span id="endTime">00:00</span>
 					</p>
 				  </div>
 				  <div class="form-group">
-					<label for="todo-text" class="control-label">메모를 입력하세요 :</label>
+					<label for="todo-text" class="control-label">Enter contents :</label>
 					<textarea class="form-control" id="todo-desc"></textarea>
 				  </div>
 				</form>
 			</div>
 		  </div>
 		  <div class="modal-footer">
-			<button type="button" class="btn btn-default" id="cancel" data-dismiss="modal">취소</button>
-			<button type="button" class="btn btn-primary" id="save">등록</button>
-			<button type="button" class="btn btn-primary" id="edit">수정</button>
+			<button type="button" class="btn btn-default" id="cancel" data-dismiss="modal">cancel</button>
+			<button type="button" class="btn btn-primary" id="save">register</button>
+			<button type="button" class="btn btn-primary" id="edit">modify</button>
 		  </div>
 		</div>
 	  </div>

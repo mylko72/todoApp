@@ -56,16 +56,6 @@
 			return descStr;
 		};
 
-		//비교함수
-		var comparator = function(a, b){
-			if (a > b) {
-				return 1;
-			} else if(a < b) {
-				return -1;
-			}
-			return 0;
-		};
-		
 		//툴팁 레이어
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
@@ -126,8 +116,6 @@
 					$bubble.html(text);	// text변수에 저장된 텍스트를 $bubble 텍스트로 설정한다.
 				}
 
-				console.log(src.nodeName);
-
 				if(eventType=='mouseover'||eventType=='mousemove'){		//$tooltip의 넓이와 높이값을 변수에 저장한다.
 					var width = (src.nodeName == 'A') ? $bubble.outerWidth() : $tooltip.outerWidth();		
 					var height = (src.nodeName == 'A') ? $bubble.outerHeight() : $tooltip.outerHeight();
@@ -150,8 +138,6 @@
 				var e = evnt;	
 				var src = e.currentTarget;
 
-				console.log('call hide');
-
 				(src.nodeName == 'A') ? $bubble.hide() : $tooltip.hide();
 
 				if(title){
@@ -168,7 +154,6 @@
 			rKey : randomKey,
 			returnBr : returnBr,
 			returnLine : returnLine,
-			comparator : comparator,
 			tooltip: tooltip
 		};
 	};

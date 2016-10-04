@@ -133,14 +133,7 @@ $$.timeWork= (function ($) {
 
 
 				if(_dataSet){
-					_setData(_dataSet);
-					
-					//var _idx = $.inArray(_idKey, _storedData.id);
-					var newArr = _storedData.filter(function(data){
-						return data.id === _idKey
-					});
-					//console.log('idx :' + _idx);
-					console.log('newArr :' + newArr);
+					_setData(_dataSet, _idKey);
 
 					for(var i=0;i<_storedData.length;i++){
 						if(_storedData[i].id === _idKey){
@@ -148,7 +141,6 @@ $$.timeWork= (function ($) {
 							_storedData[i].description = _dataSet.description;
 						}
 					}
-
 
 					//타임리스트 수정
 					_updateTimeList('.todo-list', _dataSet);
@@ -291,14 +283,13 @@ $$.timeWork= (function ($) {
 	/* 등록 데이타 가져오기 */
 	_getFormData = function(){
 		var _idKey = idKey,
-			_$bar = $('#bar_'+_idKey),
 			_dataSet= null,
-			_saveMode = _mode=='SAVE' ? true : false;
+			_saveMode = _mode=='SAVE' ? true : false,
+			_title = _$todoModal.find('#todo-title').val(),
+			_desc = _$todoModal.find('#todo-desc').val(),
+			_descStr;
 
-		//if(_saved){
-			var _title = _$todoModal.find('#todo-title').val();
-			var _desc = _$todoModal.find('#todo-desc').val();
-			var _descStr;
+			_$bar = $('#bar_'+_idKey);
 
 			if(!_title){
 				alert('할일 제목을 입력해주세요!');
@@ -322,7 +313,6 @@ $$.timeWork= (function ($) {
 			};					
 
 			return _dataSet;
-		//}
 	};
 
 	/* 데이타 설정 */
