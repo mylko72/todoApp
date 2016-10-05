@@ -11,9 +11,7 @@
 					<div class="time-wrapper"><span class="time"><span class="start-time">2013</span> - <span class="end-time">present</span></span></div>
 					<div class="flag title" draggable="true">Freelancer</div>
 					<div class="desc">
-						<p><span class="txts">My current employment. Way better than the position before!</span>
-							<!--<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>-->
-						</p>
+						<p><span class="txts">My current employment. Way better than the position before!</span></p>
 					</div>
 				</div>
 			</div>

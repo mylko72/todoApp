@@ -112,6 +112,9 @@ $$.timeWork= (function ($) {
 				_idx = $$.timeData.saveData(_dataSet);
 				//console.log(_storedData);
 				_showTimeList('.todo-list', _idx);
+
+				//var timings = $$.util.benchmark(_showTimeList('.todo-list', _idx));
+				//console.log(timings);
 		
 				_$todoModal.modal('hide')
 
@@ -139,6 +142,7 @@ $$.timeWork= (function ($) {
 						if(_storedData[i].id === _idKey){
 							_storedData[i].title = _dataSet.title;
 							_storedData[i].description = _dataSet.description;
+							console.log(_storedData[i].hasOwnProperty("title"));
 						}
 					}
 
@@ -239,11 +243,11 @@ $$.timeWork= (function ($) {
 		$(document).on('click', '.timeline .more', function(e){
 			e.preventDefault();
 			if($(this).hasClass('glyphicon-chevron-up')){
-				$(this).parents('.desc').find('p').removeClass('opened');
+				$(this).parents('.flag-wrapper').find('.desc p').removeClass('opened');
 				$(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 				return false;
 			}
-			$(this).parents('.desc').find('p').addClass('opened');
+			$(this).parents('.flag-wrapper').find('.desc p').addClass('opened');
 			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
 		});
 
@@ -514,10 +518,9 @@ $$.timeWork= (function ($) {
 		_$liEl.find('.end-time').text(_storedData[_idx].endTime);
 		_$liEl.find('.desc .txts').html(_storedData[_idx].description);
 
-
-		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc p').height()){
+		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
 			_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
-			_$liEl.find('.desc .txts').append(_$moreBtn);
+			_$liEl.find('.flag-wrapper').append(_$moreBtn);
 		} 
 
 		_sortBy($('.date_'+_storedData[_idx].startDate).find('.timeline'));

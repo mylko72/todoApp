@@ -39,7 +39,7 @@
 			var lines = value.split("\n");
 			var descStr = "";
 			for (var i = 0; i < lines.length; i++) {
-				descStr += lines[i] + "<br />";
+				descStr += (i==lines.length-1) ? lines[i] : lines[i] + "<br />";
 			}
 
 			return descStr; 
@@ -49,11 +49,29 @@
 		var returnLine = function (value){
 			var lines = value.split("<br />");
 			var descStr = "";
-			for (var i = 0; i < lines.length-1; i++) {
-				descStr += lines[i] + "\n";
+			for (var i = 0; i < lines.length; i++) {
+				descStr += (i==lines.length-1) ? lines[i] : lines[i] + "\n";
 			}
 
 			return descStr;
+		};
+
+		var repeat = function(n, action) {
+			for (var i = 0; i < n; i++){
+				action();
+			}
+		};
+
+		var benchmark = function(fn) {
+			var start = [], end = [], timings = [];
+			repeat(1000, function(){
+				start.push(fn);
+				end.push(fn);
+			});
+			for (var i = 0, n = start.length; i < n; i++) {
+				timings[i] = end[i] - start[i];	
+			}
+			return timings;
 		};
 
 		//툴팁 레이어
@@ -154,6 +172,7 @@
 			rKey : randomKey,
 			returnBr : returnBr,
 			returnLine : returnLine,
+			benchmark : benchmark,
 			tooltip: tooltip
 		};
 	};
