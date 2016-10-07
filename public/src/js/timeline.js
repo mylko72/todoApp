@@ -9,28 +9,21 @@
 $$.timeLine = (function ($) {
 
 	//--- 모듈 스코프 변수 시작 ---
-	var _base = null,	//현재시간(_now변수)을 기준으로 타임시트를 재설정하기 위한 변수
-		_now = null;			//window 시간을 현재시간으로 설정하기 위한 변수
-		_day =  24,
-		_unit = 10,		//1unit = 10px
-		_fiveminutes = _unit/2,
-		_$prev = $('#left'),
-		_$next = $('#right'),
-		_timeSheetWidth = $('#time-sheet').outerWidth(),
-		timeNavObj = null;
+	var //_base = null,	//현재시간(_now변수)을 기준으로 타임시트를 재설정하기 위한 변수
+		_unit = 10,		//_unit = 타임라인 단위 = 10px
+		_timeNavObj = null;
 
 	var _init,
 		_bindEvents,
 		_setupTimeline,
 		_createTimeline,
 		_createTimeSheet,
-		_calToPx,
 		_getTotalUnit;
 	//--- 모듈 스코프 변수 끝 ---
 
 	//--- 초기화 메서드 시작 ---
 	_init = function () {
-		timeNavObj = $$.timelineNav; //네비게이션 객체 생성
+		_timeNavObj = $$.timelineNav; //네비게이션 객체 생성
 
 		_setupTimeline('#time-line');
 		_bindEvents();
@@ -39,15 +32,17 @@ $$.timeLine = (function ($) {
 
 	//---  이벤트 핸들러 시작 ---
 	_bindEvents = function (){
+		var _$prev = $('#left'),
+			_$next = $('#right');
 
-		_$prev.on('click', timeNavObj.goPrev);	//타임시트 탐색 (이전시간 탐색) 
-		_$next.on('click', timeNavObj.goNext);	//타임시트 탐색 (다음시간 탐색) 
+		_$prev.on('click', _timeNavObj.goPrev);	//타임시트 탐색 (이전시간 탐색) 
+		_$next.on('click', _timeNavObj.goNext);	//타임시트 탐색 (다음시간 탐색) 
 
 		var _$link = $('#time-list').find('li > a');
 		// 클릭한 시간을 앞으로 slide
 		_$link.on('click', function(){
 			var _$self = $(this);
-			timeNavObj.goMove(_$self);
+			_timeNavObj.goMove(_$self);
 		});
 	};
 	//---  이벤트 핸들러 끝 ---
@@ -57,12 +52,14 @@ $$.timeLine = (function ($) {
 		var _$timeline = $(target).css('width','3000px');
 		
 		_createTimeline(); // 현재시간을 기준으로 24시간을 생성
-		_createTimeSheet(_$timeline);	// 1unit(5minutes) 단위의 타임시트 생성
+		_createTimeSheet(_$timeline);	// unit(5minutes)을 단위로 타임시트 생성
 	};
 
 	//현재 시간을 기준으로 타임라인(24시간) 생성
 	_createTimeline = function (servTime){
 		var _self = this,	
+			_day =  24,
+			_now = null,	//현재시간으로 설정하기 위한 변수
 			_servTime = servTime,
 			_d = new Date(),				//현재 시간을 가져오기 위한 Date 오브젝트 생성;
 			_n = 0;						//24시간 생성을 위한 카운트변수
@@ -70,8 +67,9 @@ $$.timeLine = (function ($) {
 		$('#timelist').empty();
 		
 		(!_servTime) ? _now = _d.getHours() : _now = _servTime;		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
-		console.log('_now : '+ _now);
-		_base = _now * _calToPx();							//_now*1hour(120px) 값을 타임시트의 기준(_base) pixel로 설정하여 _base 변수에 저장
+
+		console.log('현재시간 : '+ _now + '시');
+		//_base = _now * getPxToHour();							//_now*1hour(120px) 값을 타임시트의 기준(_base) pixel로 설정하여 _base 변수에 저장
 
 		for (var i = _now; i < (_day+2); i++) {		//현재 시간을 기준으로 24시간 생성
 			if(_n>=(_day+2)) break;
@@ -82,25 +80,26 @@ $$.timeLine = (function ($) {
 			document.getElementById('time-list').appendChild(_listEl);
 		}
 		$('#timelist').children().eq(0).addClass('first');
+
+		console.log('타임라인 생성 : _createTimeline()');
 	};
 
 	//타임시트 생성
 	_createTimeSheet = function (target){
 		var _self = this,
-			_len = _getTotalUnit(),
+			_totalUnit = _getTotalUnit(),
 			_$timeline = target;
 
-		for(var i=0;i<_len;i++){
-			//console.log(i);
+		console.log('타임시트생성 : _createTimeSheet()');
+
+		for(var i=0;i<_totalUnit;i++){
 			$('<div class="unit bg1" />').appendTo(_$timeline);
 		}
 	};
-
-	_calToPx = function(){
-		return _unit * 60/_fiveminutes;
-	};
 			 
 	_getTotalUnit = function (){	//타임시트내의 Total Unit 개수
+		var _timeSheetWidth = $('#time-sheet').outerWidth();
+
 		return _timeSheetWidth / _unit;
 	};
 	//---  DOM 메서드 끝 ---
@@ -108,14 +107,18 @@ $$.timeLine = (function ($) {
 	//---  공개 api ---
 	return {
 		init : _init,
-		calToPx : _calToPx,
+		//1시간을 px로 변환
+		getPxToHour : function(){
+			var _5min = _unit/2;
+			return _unit * 60/_5min;
+		},
 		getCurrentHour : function(){
 			var d = new Date();
 			return d.getHours();
-		},
+		}/*,
 		config : {
 			base : _base,
-		}
+		}*/
 	};
 }(jQuery));
 

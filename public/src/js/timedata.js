@@ -4,8 +4,7 @@
 $$.timeData = (function ($) {
 
 	//--- 모듈 스코프 변수 시작 ---
-	var _nowStr = null, 
-		_currentDay = null,		//현재일(theDay)
+	var _currentDay = null,		//현재일(theDay)
 		_today = null,			//오늘(today)
 		_todayObj = new Date(),
 		_storedData = [],
@@ -104,11 +103,13 @@ $$.timeData = (function ($) {
 	_saveData = function(dataSet){
 		var _dataSet = dataSet,
 			_idx,
-			_tempData;
+			_timeData;
 
-		_tempData = TimeModel.extend(_dataSet);
-		_storedData.push(_tempData);
+		_timeData = TimeModel.extend(_dataSet);
+		_storedData.push(_timeData);
 		
+		//console.log(Object.getPrototypeOf(_timeData) === TimeModel.prototype);
+
 		_storedData.sort(_comparator);
 		
 		for(var i=0;i<_storedData.length;i++){
@@ -117,8 +118,9 @@ $$.timeData = (function ($) {
 			}
 		}
 
-		console.log('_idx :' + _idx);
+		//console.log('_idx :' + _idx);
 
+		console.log('저장 되었습니다 : _saveData()');
 		console.log(_storedData);
 
 		setTimeout(function(){

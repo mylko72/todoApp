@@ -6,11 +6,11 @@ var $$ = $$ || {};
 
 $$.timeWork= (function ($) {
 	//--- 모듈 스코프 변수 시작 ---
-	var startOffsetX = null,
-		endOffsetX = null,
-		clickCnt = 0,
-		idKey = 0,
-		idNum = 0,
+	var _startOffsetX = null,
+		_endOffsetX = null,
+		_clickCnt = 0,
+		_idKey = 0,
+		//idNum = 0,
 
 		_clicked = false,
 		_saved = false,
@@ -19,8 +19,8 @@ $$.timeWork= (function ($) {
 		_$bar = null,
 		_$timeline = $('#time-line'),
 		_$todoModal = $('#todoModal');
-		config = null,
-		timeStr = null;
+		//config = null,
+		_timeStr = null;
 		
 	var _init,
 		_bindEvents,
@@ -43,7 +43,9 @@ $$.timeWork= (function ($) {
 	//--- 초기화 메서드 시작 ---
 	_init = function (timeline) {
 
-		config = $$.timeLine.config;
+		//config = $$.timeLine.config;
+		
+		//console.log('config.base :' + config.base);
 
 		_bindEvents();
 	};
@@ -61,18 +63,18 @@ $$.timeWork= (function ($) {
 
 			e.stopPropagation();
 
-			clickCnt++;
+			_clickCnt++;
 
-			if(clickCnt>=2){
+			if(_clickCnt>=2){
 				_timeStr = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
 				
 				// 할일 등록 팝업 Open
 				$('#todoModal').modal({
-					keyboard: true,
-					timeStr: _timeStr
+					keyboard: true
+					//timeStr: _timeStr
 				});
 
-				clickCnt = 0;
+				_clickCnt = 0;
 				_clicked = false;
 			}else{
 				_getStartPoint(e, $(this));	//할일 설정을 위한 함수 호출
@@ -93,8 +95,8 @@ $$.timeWork= (function ($) {
 
 			if(_clicked && e.keyCode === 27){
 				console.log('취소되었습니다!');
-				$('#bar_'+idKey).remove();
-				clickCnt = 0;
+				$('#bar_'+ _idKey).remove();
+				_clickCnt = 0;
 				_clicked = false;
 			}
 
@@ -121,7 +123,7 @@ $$.timeWork= (function ($) {
 		
 				_$todoModal.modal('hide')
 
-				idKey = '';
+				_idKey = '';
 				_mode = '';
 				_saved = false;
 			}
@@ -129,7 +131,7 @@ $$.timeWork= (function ($) {
 
 		/* 할일 수정 */
 		_$todoModal.find('#edit').on('click', function(event){
-			var _idKey = idKey,
+			var _idkey = _idKey,
 				_dataSet,
 				_storedData = $$.timeData.getStoredData();
 
@@ -139,13 +141,13 @@ $$.timeWork= (function ($) {
 
 
 				if(_dataSet){
-					_setData(_dataSet, _idKey);
+					_setData(_dataSet, _idkey);
 
 					for(var i=0;i<_storedData.length;i++){
-						if(_storedData[i].id === _idKey){
+						if(_storedData[i].id === _idkey){
 							_storedData[i].title = _dataSet.title;
 							_storedData[i].description = _dataSet.description;
-							console.log(_storedData[i].hasOwnProperty("title"));
+							//console.log(_storedData[i].hasOwnProperty("title"));
 						}
 					}
 
@@ -159,7 +161,7 @@ $$.timeWork= (function ($) {
 					console.log(_storedData);
 
 					_mode = '';
-					idKey = '';
+					_idKey = '';
 				}
 			}
 		});
@@ -167,12 +169,12 @@ $$.timeWork= (function ($) {
 		/* 할일 등록 취소 */
 		_$todoModal.find('#cancel, .close').on('click', function(event){
 			if(_mode == 'SAVE'){
-				$('#bar_'+idKey).remove();
+				$('#bar_'+ _idKey).remove();
 			}
 			_$todoModal.modal('hide')
 
 			_mode = '';
-			idKey = '';
+			_idKey = '';
 		});
 
 		/* 할일 등록 취소를 위한 ESC키 바인드 */
@@ -217,22 +219,24 @@ $$.timeWork= (function ($) {
 				_$todoModal.find('#save').hide();
 				_$todoModal.find('#edit').show();
 
-				idKey = _dataSet.id;
+				_idKey = _dataSet.id;
 
-				console.log(_mode);
+				console.log('할일 수정 팝업 오픈');
+				console.log(_mode + '모드');
 
 			}else{
-				_$time.find('#startDate').empty().append(timeStr.startDate());
-				_$time.find('#endDate').empty().append(timeStr.endDate());
-				_$time.find('#startTime').empty().append(timeStr.startTime());
-				_$time.find('#endTime').empty().append(timeStr.endTime());
+				_$time.find('#startDate').empty().append(_timeStr.startDate());
+				_$time.find('#endDate').empty().append(_timeStr.endDate());
+				_$time.find('#startTime').empty().append(_timeStr.startTime());
+				_$time.find('#endTime').empty().append(_timeStr.endTime());
 
 				_$todoModal.find('#save').show();
 				_$todoModal.find('#edit').hide();
 
 				_mode = 'SAVE';
 
-				console.log(_mode);
+				console.log('할일 등록 팝업 오픈');
+				console.log(_mode + '모드');
 			}
 
 			_$todoModal.find('#todo-title').focusin();
@@ -293,14 +297,14 @@ $$.timeWork= (function ($) {
 	
 	/* 등록 데이타 가져오기 */
 	_getFormData = function(){
-		var _idKey = idKey,
+		var _idkey = _idKey,
 			_dataSet= null,
 			_saveMode = _mode=='SAVE' ? true : false,
 			_title = _$todoModal.find('#todo-title').val(),
 			_desc = _$todoModal.find('#todo-desc').val(),
 			_descStr;
 
-			_$bar = $('#bar_'+_idKey);
+			_$bar = $('#bar_'+_idkey);
 
 			if(!_title){
 				alert('할일 제목을 입력해주세요!');
@@ -311,13 +315,13 @@ $$.timeWork= (function ($) {
 			_descStr = $$.util.returnBr(_desc);
 
 			_dataSet = {
-				id: _idKey,
-				startDate: _saveMode ? timeStr.startDate() : _$bar.data('set').startDate,
-				startTime: _saveMode ? timeStr.startTime() : _$bar.data('set').startTime,
-				startPoint: _saveMode ?  startOffsetX : _$bar.data('set').startPoint,
-				endDate: _saveMode ? timeStr.endDate() : _$bar.data('set').endDate,
-				endTime: _saveMode ? timeStr.endTime() : _$bar.data('set').endTime,
-				endPoint: _saveMode ? startOffsetX+endOffsetX : _$bar.data('set').endPoint,
+				id: _idkey,
+				startDate: _saveMode ? _timeStr.startDate() : _$bar.data('set').startDate,
+				startTime: _saveMode ? _timeStr.startTime() : _$bar.data('set').startTime,
+				startPoint: _saveMode ?  _startOffsetX : _$bar.data('set').startPoint,
+				endDate: _saveMode ? _timeStr.endDate() : _$bar.data('set').endDate,
+				endTime: _saveMode ? _timeStr.endTime() : _$bar.data('set').endTime,
+				endPoint: _saveMode ? _startOffsetX+_endOffsetX : _$bar.data('set').endPoint,
 				title: _title,
 				description: _descStr,
 				done: _saveMode ? false : _$bar.data('set').done
@@ -344,24 +348,23 @@ $$.timeWork= (function ($) {
 		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
 		_$tooltip.find('.desc').html(_$bar.data('set').description);
 
-		console.log(_$bar.data('set'));
+		//console.log(_$bar.data('set'));
 	};
 
 	/* 할일 상태(진행/완료) 전환 */
 	_chkToDone = function(){
-		var _idKey,
-			_storedData = $$.timeData.getStoredData(),
-			_idKey = $(this).parents('.bar').data('set').id,
+		var _storedData = $$.timeData.getStoredData(),
+			_idkey = $(this).parents('.bar').data('set').id,
 			_done = $(this).parents('.bar').data('set').done;
 
 			$(this).parents('.bar').data('set').done = !_done;
 
 			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
 
-			$('.timeline').find('.time_'+_idKey).toggleClass('done');
+			$('.timeline').find('.time_'+_idkey).toggleClass('done');
 
 			for(var i=0;i<_storedData.length;i++){
-				if(_storedData[i].id === _idKey){
+				if(_storedData[i].id === _idkey){
 					_storedData[i].done = $(this).is(':checked') ? false : true;
 					_storedData[i].done ? _cntDone++ : _cntDone--;
 				}
@@ -374,16 +377,15 @@ $$.timeWork= (function ($) {
    	/* 할일설정(bar생성)을 위한 Start 함수 */
 	_getStartPoint = function (event, target){	
 
-		var _self = this, 
-			e = event,
+		var	e = event,
+			_self = this, 
 			_startPos,
-			_calToPx = $$.timeLine.calToPx();
-			_storedData = $$.timeData.getStoredData();
+			_storedData = $$.timeData.getStoredData(),
 			_$timeline = target;
 
-		idKey = $$.util.rKey();
+		_idKey = $$.util.rKey();
 
-		_$bar = $('<div class="bar" id="bar_'+idKey+'" data-set="">'
+		_$bar = $('<div class="bar" id="bar_' + _idKey + '" data-set="">'
 			+ '<div class="wrapper progress">'
 				+ '<div class="inner">'
 					+ '<div class="switch demo1">'
@@ -395,47 +397,54 @@ $$.timeWork= (function ($) {
 			
 		_$timeline.append(_$bar);	// Bar 객체 생성
 
+		//console.log('config.base :' + config.base);
+
 		_startPos = _$bar.offset();
-		startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
+		//startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
+		_startOffsetX = e.pageX-_startPos.left;
 		
 		/*데이터가 하나이상 저장되어 있다면
 		if(_storedData.length>0){ 
 			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
 		}*/
 
-		_$bar.css('left', startOffsetX).css('width','2px');
+		_$bar.css('left', _startOffsetX).css('width','2px');
 
-		$$.timeData.getTime(clickCnt, startOffsetX);	//할일 시간 설정
+		$$.timeData.getTime(_clickCnt, _startOffsetX);	//할일 시간 설정
+
+		console.log('시작시간 설정 : _getStartPoint()');
 	}
 
 	/* 할일 종료를 위한 End 함수 */
 	_getEndPoint = function (event, target){	
 		var e = event,
 			_endPos,
-			_calToPx = $$.timeLine.calToPx();
+			_getPxToHour = $$.timeLine.getPxToHour(),
 			_$bar = target;
 
 		_endPos = _$bar.offset();
-		endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
+		//endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
+		_endOffsetX = e.pageX-_endPos.left;
 
-		if(endOffsetX != null &&endOffsetX<(_calToPx/2)){
+		if(_endOffsetX != null && _endOffsetX<(_getPxToHour/2)){
 			alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
-			$('#bar_'+idKey).remove();
-			clickCnt = 0;
+			$('#bar_'+ _idKey).remove();
+			_clickCnt = 0;
 			_clicked = false;
 			return false;
 		}
 
-		if(endOffsetX != null && _clicked){
+		if(_endOffsetX != null && _clicked){
 
-			timeStr = $$.timeData.getTime(clickCnt, startOffsetX, endOffsetX);	//할일 시간 설정
+			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
 			//설정한 시간만큼 Bar를 타임시트에 생성
-			TimeModel.drawBar(_$timeline, _$bar, startOffsetX, endOffsetX, idNum);
+			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
 
-			idNum++;
+			//idNum++;
+			console.log('종료시간 설정 : _getEndPoint()');
 
-			return timeStr;
+			return _timeStr;
 		}
 
 		/*if(endOffsetX != null && _storedData.length>0){
@@ -463,8 +472,8 @@ $$.timeWork= (function ($) {
 		do{
 			if(locOfClick > _storedData[_idx]["startPoint"]+30 &&  locOfClick < _storedData[_idx]["endPoint"]){
 				alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
-				$('#bar_'+idKey).remove();
-				clickCnt = 0;
+				$('#bar_'+ _idKey).remove();
+				_clickCnt = 0;
 				_clicked = false;
 				return false;
 			}
@@ -492,6 +501,8 @@ $$.timeWork= (function ($) {
 	_countTotal = function(){
 		var _len = $$.timeData.getStoredData().length,
 			_$total = $('.panel-info').find('.total');
+
+		console.log(_len + ' 건 등록');
 
 		_$total.find('.badge').text(_len);
 	};
@@ -532,7 +543,7 @@ $$.timeWork= (function ($) {
 
 		_sortBy($('.date_'+_storedData[_idx].startDate).find('.timeline'));
 
-		_nowStr = _storedData[_idx].startDate;
+		console.log('할 일 리스트 출력 : _showTimeList()');
 	};
 
 	_updateTimeList = function(target, dataset){
@@ -555,15 +566,17 @@ $$.timeWork= (function ($) {
 				_$liEl.find('.flag-wrapper .more').remove();
 			}
 		}, 500);
+
+		console.log('할 일 리스트 업데이트 : _updateTimeList()');
 	};
 
 	/* 할일 리스트 삭제 */
 	_delTimeList = function(idkey){
-		var _idKey = idkey,
+		var _idkey = idkey,
 			_$timeline;
 
-		_$timeline = $('li.time_'+_idKey).parent('.timeline');
-		_$timeline.find('li.time_'+_idKey).remove();
+		_$timeline = $('li.time_'+_idkey).parent('.timeline');
+		_$timeline.find('li.time_'+_idkey).remove();
 
 		setTimeout(function(){
 			_sortBy(_$timeline);

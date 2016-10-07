@@ -22,7 +22,7 @@ var TimeModel = {
 	toString: function(){
 		return this.startDate + ' ' + this.startTime + ' 부터' + this.endDate + ' ' + this.endTime + ' 까지' + this.title + '(을)를 할일로 등록했습니다.';
 	},
-	drawBar: function(target1, target2, startoffsetx, endoffsetx, idnum){
+	drawBar: function(target1, target2, startoffsetx, endoffsetx){
 		var $timeline = target1,
 			$bar = target2,
 			$mytool,
@@ -42,6 +42,8 @@ var TimeModel = {
 		$del = $bar.find('.del'); 
 		$edit = $bar.find('.edit'); 
 
+		console.log('타임Bar 생성 : drawBar()');
+
 		tooltipStr = String()+'<div class="tooltip">';
 		tooltipStr += '<span class="title"></span>';
 		tooltipStr += '<span class="time"></span>';
@@ -55,7 +57,7 @@ var TimeModel = {
 		util.tooltip($edit, true, 'mousemove');
 
 		$mytool.on('click', '.del', function(){
-			var _idx = idnum,
+			var //_idx = idnum,
 				_idkey = $(this).parents('.bar').data('set').id;
 
 			$(this).parents('.bar').remove();
