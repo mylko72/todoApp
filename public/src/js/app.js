@@ -35,7 +35,7 @@ var $$ = $$ || {};
 
 			//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
 			$clock.find('.date')[0].innerHTML = year + '-' + month + '-' + date;
-			$clock.find('.time')[0].innerHTML = now.toLocaleTimeString('en-US');
+			//$clock.find('.time')[0].innerHTML = now.toLocaleTimeString('en-US');
 		}
 		
 		init();

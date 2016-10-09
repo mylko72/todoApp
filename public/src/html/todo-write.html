@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://bootstrapk.com/examples/carousel/carousel.css">
+	<!--<link rel="stylesheet" href="http://bootstrapk.com/examples/carousel/carousel.css">-->
 	<link rel="stylesheet" href="../css/common.css">
 	<style type="text/css" media="screen">
 		@import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css" ) ;
@@ -15,15 +15,11 @@
 </head>
 <body>
 
-	<div class="carousel">
-		<div class="carousel-inner">
-			<div class="item active">
-				<div class="container">
-					<div class="carousel-caption">
-						<h1>To do List</h1>
-						<p>Record what you can do</p>
-					</div>
-				</div>
+	<div class="header">
+		<div class="header-inner">
+			<div class="header-caption">
+				<h1>To do List</h1>
+				<p>Record what you can do</p>
 			</div>
 		</div>
 	</div>
@@ -34,6 +30,9 @@
 		</div>
 
 		<div class="panel panel-bx">
+			<hr class="hr-1" />
+			<hr class="hr-2" />
+			<hr class="hr-3" />
 			<div class="panel-time">
 				<!--<div class="reflex">
 					<div class="display-2">
@@ -76,6 +75,7 @@
 				<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> To-do List</h2>
 				<div class="todo-list" data-template="./html/time-list.tpl">
 					<p class="nolist">It is not registered to do.</p>
+					<div id="loading"></div>
 				</div>
 			</fieldset>
 			</form>

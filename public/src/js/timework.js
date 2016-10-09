@@ -206,11 +206,12 @@ $$.timeWork= (function ($) {
 				var _desc = _dataSet.description;
 				var _descStr;
 
-				_descStr = $$.util.returnLine(_desc);
+				if(_desc){
+					_descStr = $$.util.returnLine(_desc);
+					_$todoModal.find('#todo-desc').empty().val(_descStr);
+				}
 
 				_$todoModal.find('#todo-title').empty().val(_dataSet.title);
-				_$todoModal.find('#todo-desc').empty().val(_descStr);
-
 				_$todoModal.find('#startDate').empty().append(_dataSet.startDate);
 				_$todoModal.find('#endDate').empty().append(_dataSet.endDate);
 				_$todoModal.find('#startTime').empty().append(_dataSet.startTime);
@@ -302,7 +303,9 @@ $$.timeWork= (function ($) {
 			_saveMode = _mode=='SAVE' ? true : false,
 			_title = _$todoModal.find('#todo-title').val(),
 			_desc = _$todoModal.find('#todo-desc').val(),
-			_descStr;
+			_descStr = null;
+
+			console.log(_desc.length);
 
 			_$bar = $('#bar_'+_idkey);
 
@@ -312,7 +315,9 @@ $$.timeWork= (function ($) {
 				return false;
 			}
 
-			_descStr = $$.util.returnBr(_desc);
+			if(_desc.length>0){
+				_descStr = $$.util.returnBr(_desc);
+			}
 
 			_dataSet = {
 				id: _idkey,
@@ -346,7 +351,11 @@ $$.timeWork= (function ($) {
 		_$tooltip = _$bar.find('.tooltip');
 		_$tooltip.find('.title').text(_$bar.data('set').title);
 		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
-		_$tooltip.find('.desc').html(_$bar.data('set').description);
+		if(_$bar.data('set').description){
+			_$tooltip.find('.desc').show().html(_$bar.data('set').description);
+		}else{
+			_$tooltip.find('.desc').hide();
+		}
 
 		//console.log(_$bar.data('set'));
 	};
@@ -534,7 +543,11 @@ $$.timeWork= (function ($) {
 		_$liEl.find('.title').text(_storedData[_idx].title);
 		_$liEl.find('.start-time').text(_storedData[_idx].startTime);
 		_$liEl.find('.end-time').text(_storedData[_idx].endTime);
-		_$liEl.find('.desc .txts').html(_storedData[_idx].description);
+		if(_storedData[_idx].description){
+			_$liEl.find('.desc .txts').html(_storedData[_idx].description);
+		}else{
+			_$liEl.find('.desc').hide();
+		}
 
 		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
 			_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
@@ -552,7 +565,14 @@ $$.timeWork= (function ($) {
 			_$liEl = $(target).find('.time_' + _dataSet.id);
 
 		_$liEl.find('.title').text(_dataSet.title);
-		_$liEl.find('.desc .txts').html(_dataSet.description);
+
+		if(_dataSet.description){
+			_$liEl.find('.desc').show();
+			_$liEl.find('.desc .txts').html(_dataSet.description);
+		}else{
+			_$liEl.find('.desc').hide();
+		}
+
 		_$liEl.find('.desc>p').removeClass('opened');
 		_$liEl.find('.more').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 		
