@@ -66,7 +66,7 @@ $$.timeWork= (function ($) {
 			_clickCnt++;
 
 			if(_clickCnt>=2){
-				_timeStr = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+				_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
 				
 				// 할일 등록 팝업 Open
 				$('#todoModal').modal({
@@ -500,6 +500,8 @@ $$.timeWork= (function ($) {
 			var _tempOffsetX = e.pageX-_tempPos.left;
 
 			_$bar.css('width', _tempOffsetX+2);
+			
+			console.log('드래그 : _getRange()');
 
 			if(e.keyCode==27){
 				console.log('ESC키가 눌렸습니다');

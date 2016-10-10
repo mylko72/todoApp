@@ -198,6 +198,7 @@ $$.timeData = (function ($) {
 		$$.timeWork.countTotal();
 		$$.timeWork.delTimeList(_idKey);
 
+		console.log('삭제되었습니다 : _removeData()');
 		console.log(_storedData);
 
 		//idNum--;
