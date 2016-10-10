@@ -651,13 +651,55 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	-webkit-animation: spin 1s ease-in-out infinite;
 }
 
+
+/* ================ Animation ================ */
+
+.fadeIn {
+	animation:fadeIn 1s;
+}
+
+.fadeInDown {
+	animation:fadeInDown .5s;
+}
+
+.lightSpeedIn {
+	animation:lightSpeedIn 1s;
+}
+
 @keyframes spin {
 	to { -webkit-transform: rotate(360deg); }
 }
+
 @-webkit-keyframes spin {
   	to { -webkit-transform: rotate(360deg); }
 }
 
+@keyframes fadeIn {
+	0% {
+		opacity:0;
+	}
+}
+
+@keyframes fadeInDown {
+	0% {
+		opacity:0;
+		transform:translateY(-100px);
+	}
+}
+
+@keyframes lightSpeedIn {
+  0% {
+    opacity:0;
+    transform:translateX(100%) skew(-10deg);
+  }
+  60% {
+    opacity:1;
+    transform:translateX(-20%) skew(10deg);
+  }
+  80% {
+    transform:translateX(0) skew(-5deg);
+  }
+}
 /* ================ The Timeline ================ */
 
 .timeline {
@@ -1275,16 +1317,22 @@ h3.years {font-size:18px; margin-bottom:10px;}
 			display:block;
 			margin-top:15px;
 			font-size:30px;
-			color:#fff;
+			color:rgba(255,255,255,.8);
 			opacity:.8;
 		}
 		.time {
 			display:block;
-			margin-top:5px;
+			margin-top:7px;
 			font-size:50px;
 			color:rgba(0,0,0,.4);
 			line-height:1;
 			opacity:.8;
+
+			sup {
+				display:inline-block;
+				margin-top:-50px;
+				font-size:30px;
+			}
 		}
 	}
 	#clock:before{
