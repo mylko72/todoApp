@@ -282,7 +282,20 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 			li {
 				color:rgba(212,212,212,.8);
 				line-height:1.2;
+			}
 
+			&.animation {
+				li {
+					&:nth-child(0) {
+						animation:fadeInUp .9s;
+					}
+					&:nth-child(1) {
+						animation:fadeInUp .7s;
+					}
+					&:nth-child(2) {
+						animation:fadeInUp .5s;
+					}
+				}
 			}
 		}
 
@@ -662,6 +675,18 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	animation:fadeInDown .5s;
 }
 
+.fadeInBounceDown {
+	animation:fadeInBounceDown 1s;
+}
+
+.fadeInUp {
+	animation:fadeInUp .5s;
+}
+
+.fadeInBounceUp {
+	animation:fadeInBounceUp 1s;
+}
+
 .lightSpeedIn {
 	animation:lightSpeedIn 1s;
 }
@@ -684,6 +709,35 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	0% {
 		opacity:0;
 		transform:translateY(-100px);
+	}
+}
+
+@keyframes fadeInBounceDown {
+	0% {
+		opacity:0;
+		transform:translateY(-100px)
+	}
+	50% {
+		opacity:1;
+		transform:translateY(20px);
+	}
+}
+
+@keyframes fadeInUp {
+	0% {
+		opacity:0;
+		transform:translateY(100px);
+	}
+}
+
+@keyframes fadeInBounceUp {
+	0% {
+		opacity:0;
+		transform:translateY(100px);
+	}
+	50% {
+		opacity:1;
+		transform:translateY(-20px);
 	}
 }
 
