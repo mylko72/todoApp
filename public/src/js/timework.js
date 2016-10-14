@@ -623,10 +623,9 @@ $$.timeWork= (function ($) {
 				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
 					_$target.append(template);
 					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
-
-					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
+					console.log('call 1');
 				}else{
-					_liEl = $(template).find('li');
+					_liEl = $(template).find('.timeline > li');
 					_$timelist = _$target.find('.timeline');
 
 					if(_idx == 0){
@@ -638,6 +637,7 @@ $$.timeWork= (function ($) {
 							_liEl.insertBefore(_$timelist.find('li').eq(_idx));
 						}
 					}
+					console.log('call 2');
 				}
 			},
 			complete: function(){
