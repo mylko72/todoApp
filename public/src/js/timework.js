@@ -1,9 +1,6 @@
 /**
   @module $$.timeWork
  **/
-
-var $$ = $$ || {};
-
 $$.timeWork= (function ($) {
 	//--- 모듈 스코프 변수 시작 ---
 	var _startOffsetX = null,
@@ -435,7 +432,7 @@ $$.timeWork= (function ($) {
 		//endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
 		_endOffsetX = e.pageX-_endPos.left;
 
-		if(_endOffsetX != null && _endOffsetX<(_getPxToHour/2)){
+		if(_endOffsetX && _endOffsetX<(_getPxToHour/2)){
 			alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
 			$('#bar_'+ _idKey).remove();
 			_clickCnt = 0;
@@ -443,7 +440,7 @@ $$.timeWork= (function ($) {
 			return false;
 		}
 
-		if(_endOffsetX != null && _clicked){
+		if(_endOffsetX && _clicked){
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
