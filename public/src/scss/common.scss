@@ -691,7 +691,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 }
 
 .fadeInRight {
-	animation:fadeInRight 1.5s 1.5s backwards;
+	animation:fadeInRight 1.5s 1s backwards;
 }
 
 .fadeInDown {
@@ -731,7 +731,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 @keyframes fadeInRight {
 	0% {
 		opacity:0;
-		transform:translateX(200px);
+		transform:translateX(50px);
 	}
 	50% {
 		opacity:1;
@@ -834,21 +834,46 @@ h3.years {font-size:18px; margin-bottom:10px;}
 
 	&:first-child {top:0;}
 
+	&:before {
+		position: absolute;
+		top: 25px;
+		left:50%;
+		content: ' ';
+		display: block;
+		width: 20px;
+		height: 20px;
+		margin-left:-10px;
+		background: #fff;
+		border-radius: 10px;
+		border: 4px solid rgb(255,80,80);
+		z-index: 10;
+	}
+
 	&.done {
+		&:before {
+			border-color:#505050;	
+		}
 		.flag {
 			text-decoration:line-through;
-			&:before {
-				border-color:#505050;	
-			}
 		} 
 		.flag-wrapper:before {
 			border-color:#999;
 		}
 		.time-wrapper {
 			background-color:#b5b5b5;
-
-			&:before {
-				border-left-color:#b5b5b5;
+		}
+		.direction-l {
+			.time-wrapper {
+				&:before {
+					border-left-color:#b5b5b5;
+				}
+			}
+		}
+		.direction-r {
+			.time-wrapper {
+				&:before {
+					border-right-color:#b5b5b5;
+				}
 			}
 		}
 	}
@@ -869,7 +894,6 @@ h3.years {font-size:18px; margin-bottom:10px;}
   float: left;
   padding-right: 30px;
   text-align: right;
-  animation: timeMotionLeft .5s ease-in-out backwards;
 }
 
 .timeline .direction-r {
@@ -877,20 +901,6 @@ h3.years {font-size:18px; margin-bottom:10px;}
   width: 50%;
   padding-left: 30px;
   float: right;
-  animation: timeMotionRight .5s ease-in-out backwards;
-}
-
-@keyframes timeMotionLeft {
-	0% {
-		opacity:0%;
-		transform:translateX(-100px);
-	}
-}
-@keyframes timeMotionRight {
-	0% {
-		opacity:0%;
-		transform:translateX(100px);
-	}
 }
 
 .timeline .flag-wrapper {
@@ -945,21 +955,6 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.15);
 	  -moz-box-shadow: 1px 1px 1px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.15);
 	  box-shadow: 1px 1px 1px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.15);
-}
-
-.timeline .direction-l .flag-wrapper:before,
-.timeline .direction-r .flag-wrapper:before {
-	position: absolute;
-	top: 6%;
-	right: -40px;
-	content: ' ';
-	display: block;
-	width: 20px;
-	height: 20px;
-	background: #fff;
-	border-radius: 10px;
-	border: 4px solid rgb(255,80,80);
-	z-index: 10;
 }
 
 .timeline .direction-r .flag-wrapper:before {
@@ -1047,7 +1042,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		}
 
 		.txts {
-			display:inline-block;	
+			//display:inline-block;	
 		}
 	}
   }

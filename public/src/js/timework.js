@@ -7,16 +7,13 @@ $$.timeWork= (function ($) {
 		_endOffsetX = null,
 		_clickCnt = 0,
 		_idKey = 0,
-		//idNum = 0,
-
 		_clicked = false,
 		_saved = false,
 		_cntDone = 0,
 		_mode = "",
 		_$bar = null,
 		_$timeline = $('#time-line'),
-		_$todoModal = $('#todoModal');
-		//config = null,
+		_$todoModal = $('#todoModal'),
 		_timeStr = null;
 		
 	var _init,
@@ -39,11 +36,6 @@ $$.timeWork= (function ($) {
 
 	//--- 초기화 메서드 시작 ---
 	_init = function (timeline) {
-
-		//config = $$.timeLine.config;
-		
-		//console.log('config.base :' + config.base);
-
 		_bindEvents();
 	};
 	//--- 초기화 메서드 끝 ---
@@ -56,6 +48,7 @@ $$.timeWork= (function ($) {
 		/* 할일 설정과 종료 이벤트 */
 		_$timeline.on('click', function(event){
 			var e = event,
+				_res;
 				_timeStr;
 
 			e.stopPropagation();
@@ -63,13 +56,14 @@ $$.timeWork= (function ($) {
 			_clickCnt++;
 
 			if(_clickCnt>=2){
-				_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
-				
+				_res = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+
 				// 할일 등록 팝업 Open
-				$('#todoModal').modal({
-					keyboard: true
-					//timeStr: _timeStr
-				});
+				if(_res){
+					$('#todoModal').modal({
+						keyboard: true
+					});
+				}
 
 				_clickCnt = 0;
 				_clicked = false;
@@ -96,8 +90,6 @@ $$.timeWork= (function ($) {
 				_clickCnt = 0;
 				_clicked = false;
 			}
-
-			//_mode = '';
 		});
 
 		/* 할일 등록 저장 */
@@ -112,12 +104,8 @@ $$.timeWork= (function ($) {
 				_setData(_dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
-				//console.log(_storedData);
 				_showTimeList('.todo-list', _idx);
 
-				//var timings = $$.util.benchmark(_showTimeList('.todo-list', _idx));
-				//console.log(timings);
-		
 				_$todoModal.modal('hide')
 
 				_idKey = '';
@@ -144,7 +132,6 @@ $$.timeWork= (function ($) {
 						if(_storedData[i].id === _idkey){
 							_storedData[i].title = _dataSet.title;
 							_storedData[i].description = _dataSet.description;
-							//console.log(_storedData[i].hasOwnProperty("title"));
 						}
 					}
 
@@ -152,7 +139,6 @@ $$.timeWork= (function ($) {
 					_updateTimeList('.todo-list', _dataSet);
 
 					//tooltip 데이타수정
-					
 					_$todoModal.modal('hide')
 
 					console.log(_storedData);
@@ -403,17 +389,9 @@ $$.timeWork= (function ($) {
 			
 		_$timeline.append(_$bar);	// Bar 객체 생성
 
-		//console.log('config.base :' + config.base);
-
 		_startPos = _$bar.offset();
-		//startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
 		_startOffsetX = e.pageX-_startPos.left;
 		
-		/*데이터가 하나이상 저장되어 있다면
-		if(_storedData.length>0){ 
-			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
-		}*/
-
 		_$bar.css('left', _startOffsetX).css('width','2px');
 
 		$$.timeData.getTime(_clickCnt, _startOffsetX);	//할일 시간 설정
@@ -437,6 +415,7 @@ $$.timeWork= (function ($) {
 			$('#bar_'+ _idKey).remove();
 			_clickCnt = 0;
 			_clicked = false;
+			
 			return false;
 		}
 
@@ -450,7 +429,7 @@ $$.timeWork= (function ($) {
 			//idNum++;
 			console.log('종료시간 설정 : _getEndPoint()');
 
-			return _timeStr;
+			return true; 
 		}
 
 		/*if(endOffsetX != null && _storedData.length>0){
