@@ -291,6 +291,8 @@ $$.timeWork= (function ($) {
 			console.log(_desc.length);
 
 			_$bar = $('#bar_'+_idkey);
+			
+			console.log(_$bar);
 
 			if(!_title){
 				alert('할일 제목을 입력해주세요!');
@@ -599,7 +601,6 @@ $$.timeWork= (function ($) {
 				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
 					_$target.append(template);
 					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
-					console.log('call 1');
 				}else{
 					_liEl = $(template).find('.timeline > li');
 					_$timelist = _$target.find('.timeline');
@@ -613,7 +614,6 @@ $$.timeWork= (function ($) {
 							_liEl.insertBefore(_$timelist.find('li').eq(_idx));
 						}
 					}
-					console.log('call 2');
 				}
 			},
 			complete: function(){
@@ -658,11 +658,21 @@ $$.timeWork= (function ($) {
 	_sortBy = function(target){
 		var _$liEl = $(target).find('li');
 		_$liEl.each(function(){
-			var _idx = $(target).find('li').index(this);	
+			var _idx = $(target).find('li').index(this),
+				_$directionL = $(this).find('.direction-l'),
+			    _$directionR = $(this).find('.direction-r');
+
 			if(_idx%2 == 1){
-				$(this).find('.direction-l').removeClass().addClass('direction-r');
+				if(_$directionR.hasClass('in')){
+					_$directionR.addClass('slideInRight').removeClass('in');
+				}
+				_$directionL.removeClass('direction-l').addClass('direction-r');
 			}else{
-				$(this).find('.direction-r').removeClass().addClass('direction-l');
+				var _$el = _$directionR.removeClass('direction-r').addClass('direction-l');
+
+				if(_$el.hasClass('in')){
+					_$el.addClass('slideInLeft').removeClass('in');
+				}
 			}
 		});
 	};

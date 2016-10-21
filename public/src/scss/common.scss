@@ -714,6 +714,14 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	animation:lightSpeedIn 1s;
 }
 
+.slideInLeft {
+	animation:slideInLeft 1.5s backwards;
+}
+
+.slideInRight {
+	animation:slideInRight 1.5s backwards;
+}
+
 @keyframes spin {
 	to { -webkit-transform: rotate(360deg); }
 }
@@ -731,7 +739,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 @keyframes fadeInRight {
 	0% {
 		opacity:0;
-		transform:translateX(50px);
+		transform:translateX(100px);
 	}
 	50% {
 		opacity:1;
@@ -774,6 +782,29 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		transform:translateY(-20px);
 	}
 }
+
+@keyframes slideInLeft {
+	0% {
+		opacity:0;
+		transform:translateX(-50px);
+	}
+	50% {
+		opacity:1;
+		transform:translateX(20px);
+	}
+}
+
+@keyframes slideInRight {
+	0% {
+		opacity:0;
+		transform:translateX(50px);
+	}
+	50% {
+		opacity:1;
+		transform:translateX(-20px);
+	}
+}
+
 
 @keyframes swing {
 	0% {transform: rotateX(-90deg);}
@@ -828,11 +859,11 @@ h3.years {font-size:18px; margin-bottom:10px;}
 
 .timeline li {
 	position:relative;
-	top:-50px;
+	margin-top:-30px;
 	padding: 1em 0;
 	text-align:left;
 
-	&:first-child {top:0;}
+	&:first-child {margin-top:0;}
 
 	&:before {
 		position: absolute;
@@ -920,6 +951,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		position:absolute;
 		top:auto;
 		left:50%;
+		z-index:50;
 		display:inline-block;
 		bottom:-13px;
 		width:24px;
