@@ -1,25 +1,19 @@
 /**
   @module $$.timeWork
  **/
-
-var $$ = $$ || {};
-
 $$.timeWork= (function ($) {
 	//--- 모듈 스코프 변수 시작 ---
 	var _startOffsetX = null,
 		_endOffsetX = null,
 		_clickCnt = 0,
 		_idKey = 0,
-		//idNum = 0,
-
 		_clicked = false,
 		_saved = false,
 		_cntDone = 0,
 		_mode = "",
 		_$bar = null,
 		_$timeline = $('#time-line'),
-		_$todoModal = $('#todoModal');
-		//config = null,
+		_$todoModal = $('#todoModal'),
 		_timeStr = null;
 		
 	var _init,
@@ -42,11 +36,6 @@ $$.timeWork= (function ($) {
 
 	//--- 초기화 메서드 시작 ---
 	_init = function (timeline) {
-
-		//config = $$.timeLine.config;
-		
-		//console.log('config.base :' + config.base);
-
 		_bindEvents();
 	};
 	//--- 초기화 메서드 끝 ---
@@ -59,6 +48,7 @@ $$.timeWork= (function ($) {
 		/* 할일 설정과 종료 이벤트 */
 		_$timeline.on('click', function(event){
 			var e = event,
+				_res;
 				_timeStr;
 
 			e.stopPropagation();
@@ -66,13 +56,14 @@ $$.timeWork= (function ($) {
 			_clickCnt++;
 
 			if(_clickCnt>=2){
-				_getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
-				
+				_res = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+
 				// 할일 등록 팝업 Open
-				$('#todoModal').modal({
-					keyboard: true
-					//timeStr: _timeStr
-				});
+				if(_res){
+					$('#todoModal').modal({
+						keyboard: true
+					});
+				}
 
 				_clickCnt = 0;
 				_clicked = false;
@@ -99,8 +90,6 @@ $$.timeWork= (function ($) {
 				_clickCnt = 0;
 				_clicked = false;
 			}
-
-			//_mode = '';
 		});
 
 		/* 할일 등록 저장 */
@@ -115,12 +104,8 @@ $$.timeWork= (function ($) {
 				_setData(_dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
-				//console.log(_storedData);
 				_showTimeList('.todo-list', _idx);
 
-				//var timings = $$.util.benchmark(_showTimeList('.todo-list', _idx));
-				//console.log(timings);
-		
 				_$todoModal.modal('hide')
 
 				_idKey = '';
@@ -147,7 +132,6 @@ $$.timeWork= (function ($) {
 						if(_storedData[i].id === _idkey){
 							_storedData[i].title = _dataSet.title;
 							_storedData[i].description = _dataSet.description;
-							//console.log(_storedData[i].hasOwnProperty("title"));
 						}
 					}
 
@@ -155,7 +139,6 @@ $$.timeWork= (function ($) {
 					_updateTimeList('.todo-list', _dataSet);
 
 					//tooltip 데이타수정
-					
 					_$todoModal.modal('hide')
 
 					console.log(_storedData);
@@ -308,6 +291,8 @@ $$.timeWork= (function ($) {
 			console.log(_desc.length);
 
 			_$bar = $('#bar_'+_idkey);
+			
+			console.log(_$bar);
 
 			if(!_title){
 				alert('할일 제목을 입력해주세요!');
@@ -406,17 +391,9 @@ $$.timeWork= (function ($) {
 			
 		_$timeline.append(_$bar);	// Bar 객체 생성
 
-		//console.log('config.base :' + config.base);
-
 		_startPos = _$bar.offset();
-		//startOffsetX = (e.pageX+config.base)-(_startPos.left+config.base);
 		_startOffsetX = e.pageX-_startPos.left;
 		
-		/*데이터가 하나이상 저장되어 있다면
-		if(_storedData.length>0){ 
-			_getChkPoint(startOffsetX); // 등록시간 중복오류 체크 
-		}*/
-
 		_$bar.css('left', _startOffsetX).css('width','2px');
 
 		$$.timeData.getTime(_clickCnt, _startOffsetX);	//할일 시간 설정
@@ -435,15 +412,16 @@ $$.timeWork= (function ($) {
 		//endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
 		_endOffsetX = e.pageX-_endPos.left;
 
-		if(_endOffsetX != null && _endOffsetX<(_getPxToHour/2)){
+		if(_endOffsetX && _endOffsetX<(_getPxToHour/2)){
 			alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
 			$('#bar_'+ _idKey).remove();
 			_clickCnt = 0;
 			_clicked = false;
+			
 			return false;
 		}
 
-		if(_endOffsetX != null && _clicked){
+		if(_endOffsetX && _clicked){
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
@@ -453,7 +431,7 @@ $$.timeWork= (function ($) {
 			//idNum++;
 			console.log('종료시간 설정 : _getEndPoint()');
 
-			return _timeStr;
+			return true; 
 		}
 
 		/*if(endOffsetX != null && _storedData.length>0){
@@ -623,21 +601,13 @@ $$.timeWork= (function ($) {
 				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
 					_$target.append(template);
 					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
-					console.log('call 1');
 				}else{
 					_liEl = $(template).find('.timeline > li');
 					_$timelist = _$target.find('.timeline');
 
-					if(_idx == 0){
-						_liEl.insertBefore(_$timelist.find('li').eq(_idx));
-					}else{
-						if(_idx == _length-1){
-							_liEl.insertAfter(_$timelist.find('li').eq(_idx-1));
-						}else{
-							_liEl.insertBefore(_$timelist.find('li').eq(_idx));
-						}
-					}
-					console.log('call 2');
+					_idx == 0 ? _liEl.insertBefore(_$timelist.find('li').eq(_idx)) :
+					_idx == _length-1 ? _liEl.insertAfter(_$timelist.find('li').eq(_idx-1)) :
+										_liEl.insertBefore(_$timelist.find('li').eq(_idx));
 				}
 			},
 			complete: function(){
@@ -682,11 +652,21 @@ $$.timeWork= (function ($) {
 	_sortBy = function(target){
 		var _$liEl = $(target).find('li');
 		_$liEl.each(function(){
-			var _idx = $(target).find('li').index(this);	
+			var _idx = $(target).find('li').index(this),
+				_$directionL = $(this).find('.direction-l'),
+			    _$directionR = $(this).find('.direction-r');
+
 			if(_idx%2 == 1){
-				$(this).find('.direction-l').removeClass().addClass('direction-r');
+				if(_$directionR.hasClass('in')){
+					_$directionR.addClass('slideInRight').removeClass('in');
+				}
+				_$directionL.removeClass('direction-l').addClass('direction-r');
 			}else{
-				$(this).find('.direction-r').removeClass().addClass('direction-l');
+				var _$el = _$directionR.removeClass('direction-r').addClass('direction-l');
+
+				if(_$el.hasClass('in')){
+					_$el.addClass('slideInLeft').removeClass('in');
+				}
 			}
 		});
 	};

@@ -16,7 +16,7 @@
 	<ul class="timeline">
 		<!-- Item 1 -->
 		<li>
-			<div class="direction-r fadeInRight">
+			<div class="direction-r in">
 				<div class="flag-wrapper">
 					<div class="time-wrapper"><span class="time"><span class="start-time">2013</span> - <span class="end-time">present</span></span></div>
 					<div class="flag title" draggable="true">Freelancer</div>

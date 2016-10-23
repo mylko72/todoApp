@@ -9,7 +9,7 @@
 $$.timeLine = (function ($) {
 
 	//--- 모듈 스코프 변수 시작 ---
-	var //_base = null,	//현재시간(_now변수)을 기준으로 타임시트를 재설정하기 위한 변수
+	var _now = null,	//현재시간으로 설정하기 위한 변수
 		_unit = 10,		//_unit = 타임라인 단위 = 10px
 		_timeNavObj = null;
 
@@ -59,7 +59,6 @@ $$.timeLine = (function ($) {
 	_createTimeline = function (servTime){
 		var _self = this,	
 			_day =  24,
-			_now = null,	//현재시간으로 설정하기 위한 변수
 			_servTime = servTime,
 			_d = new Date(),				//현재 시간을 가져오기 위한 Date 오브젝트 생성;
 			_n = 0;						//24시간 생성을 위한 카운트변수
@@ -67,6 +66,7 @@ $$.timeLine = (function ($) {
 		$('#timelist').empty();
 		
 		(!_servTime) ? _now = _d.getHours() : _now = _servTime;		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
+		//_now = 0;
 
 		console.log('현재시간 : '+ _now + '시');
 		//_base = _now * getPxToHour();							//_now*1hour(120px) 값을 타임시트의 기준(_base) pixel로 설정하여 _base 변수에 저장
@@ -130,21 +130,24 @@ $$.timelineNav = (function($){
 
 	//---  공개 api ---
 	return {
-		goPrev : function(){
+		goPrev : function(e){
 			_cnt==0 ? _cnt : _cnt--;
 			_$timesheet.animate({'left': '-'+(120*_cnt)+'px'});
+			e.preventDefault();
 		},
-		goNext : function(){
+		goNext : function(e){
 			_cnt>=23-7 ? _cnt : _cnt++;
 			_$timesheet.animate({'left':'-'+(120*_cnt)+'px'});
+			e.preventDefault();
 		},
-		goMove : function(self){
+		goMove : function(e, self){
 			var _parent = self.parent();
 			var _idx = $('#time-list').children().index(_parent);
 
 			(_idx>18) ? _cnt = 18 : _cnt = _idx;
 
 			_$timesheet.animate({'left': '-'+(120*_cnt)+'px'},'slow');
+			e.preventDefault();
 		}
 	};
 }(jQuery));

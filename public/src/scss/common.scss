@@ -691,7 +691,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 }
 
 .fadeInRight {
-	animation:fadeInRight 1.5s 1.5s backwards;
+	animation:fadeInRight 1.5s 1s backwards;
 }
 
 .fadeInDown {
@@ -714,6 +714,14 @@ h3.years {font-size:18px; margin-bottom:10px;}
 	animation:lightSpeedIn 1s;
 }
 
+.slideInLeft {
+	animation:slideInLeft 1.5s backwards;
+}
+
+.slideInRight {
+	animation:slideInRight 1.5s backwards;
+}
+
 @keyframes spin {
 	to { -webkit-transform: rotate(360deg); }
 }
@@ -731,7 +739,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 @keyframes fadeInRight {
 	0% {
 		opacity:0;
-		transform:translateX(200px);
+		transform:translateX(100px);
 	}
 	50% {
 		opacity:1;
@@ -774,6 +782,29 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		transform:translateY(-20px);
 	}
 }
+
+@keyframes slideInLeft {
+	0% {
+		opacity:0;
+		transform:translateX(-50px);
+	}
+	50% {
+		opacity:1;
+		transform:translateX(20px);
+	}
+}
+
+@keyframes slideInRight {
+	0% {
+		opacity:0;
+		transform:translateX(50px);
+	}
+	50% {
+		opacity:1;
+		transform:translateX(-20px);
+	}
+}
+
 
 @keyframes swing {
 	0% {transform: rotateX(-90deg);}
@@ -828,35 +859,16 @@ h3.years {font-size:18px; margin-bottom:10px;}
 
 .timeline li {
 	position:relative;
-	top:-50px;
+	margin-top:-30px;
 	padding: 1em 0;
 	text-align:left;
 
-	&:first-child {top:0;}
-
-	&.done {
-		.flag {
-			text-decoration:line-through;
-			&:before {
-				border-color:#505050;	
-			}
-		} 
-		.flag-wrapper:before {
-			border-color:#999;
-		}
-		.time-wrapper {
-			background-color:#b5b5b5;
-
-			&:before {
-				border-left-color:#b5b5b5;
-			}
-		}
-	}
+	&:first-child {margin-top:0;}
 
 	&:before {
 		position: absolute;
-		top: 23%;
-		left: 50%;
+		top: 25px;
+		left:50%;
 		content: ' ';
 		display: block;
 		width: 20px;
@@ -868,6 +880,34 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		z-index: 10;
 	}
 
+	&.done {
+		&:before {
+			border-color:#505050;	
+		}
+		.flag {
+			text-decoration:line-through;
+		} 
+		.flag-wrapper:before {
+			border-color:#999;
+		}
+		.time-wrapper {
+			background-color:#b5b5b5;
+		}
+		.direction-l {
+			.time-wrapper {
+				&:before {
+					border-left-color:#b5b5b5;
+				}
+			}
+		}
+		.direction-r {
+			.time-wrapper {
+				&:before {
+					border-right-color:#b5b5b5;
+				}
+			}
+		}
+	}
 }
 
 .timeline li:after {
@@ -884,7 +924,6 @@ h3.years {font-size:18px; margin-bottom:10px;}
   float: left;
   padding-right: 30px;
   text-align: right;
-  animation: timeMotionLeft .5s ease-in-out backwards;
 }
 
 .timeline .direction-r {
@@ -892,20 +931,6 @@ h3.years {font-size:18px; margin-bottom:10px;}
   width: 50%;
   padding-left: 30px;
   float: right;
-  animation: timeMotionRight .5s ease-in-out backwards;
-}
-
-@keyframes timeMotionLeft {
-	0% {
-		opacity:0%;
-		transform:translateX(-100px);
-	}
-}
-@keyframes timeMotionRight {
-	0% {
-		opacity:0%;
-		transform:translateX(100px);
-	}
 }
 
 .timeline .flag-wrapper {
@@ -925,6 +950,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		position:absolute;
 		top:auto;
 		left:50%;
+		z-index:50;
 		display:inline-block;
 		bottom:-13px;
 		width:24px;
@@ -1062,7 +1088,7 @@ h3.years {font-size:18px; margin-bottom:10px;}
 		}
 
 		.txts {
-			display:inline-block;	
+			//display:inline-block;	
 		}
 	}
   }
