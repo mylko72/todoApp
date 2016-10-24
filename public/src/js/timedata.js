@@ -108,8 +108,6 @@ $$.timeData = (function ($) {
 		_timeData = TimeModel.extend(_dataSet);
 		_storedData.push(_timeData);
 		
-		//console.log(Object.getPrototypeOf(_timeData) === TimeModel.prototype);
-
 		_storedData.sort(_comparator);
 		
 		for(var i=0;i<_storedData.length;i++){
@@ -117,8 +115,6 @@ $$.timeData = (function ($) {
 				_idx = _storedData.indexOf(_storedData[i]);
 			}
 		}
-
-		//console.log('_idx :' + _idx);
 
 		console.log('저장 되었습니다 : _saveData()');
 		console.log(_storedData);

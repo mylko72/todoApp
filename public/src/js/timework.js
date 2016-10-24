@@ -60,7 +60,7 @@ $$.timeWork= (function ($) {
 
 				// 할일 등록 팝업 Open
 				if(_res){
-					$('#todoModal').modal({
+					_$todoModal.modal({
 						keyboard: true
 					});
 				}
@@ -104,7 +104,8 @@ $$.timeWork= (function ($) {
 				_setData(_dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
-				_showTimeList('.todo-list', _idx);
+				
+				_showTimeList('.todo-area', _idx);
 
 				_$todoModal.modal('hide')
 
@@ -124,7 +125,6 @@ $$.timeWork= (function ($) {
 
 				_dataSet = _getFormData();
 
-
 				if(_dataSet){
 					_setData(_dataSet, _idkey);
 
@@ -136,7 +136,7 @@ $$.timeWork= (function ($) {
 					}
 
 					//타임리스트 수정
-					_updateTimeList('.todo-list', _dataSet);
+					_updateTimeList('.todo-area', _dataSet);
 
 					//tooltip 데이타수정
 					_$todoModal.modal('hide')
@@ -181,6 +181,8 @@ $$.timeWork= (function ($) {
 				_$time = $('#todoModal').find('.txt-time');
 
 			_mode = _$button.data('mode');
+
+			console.log('call here!');
 	
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
@@ -231,7 +233,7 @@ $$.timeWork= (function ($) {
 			_$todoModal.find('#todo-desc').val('');
 		});
 
-		$(document).on('click', '.timeline .more', function(e){
+		$(document).on('click', '.todo-list .more', function(e){
 			e.preventDefault();
 			if($(this).hasClass('glyphicon-chevron-up')){
 				$(this).parents('.flag-wrapper').find('.desc p').removeClass('opened');
@@ -252,7 +254,7 @@ $$.timeWork= (function ($) {
 			event.preventDefault();
 		});
 
-		$(document).on('dragstart', '.timeline .flag.title', function(event){
+		$(document).on('dragstart', '.todo-list .flag.title', function(event){
 			var _class = $(this).attr('class');
 			_class = _class.split(' ')[1];
 			console.log('drag가 시작되었음');
@@ -355,7 +357,7 @@ $$.timeWork= (function ($) {
 
 			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
 
-			$('.timeline').find('.time_'+_idkey).toggleClass('done');
+			$('.todo-list').find('.time_'+_idkey).toggleClass('done');
 
 			for(var i=0;i<_storedData.length;i++){
 				if(_storedData[i].id === _idkey){
@@ -534,7 +536,7 @@ $$.timeWork= (function ($) {
 			_$liEl.find('.flag-wrapper').append(_$moreBtn);
 		} 
 
-		_sortBy($('.date_'+_storedData[_idx].startDate).find('.timeline'));
+		_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
 
 		console.log('할 일 리스트 출력 : _showTimeList()');
 	};
@@ -557,7 +559,7 @@ $$.timeWork= (function ($) {
 		_$liEl.find('.more').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
 		
 		setTimeout(function(){
-			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc>p').height()){
+			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
 				if(_$liEl.find('.flag-wrapper .more').length == 0){
 					_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
 					_$liEl.find('.flag-wrapper').append(_$moreBtn);
@@ -565,7 +567,7 @@ $$.timeWork= (function ($) {
 			}else{
 				_$liEl.find('.flag-wrapper .more').remove();
 			}
-		}, 500);
+		}, 300);
 
 		console.log('할 일 리스트 업데이트 : _updateTimeList()');
 	};
@@ -573,13 +575,13 @@ $$.timeWork= (function ($) {
 	/* 할일 리스트 삭제 */
 	_delTimeList = function(idkey){
 		var _idkey = idkey,
-			_$timeline;
+			_$todolist;
 
-		_$timeline = $('li.time_'+_idkey).parent('.timeline');
-		_$timeline.find('li.time_'+_idkey).remove();
+		_$todolist = $('li.time_'+_idkey).parent('.todo-list');
+		_$todolist.find('li.time_'+_idkey).remove();
 
 		setTimeout(function(){
-			_sortBy(_$timeline);
+			_sortBy(_$todolist);
 		}, 1000);
 	};
 
@@ -602,8 +604,8 @@ $$.timeWork= (function ($) {
 					_$target.append(template);
 					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
 				}else{
-					_liEl = $(template).find('.timeline > li');
-					_$timelist = _$target.find('.timeline');
+					_liEl = $(template).find('.todo-list > li');
+					_$timelist = _$target.find('.todo-list');
 
 					_idx == 0 ? _liEl.insertBefore(_$timelist.find('li').eq(_idx)) :
 					_idx == _length-1 ? _liEl.insertAfter(_$timelist.find('li').eq(_idx-1)) :
@@ -611,7 +613,7 @@ $$.timeWork= (function ($) {
 				}
 			},
 			complete: function(){
-				_$liEl = _$target.find('.timeline').find('li').eq(_idx);
+				_$liEl = _$target.find('.todo-list').find('li').eq(_idx);
 			}
 		});
 

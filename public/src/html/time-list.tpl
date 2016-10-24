@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<!-- The Timeline -->
-	<ul class="timeline">
+	<ul class="todo-list">
 		<!-- Item 1 -->
 		<li>
 			<div class="direction-r in">
