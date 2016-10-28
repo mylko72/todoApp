@@ -182,8 +182,6 @@ $$.timeWork= (function ($) {
 
 			_mode = _$button.data('mode');
 
-			console.log('call here!');
-	
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
 
@@ -509,32 +507,43 @@ $$.timeWork= (function ($) {
 
 	/* 할일 리스트 출력 */
 	_showTimeList = function(target, idx){
-		var _$todoList = $(target),
-			_url = _$todoList.data('template'),
+		var _$todoArea = $(target),
+			_$todoList,
+			_url = _$todoArea.data('template'),
 			_storedData = $$.timeData.getStoredData(), 
 			_idx = idx,
 			_$liEl,
 			_$moreBtn;
 
-		_$todoList.find('.nolist').hide();
-		_$liEl = _renderHtml(_$todoList, _idx, _storedData, _url);
+		_$todoArea.find('.nolist').hide();
+		_renderHtml(_$todoArea, _idx, _storedData, _url);
 
-		$('.date_'+_storedData[_idx].startDate).find('.time-tit').text(_storedData[_idx].startDate);
-
-	   	_$liEl.addClass('time_'+_storedData[_idx].id);
-		_$liEl.find('.title').text(_storedData[_idx].title);
-		_$liEl.find('.start-time').text(_storedData[_idx].startTime);
-		_$liEl.find('.end-time').text(_storedData[_idx].endTime);
-		if(_storedData[_idx].description){
-			_$liEl.find('.desc .txts').html(_storedData[_idx].description);
-		}else{
-			_$liEl.find('.desc').hide();
+		if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
+			_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
+			$('.date_'+_storedData[_idx].startDate).find('.time-tit').text(_storedData[_idx].startDate);
+			console.log('call here');
 		}
 
-		if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
-			_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
-			_$liEl.find('.flag-wrapper').append(_$moreBtn);
-		} 
+		_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate).find(' .todo-list');
+
+		_$todoList.find('li').each(function(i){
+			_$liEl = $(this);
+
+			_$liEl.addClass('time_'+_storedData[_idx].id);
+			_$liEl.find('.title').text(_storedData[_idx].title);
+			_$liEl.find('.start-time').text(_storedData[_idx].startTime);
+			_$liEl.find('.end-time').text(_storedData[_idx].endTime);
+			if(_storedData[_idx].description){
+				_$liEl.find('.desc .txts').html(_storedData[_idx].description);
+			}else{
+				_$liEl.find('.desc').hide();
+			}
+
+			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
+				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+				_$liEl.find('.flag-wrapper').append(_$moreBtn);
+			} 
+		});
 
 		_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
 
@@ -586,34 +595,46 @@ $$.timeWork= (function ($) {
 	};
 
 	/* Html(목록) 렌더링 */
-	_renderHtml = function(target, idx, storedData, url){
-		var _$target = target,
+	_renderHtml = function(target, idx, storedData, templateUrl){
+		var _$todoArea = target,
+			_$todoList,
 			_idx = idx,
+			_storedData = storedData,
 			_date = storedData[_idx].startDate,
 			_length = storedData.length,
-			_url = url,
+			_templateUrl = templateUrl,
 			_$timelist,
 			_$liEl;
 	
 		$.ajax({
 			type : "GET",
 			async : false,
-			url : _url,
+			url : _templateUrl,
 			success : function(template) {
-				if(_$target.find('.date_'+_date).size()==0/* || _nowStr != _date*/){
-					_$target.append(template);
-					_$target.find('.time-area').eq(-1).addClass('date_'+_date);
+
+				if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
+					_$todoArea.append(template);
+					//_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
+					//_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate + ' .todo-list');
 				}else{
 					_liEl = $(template).find('.todo-list > li');
-					_$timelist = _$target.find('.todo-list');
+					_$todoArea.find('.todo-list').append(_liEl);
+				}
+
+				/*if(_$todoArea.find('.date_'+_date).size()==0){
+					_$todoArea.append(template);
+					_$todoArea.find('.time-area').eq(-1).addClass('date_'+_date);
+				}else{
+					_liEl = $(template).find('.todo-list > li');
+					_$timelist = _$todoArea.find('.todo-list');
 
 					_idx == 0 ? _liEl.insertBefore(_$timelist.find('li').eq(_idx)) :
 					_idx == _length-1 ? _liEl.insertAfter(_$timelist.find('li').eq(_idx-1)) :
 										_liEl.insertBefore(_$timelist.find('li').eq(_idx));
-				}
+				}*/
 			},
 			complete: function(){
-				_$liEl = _$target.find('.todo-list').find('li').eq(_idx);
+				//_$liEl = _$todoArea.find('.todo-list').find('li').eq(_idx);
 			}
 		});
 
