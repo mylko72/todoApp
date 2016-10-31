@@ -5,6 +5,10 @@ $$.timeData = (function ($) {
 
 	//--- 모듈 스코프 변수 시작 ---
 	var _currentDay = null,		//현재일(theDay)
+		_daysInMonth = null,	//총일수(Month기준)
+		_year,
+		_month,
+		_date,
 		_today = null,			//오늘(today)
 		_todayObj = new Date(),
 		_storedData = [],
@@ -29,11 +33,10 @@ $$.timeData = (function ($) {
 	_getNToday = function (dt){	
 
 		var _self = this,
-			_year,
-			_month,
-			_date,
-			_dateObj,
-			_daysInMonth;	//총일수(Month기준)
+			_dateObj;
+
+		console.log('_currentDay :' + _currentDay);
+		console.log('_daysInMonth :' + _daysInMonth);
 
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
 			_dateObj = new Date ();
@@ -42,6 +45,8 @@ $$.timeData = (function ($) {
 			_date = _dateObj.getDate();
 
 			_currentDay = _today;
+
+			console.log('call here');
 
 		}else{
 
@@ -62,6 +67,7 @@ $$.timeData = (function ($) {
 				_date = _dateObj.getDate()+1
 			}
 
+			console.log('call here2');
 		}
 		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
 	};
@@ -71,7 +77,7 @@ $$.timeData = (function ($) {
 		
 		var _self = this;
 
-		_getNToday(_todayObj);
+		//_getNToday(_todayObj);
 
 		if(clickcnt==1){
 			var _startTime = startoffsetx / 2;
