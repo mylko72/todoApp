@@ -40,9 +40,9 @@ $$.timeLine = (function ($) {
 
 		var _$link = $('#time-list').find('li > a');
 		// 클릭한 시간을 앞으로 slide
-		_$link.on('click', function(){
+		_$link.on('click', function(e){
 			var _$self = $(this);
-			_timeNavObj.goMove(_$self);
+			_timeNavObj.goMove(e, _$self);
 		});
 	};
 	//---  이벤트 핸들러 끝 ---

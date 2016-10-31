@@ -182,8 +182,6 @@ $$.timeWork= (function ($) {
 
 			_mode = _$button.data('mode');
 
-			console.log('call here!');
-	
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
 
