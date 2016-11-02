@@ -509,32 +509,74 @@ $$.timeWork= (function ($) {
 	_showTimeList = function(target, idx){
 		var _$todoArea = $(target),
 			_$todoList,
+			_$liEl,
+			_$moreBtn,
 			_url = _$todoArea.data('template'),
 			_storedData = $$.timeData.getStoredData(), 
-			_idx = idx,
-			_$liEl,
-			_$moreBtn;
+			_chkDate,
+			_num = 0,
+			_idx = idx;
 
 		_$todoArea.find('.nolist').hide();
+		//_$todoArea.find('.todo-list').empty();
+
 		_renderHtml(_$todoArea, _idx, _storedData, _url);
 
-		if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
-			_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
-			$('.date_'+_storedData[_idx].startDate).find('.time-tit').text(_storedData[_idx].startDate);
-			console.log('call here');
-		}
 
-		_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate).find(' .todo-list');
 
-		_$todoList.find('li').each(function(i){
-			_$liEl = $(this);
+		/*var newArr = [];
+			
+		_storedData.reduce(function(a,b,i){
+			//console.log("a:", a);
+			//console.log("b:", b);
+			
+			a.push(b);
 
-			_$liEl.addClass('time_'+_storedData[_idx].id);
-			_$liEl.find('.title').text(_storedData[_idx].title);
-			_$liEl.find('.start-time').text(_storedData[_idx].startTime);
-			_$liEl.find('.end-time').text(_storedData[_idx].endTime);
-			if(_storedData[_idx].description){
-				_$liEl.find('.desc .txts').html(_storedData[_idx].description);
+			a[i] = a[i-1] || a[i];
+
+			//console.log("a2:", a[i].startDate);
+			//console.log("b2:", b.startDate);
+			
+			if(a[i].startDate == b.startDate){
+				newArr.push(a[i]);
+			}
+
+			return newArr;
+
+		}, []);*/
+
+		/*$.each(_storedData, function(index, item){
+
+			console.log('_chkDate : ' + _chkDate);
+			console.log('_item.date : ' + item.startDate);
+
+
+			if (_chkDate != item.startDate){
+				console.log('call here2');
+				_num = 0;
+			}
+
+			if(_chkDate == null || _chkDate != item.startDate){
+				_chkDate = item.startDate;
+				console.log('call here1');
+
+				if(_$todoArea.find('.date_'+item.startDate).size()==0){
+					_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
+					$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
+				}
+			} 
+
+			_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
+
+			_$liEl = _$todoList.find('li').eq(_num);
+
+			_$liEl.addClass('time_'+item.id);
+			_$liEl.find('.title').text(item.title);
+			_$liEl.find('.start-time').text(item.startTime);
+			_$liEl.find('.end-time').text(item.endTime);
+
+			if(item.description){
+				_$liEl.find('.desc .txts').html(item.description);
 			}else{
 				_$liEl.find('.desc').hide();
 			}
@@ -543,9 +585,86 @@ $$.timeWork= (function ($) {
 				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
 				_$liEl.find('.flag-wrapper').append(_$moreBtn);
 			} 
-		});
 
-		_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
+			_$liEl.clone().appendTo(_$todoList);
+
+			if(_num % 2 == 0){
+				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
+			}else{
+				_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
+			}
+
+			_num++;
+
+		});*/
+
+		/*_storedData.forEach(function(item){
+
+			if(_$todoArea.find('.date_'+item.startDate).size()==0){
+				_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
+				$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
+				_new = true;
+			}
+
+			if(!_$todoList){
+				_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
+				_num = _$todoList.data('num');
+				console.log('call new');
+			} 
+
+			console.log('_num :'+_num);
+
+			_$liEl = _$todoList.find('li').eq(_num);
+
+			_$liEl.addClass('time_'+item.id);
+			_$liEl.find('.title').text(item.title);
+			_$liEl.find('.start-time').text(item.startTime);
+			_$liEl.find('.end-time').text(item.endTime);
+
+			if(item.description){
+				_$liEl.find('.desc .txts').html(item.description);
+			}else{
+				_$liEl.find('.desc').hide();
+			}
+
+			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
+				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+				_$liEl.find('.flag-wrapper').append(_$moreBtn);
+			} 
+
+			if(_num % 2 == 0){
+				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
+			}else{
+				_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
+			}
+
+			_new = false;
+			_num++;
+		});*/
+
+		/*_$todoList.find('li').each(function(i){
+			_$liEl = $(this);
+
+			_$liEl.addClass('time_'+_storedData[i].id);
+			_$liEl.find('.title').text(_storedData[i].title);
+			_$liEl.find('.start-time').text(_storedData[i].startTime);
+			_$liEl.find('.end-time').text(_storedData[i].endTime);
+			if(_storedData[i].description){
+				_$liEl.find('.desc .txts').html(_storedData[i].description);
+			}else{
+				_$liEl.find('.desc').hide();
+			}
+
+			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
+				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+				_$liEl.find('.flag-wrapper').append(_$moreBtn);
+			} 
+			if(i % 2 == 0){
+				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
+			}
+		});*/
+
+		//_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
 
 		console.log('할 일 리스트 출력 : _showTimeList()');
 	};
@@ -598,6 +717,8 @@ $$.timeWork= (function ($) {
 	_renderHtml = function(target, idx, storedData, templateUrl){
 		var _$todoArea = target,
 			_$todoList,
+			_chkDate,
+			_num,
 			_idx = idx,
 			_storedData = storedData,
 			_date = storedData[_idx].startDate,
@@ -612,14 +733,65 @@ $$.timeWork= (function ($) {
 			url : _templateUrl,
 			success : function(template) {
 
-				if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
+				_$todoArea.find('.todo-list').empty();
+			
+				$.each(_storedData, function(index, item){
+
+					if(_chkDate != item.startDate){
+						_chkDate = item.startDate;
+						_num = 0;
+
+						if(_$todoArea.find('.date_'+item.startDate).size()==0){
+							_$todoArea.append(template);
+							_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
+							$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
+						}
+					} 
+
+					if(_$todoArea.find('.todo-list li').size()<_storedData.length){
+						var _newLi = $(template).find('.todo-list > li');
+						_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
+					}
+
+					_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
+
+					_$liEl = _$todoList.find('li').eq(_num);
+
+					_$liEl.addClass('time_'+item.id);
+					_$liEl.find('.title').text(item.title);
+					_$liEl.find('.start-time').text(item.startTime);
+					_$liEl.find('.end-time').text(item.endTime);
+
+					if(item.description){
+						_$liEl.find('.desc .txts').html(item.description);
+					}else{
+						_$liEl.find('.desc').hide();
+					}
+
+					if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
+						_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
+						_$liEl.find('.flag-wrapper').append(_$moreBtn);
+					} 
+
+					if(_num % 2 == 0){
+						_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
+					}else{
+						_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
+					}
+
+					_num++;
+
+				});
+
+
+				/*if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
 					_$todoArea.append(template);
-					//_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
-					//_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate + ' .todo-list');
+					_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
+					_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate + ' .todo-list');
 				}else{
 					_liEl = $(template).find('.todo-list > li');
 					_$todoArea.find('.todo-list').append(_liEl);
-				}
+				}*/
 
 				/*if(_$todoArea.find('.date_'+_date).size()==0){
 					_$todoArea.append(template);
@@ -694,6 +866,27 @@ $$.timeWork= (function ($) {
 		});
 	};
 
+	_sortBy2 = function(target){
+		var _$liEl = $(target).find('li');
+		_$liEl.each(function(){
+			var _idx = $(target).find('li').index(this),
+				_$directionL = $(this).find('.direction-l'),
+			    _$directionR = $(this).find('.direction-r');
+
+			if(_idx%2 == 1){
+				if(_$directionR.hasClass('in')){
+					_$directionR.addClass('slideInRight').removeClass('in');
+				}
+				_$directionL.removeClass('direction-l').addClass('direction-r');
+			}else{
+				var _$el = _$directionR.removeClass('direction-r').addClass('direction-l');
+
+				if(_$el.hasClass('in')){
+					_$el.addClass('slideInLeft').removeClass('in');
+				}
+			}
+		});
+	};
 	//---  DOM 메서드 끝 ---
 
 	//---  공개 api ---

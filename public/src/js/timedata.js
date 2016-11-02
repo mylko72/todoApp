@@ -35,9 +35,6 @@ $$.timeData = (function ($) {
 		var _self = this,
 			_dateObj;
 
-		console.log('_currentDay :' + _currentDay);
-		console.log('_daysInMonth :' + _daysInMonth);
-
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
 			_dateObj = new Date ();
 			_dateObj.setDate (_dateObj.getDate () + 1);
@@ -45,8 +42,6 @@ $$.timeData = (function ($) {
 			_date = _dateObj.getDate();
 
 			_currentDay = _today;
-
-			console.log('call here');
 
 		}else{
 
@@ -66,8 +61,6 @@ $$.timeData = (function ($) {
 			if(_currentDay>_date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
 				_date = _dateObj.getDate()+1
 			}
-
-			console.log('call here2');
 		}
 		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
 	};
