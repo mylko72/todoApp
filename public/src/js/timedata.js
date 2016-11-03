@@ -139,22 +139,19 @@ $$.timeData = (function ($) {
 		var _$objInfo = $(target),
 			_result = '\n';
 
-		console.log(_storedData[idx]);
-
 		for(var prop in _storedData[idx]){
 			_result += '[속성명 : ' + prop + ', 값: ' + _storedData[idx][prop] + ']\n';
 		}
-		console.log(idx);
 		_$objInfo.append('<li class="list-group-item" />');
 		_$objInfo.children().eq(idx).text(_result);
 	};
 
-	_addTime = function (tTimes){
+	_addTime = function (times){
 		var _now = $$.timeLine.getCurrentHour(),
-			_hour = Math.floor(tTimes/60) + _now,
+			_hour = Math.floor(times/60) + _now,
 			_day =  24;
 
-		//console.log(_now);
+		console.log(_now);
 
 		if(_hour>=_day){
 			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
@@ -163,7 +160,7 @@ $$.timeData = (function ($) {
 			_currentDay = _today;
 		}
 
-		var _minute = Math.floor(tTimes%60);
+		var _minute = Math.floor(times%60);
 
 		var _timeStr = (_hour < 10 ? "0": "") + _hour+':' + (_minute < 10 ? "0": "") + _minute;
 
@@ -192,11 +189,6 @@ $$.timeData = (function ($) {
 
 		$$.timeWork.countTotal();
 		$$.timeWork.delTimeList(_idKey);
-
-		console.log('삭제되었습니다 : _removeData()');
-		console.log(_storedData);
-
-		//idNum--;
 	};
 
 	_getDaysInMonth = function (_year, _month) {

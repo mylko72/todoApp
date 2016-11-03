@@ -59,8 +59,6 @@ var TimeModel = {
 		$del = $bar.find('.del'); 
 		$edit = $bar.find('.edit'); 
 
-		console.log('타임Bar 생성 : drawBar()');
-
 		tooltipStr = String()+'<div class="tooltip">';
 		tooltipStr += '<span class="title"></span>';
 		tooltipStr += '<span class="time"></span>';

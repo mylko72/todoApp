@@ -185,7 +185,6 @@ $$.timeWork= (function ($) {
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
 
-				console.log(_dataSet);
 				var _desc = _dataSet.description;
 				var _descStr;
 
@@ -205,7 +204,6 @@ $$.timeWork= (function ($) {
 
 				_idKey = _dataSet.id;
 
-				console.log('할일 수정 팝업 오픈');
 				console.log(_mode + '모드');
 
 			}else{
@@ -219,7 +217,6 @@ $$.timeWork= (function ($) {
 
 				_mode = 'SAVE';
 
-				console.log('할일 등록 팝업 오픈');
 				console.log(_mode + '모드');
 			}
 
@@ -247,33 +244,6 @@ $$.timeWork= (function ($) {
 		$(document).on('click', '.modal .modal-backdrop', function(){
 			_$todoModal.find('#cancel').trigger('click'); 
 		});
-
-		$(document).on('dragover', '#dropzone, .flag.title', function(event){
-			event.preventDefault();
-		});
-
-		$(document).on('dragstart', '.todo-list .flag.title', function(event){
-			var _class = $(this).attr('class');
-			_class = _class.split(' ')[1];
-			console.log('drag가 시작되었음');
-			console.log(_class);
-			event.originalEvent.dataTransfer.setData('Text', _class);
-		});
-
-		$(document).on('drop', '#dropzone, .flag.title', function(event){
-			
-			var id = event.target.getAttribute('id');
-			var data = event.originalEvent.dataTransfer.getData('Text');
-			//console.log('id :' + id);
-			//console.log('data :' + data);
-			event.target.appendChild($('.'+data)[0]);
-			if(id == 'dropzone'){
-				alert('휴지통에 담았습니다. 데이타가 삭제됩니다.');
-				$$.timeData.removeData(_idKey);
-			}
-			event.preventDefault();
-		});
-
 	};
 	//---  이벤트 핸들러 끝 ---
 
@@ -287,8 +257,6 @@ $$.timeWork= (function ($) {
 			_title = _$todoModal.find('#todo-title').val(),
 			_desc = _$todoModal.find('#todo-desc').val(),
 			_descStr = null;
-
-			console.log(_desc.length);
 
 			_$bar = $('#bar_'+_idkey);
 			
@@ -325,8 +293,6 @@ $$.timeWork= (function ($) {
 		var _dataSet = dataSet,
 			_$tooltip;
 
-		console.log(_mode);
-
 		if(_mode == 'SAVE'){
 			_$bar.find('.switch input:checkbox').prop('checked', true);
 			_$bar.appendTo($('#time-sheet'));
@@ -341,8 +307,6 @@ $$.timeWork= (function ($) {
 		}else{
 			_$tooltip.find('.desc').hide();
 		}
-
-		//console.log(_$bar.data('set'));
 	};
 
 	/* 할일 상태(진행/완료) 전환 */
@@ -363,7 +327,6 @@ $$.timeWork= (function ($) {
 					_storedData[i].done ? _cntDone++ : _cntDone--;
 				}
 			}
-			console.log(_storedData);
 
 			_countDone(_cntDone);
 	},
@@ -397,8 +360,6 @@ $$.timeWork= (function ($) {
 		_$bar.css('left', _startOffsetX).css('width','2px');
 
 		$$.timeData.getTime(_clickCnt, _startOffsetX);	//할일 시간 설정
-
-		console.log('시작시간 설정 : _getStartPoint()');
 	}
 
 	/* 할일 종료를 위한 End 함수 */
@@ -427,9 +388,6 @@ $$.timeWork= (function ($) {
 
 			//설정한 시간만큼 Bar를 타임시트에 생성
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
-
-			//idNum++;
-			console.log('종료시간 설정 : _getEndPoint()');
 
 			return true; 
 		}
@@ -478,20 +436,12 @@ $$.timeWork= (function ($) {
 			var _tempOffsetX = e.pageX-_tempPos.left;
 
 			_$bar.css('width', _tempOffsetX+2);
-			
-			console.log('드래그 : _getRange()');
-
-			if(e.keyCode==27){
-				console.log('ESC키가 눌렸습니다');
-			}
 		}
 	};
 
 	_countTotal = function(){
 		var _len = $$.timeData.getStoredData().length,
 			_$total = $('.panel-info').find('.total');
-
-		console.log(_len + ' 건 등록');
 
 		_$total.find('.badge').text(_len);
 	};
@@ -508,165 +458,15 @@ $$.timeWork= (function ($) {
 	/* 할일 리스트 출력 */
 	_showTimeList = function(target, idx){
 		var _$todoArea = $(target),
-			_$todoList,
-			_$liEl,
-			_$moreBtn,
 			_url = _$todoArea.data('template'),
 			_storedData = $$.timeData.getStoredData(), 
-			_chkDate,
-			_num = 0,
 			_idx = idx;
 
 		_$todoArea.find('.nolist').hide();
-		//_$todoArea.find('.todo-list').empty();
 
-		_renderHtml(_$todoArea, _idx, _storedData, _url);
-
-
-
-		/*var newArr = [];
-			
-		_storedData.reduce(function(a,b,i){
-			//console.log("a:", a);
-			//console.log("b:", b);
-			
-			a.push(b);
-
-			a[i] = a[i-1] || a[i];
-
-			//console.log("a2:", a[i].startDate);
-			//console.log("b2:", b.startDate);
-			
-			if(a[i].startDate == b.startDate){
-				newArr.push(a[i]);
-			}
-
-			return newArr;
-
-		}, []);*/
-
-		/*$.each(_storedData, function(index, item){
-
-			console.log('_chkDate : ' + _chkDate);
-			console.log('_item.date : ' + item.startDate);
-
-
-			if (_chkDate != item.startDate){
-				console.log('call here2');
-				_num = 0;
-			}
-
-			if(_chkDate == null || _chkDate != item.startDate){
-				_chkDate = item.startDate;
-				console.log('call here1');
-
-				if(_$todoArea.find('.date_'+item.startDate).size()==0){
-					_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
-					$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
-				}
-			} 
-
-			_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
-
-			_$liEl = _$todoList.find('li').eq(_num);
-
-			_$liEl.addClass('time_'+item.id);
-			_$liEl.find('.title').text(item.title);
-			_$liEl.find('.start-time').text(item.startTime);
-			_$liEl.find('.end-time').text(item.endTime);
-
-			if(item.description){
-				_$liEl.find('.desc .txts').html(item.description);
-			}else{
-				_$liEl.find('.desc').hide();
-			}
-
-			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
-				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
-				_$liEl.find('.flag-wrapper').append(_$moreBtn);
-			} 
-
-			_$liEl.clone().appendTo(_$todoList);
-
-			if(_num % 2 == 0){
-				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
-			}else{
-				_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
-			}
-
-			_num++;
-
-		});*/
-
-		/*_storedData.forEach(function(item){
-
-			if(_$todoArea.find('.date_'+item.startDate).size()==0){
-				_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
-				$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
-				_new = true;
-			}
-
-			if(!_$todoList){
-				_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
-				_num = _$todoList.data('num');
-				console.log('call new');
-			} 
-
-			console.log('_num :'+_num);
-
-			_$liEl = _$todoList.find('li').eq(_num);
-
-			_$liEl.addClass('time_'+item.id);
-			_$liEl.find('.title').text(item.title);
-			_$liEl.find('.start-time').text(item.startTime);
-			_$liEl.find('.end-time').text(item.endTime);
-
-			if(item.description){
-				_$liEl.find('.desc .txts').html(item.description);
-			}else{
-				_$liEl.find('.desc').hide();
-			}
-
-			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
-				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
-				_$liEl.find('.flag-wrapper').append(_$moreBtn);
-			} 
-
-			if(_num % 2 == 0){
-				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
-			}else{
-				_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
-			}
-
-			_new = false;
-			_num++;
-		});*/
-
-		/*_$todoList.find('li').each(function(i){
-			_$liEl = $(this);
-
-			_$liEl.addClass('time_'+_storedData[i].id);
-			_$liEl.find('.title').text(_storedData[i].title);
-			_$liEl.find('.start-time').text(_storedData[i].startTime);
-			_$liEl.find('.end-time').text(_storedData[i].endTime);
-			if(_storedData[i].description){
-				_$liEl.find('.desc .txts').html(_storedData[i].description);
-			}else{
-				_$liEl.find('.desc').hide();
-			}
-
-			if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
-				_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
-				_$liEl.find('.flag-wrapper').append(_$moreBtn);
-			} 
-			if(i % 2 == 0){
-				_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
-			}
-		});*/
+		_renderList(_$todoArea, _idx, _storedData, _url);
 
 		//_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
-
-		console.log('할 일 리스트 출력 : _showTimeList()');
 	};
 
 	_updateTimeList = function(target, dataset){
@@ -696,8 +496,6 @@ $$.timeWork= (function ($) {
 				_$liEl.find('.flag-wrapper .more').remove();
 			}
 		}, 300);
-
-		console.log('할 일 리스트 업데이트 : _updateTimeList()');
 	};
 
 	/* 할일 리스트 삭제 */
@@ -714,17 +512,15 @@ $$.timeWork= (function ($) {
 	};
 
 	/* Html(목록) 렌더링 */
-	_renderHtml = function(target, idx, storedData, templateUrl){
+	_renderList = function(target, idx, storedData, templateUrl){
 		var _$todoArea = target,
 			_$todoList,
+			_$moreBtn,
 			_chkDate,
 			_num,
 			_idx = idx,
 			_storedData = storedData,
-			_date = storedData[_idx].startDate,
-			_length = storedData.length,
 			_templateUrl = templateUrl,
-			_$timelist,
 			_$liEl;
 	
 		$.ajax({
@@ -762,51 +558,18 @@ $$.timeWork= (function ($) {
 					_$liEl.find('.start-time').text(item.startTime);
 					_$liEl.find('.end-time').text(item.endTime);
 
-					if(item.description){
-						_$liEl.find('.desc .txts').html(item.description);
-					}else{
-						_$liEl.find('.desc').hide();
-					}
+					item.description ? _$liEl.find('.desc .txts').html(item.description) : _$liEl.find('.desc').hide();
 
 					if(_$liEl.find('.desc .txts').height()>_$liEl.find('.desc').height()){
 						_$moreBtn = String() + '<a href="#" class="glyphicon glyphicon-chevron-down more">더보기</a>';
 						_$liEl.find('.flag-wrapper').append(_$moreBtn);
 					} 
 
-					if(_num % 2 == 0){
-						_$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l');
-					}else{
-						_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r');
-					}
+					_num % 2 == 0 ? _$liEl.find('.direction-r').removeClass('direction-r').addClass('direction-l') 
+									:_$liEl.find('.direction-l').removeClass('direction-l').addClass('direction-r'); 
 
 					_num++;
-
 				});
-
-
-				/*if(_$todoArea.find('.date_'+_storedData[_idx].startDate).size()==0){
-					_$todoArea.append(template);
-					_$todoArea.find('.time-area').eq(-1).addClass('date_'+_storedData[_idx].startDate);
-					_$todoList = _$todoArea.find('.date_'+_storedData[_idx].startDate + ' .todo-list');
-				}else{
-					_liEl = $(template).find('.todo-list > li');
-					_$todoArea.find('.todo-list').append(_liEl);
-				}*/
-
-				/*if(_$todoArea.find('.date_'+_date).size()==0){
-					_$todoArea.append(template);
-					_$todoArea.find('.time-area').eq(-1).addClass('date_'+_date);
-				}else{
-					_liEl = $(template).find('.todo-list > li');
-					_$timelist = _$todoArea.find('.todo-list');
-
-					_idx == 0 ? _liEl.insertBefore(_$timelist.find('li').eq(_idx)) :
-					_idx == _length-1 ? _liEl.insertAfter(_$timelist.find('li').eq(_idx-1)) :
-										_liEl.insertBefore(_$timelist.find('li').eq(_idx));
-				}*/
-			},
-			complete: function(){
-				//_$liEl = _$todoArea.find('.todo-list').find('li').eq(_idx);
 			}
 		});
 

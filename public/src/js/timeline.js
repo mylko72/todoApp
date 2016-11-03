@@ -65,11 +65,10 @@ $$.timeLine = (function ($) {
 		
 		$('#timelist').empty();
 		
-		(!_servTime) ? _now = _d.getHours() : _now = _servTime;		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
+		_now = (!_servTime) ? _d.getHours() : _servTime;		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
 		//_now = 0;
 
 		console.log('현재시간 : '+ _now + '시');
-		//_base = _now * getPxToHour();							//_now*1hour(120px) 값을 타임시트의 기준(_base) pixel로 설정하여 _base 변수에 저장
 
 		for (var i = _now; i < (_day+2); i++) {		//현재 시간을 기준으로 24시간 생성
 			if(_n>=(_day+2)) break;
@@ -80,8 +79,6 @@ $$.timeLine = (function ($) {
 			document.getElementById('time-list').appendChild(_listEl);
 		}
 		$('#timelist').children().eq(0).addClass('first');
-
-		console.log('타임라인 생성 : _createTimeline()');
 	};
 
 	//타임시트 생성
@@ -89,8 +86,6 @@ $$.timeLine = (function ($) {
 		var _self = this,
 			_totalUnit = _getTotalUnit(),
 			_$timeline = target;
-
-		console.log('타임시트생성 : _createTimeSheet()');
 
 		for(var i=0;i<_totalUnit;i++){
 			$('<div class="unit bg1" />').appendTo(_$timeline);
@@ -113,12 +108,8 @@ $$.timeLine = (function ($) {
 			return _unit * 60/_5min;
 		},
 		getCurrentHour : function(){
-			var d = new Date();
-			return d.getHours();
-		}/*,
-		config : {
-			base : _base,
-		}*/
+			return _now;
+		}
 	};
 }(jQuery));
 
