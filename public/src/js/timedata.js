@@ -151,8 +151,6 @@ $$.timeData = (function ($) {
 			_hour = Math.floor(times/60) + _now,
 			_day =  24;
 
-		console.log(_now);
-
 		if(_hour>=_day){
 			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
 			_currentDay = _today+1;
