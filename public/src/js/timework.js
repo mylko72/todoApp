@@ -461,19 +461,25 @@ $$.timeWork= (function ($) {
 		var _$todoArea = $(target),
 			_url = _$todoArea.data('template'),
 			_storedData = $$.timeData.getStoredData(), 
+			_success = false,
+			_li,
+			_top,
 			_idx = idx;
 
 		_$todoArea.find('.nolist').hide();
 
 		console.log(_idx);
 
-		var result = _renderList(_$todoArea, _idx, _storedData, _url);
+		_success = _renderList(_$todoArea, _idx, _storedData, _url);
 
-		if(result) {
-			_slideIn($('.todo-list'), _idx);
+		if(_success) {
+			_li = _slideIn($('.todo-list'), _idx);
+			_top = $$.util.elemTop($(_li));
 
 			$('.content').css('height', 'auto');
 			$('.content').css('height', $('.content').outerHeight());
+
+			$(window).scrollTop(_top);
 		}
 		//_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
 	};
@@ -643,6 +649,7 @@ $$.timeWork= (function ($) {
 
 	_slideIn = function(target, idx){
 		var _$todolist = target,
+			_li,
 			_idx = idx;
 
 		_$todolist.find('li').each(function(index){
@@ -651,8 +658,12 @@ $$.timeWork= (function ($) {
 			if(index == _idx) {
 				addclass = _idx%2 == 1 ? 'slideInRight' : 'slideInLeft' ;
 				$(this).find("div[class*='direction']").addClass(addclass);
+
+				_li = this;	
 			}
 		});
+
+		return _li;
 	};
 	//---  DOM 메서드 끝 ---
 

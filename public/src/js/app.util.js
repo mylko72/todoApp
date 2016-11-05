@@ -56,22 +56,18 @@
 			return descStr;
 		};
 
-		var repeat = function(n, action) {
-			for (var i = 0; i < n; i++){
-				action();
-			}
-		};
+		var elemTop = function(elem) {
+			var offset = elem.offset();
 
-		var benchmark = function(fn) {
-			var start = [], end = [], timings = [];
-			repeat(1000, function(){
-				start.push(fn);
-				end.push(fn);
-			});
-			for (var i = 0, n = start.length; i < n; i++) {
-				timings[i] = end[i] - start[i];	
-			}
-			return timings;
+			return offset.top;
+		}
+
+		var scrollTo = function(element, position, speed, func) { 
+			var pos = position || $(element).offset().top, 
+				_speed = speed || 800, 
+				callback = (func) ? func() : null; 
+				
+			$('body').animate({scrollTop: pos}, _speed, function () {callback;});
 		};
 
 		//툴팁 레이어
@@ -166,13 +162,13 @@
 
 		}	
 			
-		
 		return {
 			init : init,
 			rKey : randomKey,
 			returnBr : returnBr,
 			returnLine : returnLine,
-			benchmark : benchmark,
+			elemTop : elemTop,
+			scrollTo : scrollTo,
 			tooltip: tooltip
 		};
 	};
