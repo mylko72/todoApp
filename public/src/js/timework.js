@@ -20,6 +20,7 @@ $$.timeWork= (function ($) {
 		_bindEvents,
 		_getFormData,
 		_setData,
+		_loadStoredData,
 		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
@@ -91,6 +92,29 @@ $$.timeWork= (function ($) {
 				_clickCnt = 0;
 				_clicked = false;
 			}
+		});
+		
+		$(document).on('click', '.btn-load', function(event){
+			var e = event;
+
+			e.preventDefault();
+
+			_loadStoredData();
+
+		});
+
+		$(document).on('click', '.btn-send', function(event){
+			var e = event,
+				_todoData = {},
+				_storedData = $$.timeData.getStoredData(),
+				_date = new Date().getDate()+1,
+				_jsonData;
+
+			e.preventDefault();
+
+			_todoData.todo = _storedData; 	
+			_jsonData = JSON.stringify(_todoData);
+			console.log(_jsonData);
 		});
 
 		/* 할일 등록 저장 */
@@ -249,6 +273,30 @@ $$.timeWork= (function ($) {
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
+	
+	_loadStoredData = function(){
+		var _jsonData = './html/todo-2016-11-10.json',
+			_timer = null,
+			_result = false;
+
+		$.getJSON(_jsonData, function(data){
+
+			$('<div id="loading" />').appendTo('body');
+
+			_result = $$.timeData.loadData(data.todo);
+		})
+		.done(function(data){
+			if(_result){
+				setTimeout(function(){
+					if($('.time-area').length){
+						$('.time-area').remove();
+					}
+					_showTimeList('.todo-area');
+					$('#loading').remove();
+				}, 1000);
+			}
+		});
+	};
 	
 	/* 등록 데이타 가져오기 */
 	_getFormData = function(){
@@ -464,7 +512,7 @@ $$.timeWork= (function ($) {
 			_success = false,
 			_li,
 			_top,
-			_idx = idx;
+			_idx = idx || 0;
 
 		_$todoArea.find('.nolist').hide();
 

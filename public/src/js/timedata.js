@@ -24,6 +24,7 @@ $$.timeData = (function ($) {
 		_addTime,
 		_removeData,
 		_saveData,
+		_loadData,
 		_getDaysInMonth;
 	//--- 모듈 스코프 변수 끝 ---
 
@@ -126,6 +127,13 @@ $$.timeData = (function ($) {
 		return _idx;
 	};
 
+	_loadData = function(data){
+		_storedData = data;
+		console.log(_storedData);
+
+		return true;
+	},
+
 	_comparator = function(a, b){
 		if (a > b) {
 			return 1;
@@ -201,7 +209,8 @@ $$.timeData = (function ($) {
 		},
 		getTime : _getTime,
 		removeData : _removeData,
-		saveData : _saveData
+		saveData : _saveData,
+		loadData : _loadData
 	};
 
 }(jQuery));
