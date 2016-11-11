@@ -23,7 +23,7 @@ var $$ = $$ || {};
 			//new $.Form().init();
 			
 			updateClock();
-			setInterval (updateClock, 1000);
+			//setInterval (updateClock, 1000);
 		}
 		
 		function updateClock(){

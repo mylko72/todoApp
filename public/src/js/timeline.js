@@ -22,10 +22,15 @@ $$.timeLine = (function ($) {
 	//--- 모듈 스코프 변수 끝 ---
 
 	//--- 초기화 메서드 시작 ---
-	_init = function () {
-		_timeNavObj = $$.timelineNav; //네비게이션 객체 생성
+	_init = function (times) {
+		var _times = times,
+			_d = new Date();			//현재 시간을 가져오기 위한 Date 오브젝트 생성;
 
-		_setupTimeline('#time-line');
+		_now = (_times) ? _times : _d.getHours();		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
+
+		_timeNavObj = $$.timelineNav; //네비게이션 객체 생성
+		_setupTimeline('#time-line', _now);
+
 		_bindEvents();
 	};
 	//--- 초기화 메서드 끝 ---
@@ -48,24 +53,22 @@ $$.timeLine = (function ($) {
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
-	_setupTimeline = function (target){
+	_setupTimeline = function (target, now){
 		var _$timeline = $(target).css('width','3000px');
 		
-		_createTimeline(); // 현재시간을 기준으로 24시간을 생성
+		_createTimeline(now); // 현재시간을 기준으로 24시간을 생성
 		_createTimeSheet(_$timeline);	// unit(5minutes)을 단위로 타임시트 생성
 	};
 
 	//현재 시간을 기준으로 타임라인(24시간) 생성
-	_createTimeline = function (servTime){
+	_createTimeline = function (now){
 		var _self = this,	
 			_day =  24,
-			_servTime = servTime,
-			_d = new Date(),				//현재 시간을 가져오기 위한 Date 오브젝트 생성;
+			_now = now,
 			_n = 0;						//24시간 생성을 위한 카운트변수
 		
-		$('#timelist').empty();
+		$('#time-list').empty();
 		
-		_now = (!_servTime) ? _d.getHours() : _servTime;		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
 		//_now = 0;
 
 		console.log('현재시간 : '+ _now + '시');
@@ -78,7 +81,7 @@ $$.timeLine = (function ($) {
 			_listEl.innerHTML = "<a href='#'>"+(i < 10 ? "0": "") + i + ":00</a>";
 			document.getElementById('time-list').appendChild(_listEl);
 		}
-		$('#timelist').children().eq(0).addClass('first');
+		$('#time-list').children().eq(0).addClass('first');
 	};
 
 	//타임시트 생성
@@ -86,6 +89,8 @@ $$.timeLine = (function ($) {
 		var _self = this,
 			_totalUnit = _getTotalUnit(),
 			_$timeline = target;
+
+		_$timeline.empty();
 
 		for(var i=0;i<_totalUnit;i++){
 			$('<div class="unit bg1" />').appendTo(_$timeline);

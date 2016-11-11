@@ -19,7 +19,9 @@ $$.timeWork= (function ($) {
 	var _init,
 		_bindEvents,
 		_getFormData,
-		_setData,
+		_setDataBar,
+		_loadStoredData,
+		_resetTimeline,
 		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
@@ -92,6 +94,26 @@ $$.timeWork= (function ($) {
 				_clicked = false;
 			}
 		});
+		
+		$(document).on('click', '.btn-load', function(event){
+			var e = event;
+
+			_loadStoredData();
+
+		});
+
+		$(document).on('click', '.btn-send', function(event){
+			var e = event,
+				_todoData = {},
+				_storedData = $$.timeData.getStoredData(),
+				_jsonData;
+
+			e.preventDefault();
+
+			_todoData.todo = _storedData; 	
+			_jsonData = JSON.stringify(_todoData);
+			console.log(_jsonData);
+		});
 
 		/* 할일 등록 저장 */
 		_$todoModal.find('#save').on('click', function(event){
@@ -102,7 +124,7 @@ $$.timeWork= (function ($) {
 			_dataSet = _getFormData();
 
 			if(_dataSet){
-				_setData(_dataSet);
+				_setDataBar.call(_$bar, _dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
 				
@@ -127,7 +149,7 @@ $$.timeWork= (function ($) {
 				_dataSet = _getFormData();
 
 				if(_dataSet){
-					_setData(_dataSet, _idkey);
+					_setDataBar.call(_$bar, _dataSet);
 
 					for(var i=0;i<_storedData.length;i++){
 						if(_storedData[i].id === _idkey){
@@ -185,6 +207,8 @@ $$.timeWork= (function ($) {
 
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
+
+				console.log(_dataSet);
 
 				var _desc = _dataSet.description;
 				var _descStr;
@@ -250,6 +274,89 @@ $$.timeWork= (function ($) {
 
 	//---  DOM 메서드 시작 ---
 	
+	_loadStoredData = function(){
+		var _jsonData = './html/todo-2016-11-10.json',
+			_storedData,
+			_timer = null,
+			_result = false;
+
+		$.getJSON(_jsonData, function(data){
+
+			$('<div id="loading" />').appendTo('body');
+
+			_result = $$.timeData.loadData(data.todo);
+		})
+		.done(function(data){
+			if(_result){
+				_timer = setTimeout(function(){
+					if($('.time-area').length){
+						$('.time-area').remove();
+					}
+					$('#loading').remove();
+
+					_resetTimeline();
+					_showTimeList('.todo-area');
+
+					_timer = null;
+				}, 1000);
+			}
+		});
+	};
+
+	_resetTimeline = function(){
+		var _storedData = $$.timeData.getStoredData(),
+			_dateStr = new Date(_storedData[0].startDate),
+			_startTime = _storedData[0].startTime,
+			_tooltipStr,
+			_dataSet;
+
+		if($('.bar').length){
+			$('.bar').remove();
+		}
+
+		_startTime = parseInt(_startTime.split(':')[0]);
+
+		console.log(_dateStr);
+
+		$$.timeData.setObjDate(_dateStr);
+		$$.timeLine.init(_startTime);
+
+		$.each(_storedData, function(index, item){
+			var _width = item.endPoint - item.startPoint;
+
+			_$bar = $('<div class="bar" id="bar_' + item.id + '" data-set="">'
+				+ '<div class="wrapper progress">'
+					+ '<div class="inner">'
+						+ '<div class="switch demo1">'
+							+ '<input type="checkbox"><label><i></i></label>'
+						+ '</div>'
+					+ '</div>'
+				+ '</div>'
+				+ '</div>');
+
+			$('#time-sheet').append(_$bar);	
+
+			_dataSet = {
+				id: item.id,
+				startDate: item.startDate,
+				startTime: item.startTime, 
+				startPoint: item.startPoint,
+				endDate: item.endDate, 
+				endTime: item.endTime, 
+				endPoint: item.endPoint, 
+				title: item.title,
+				description: item.description, 
+				done: item.done 
+			};					
+
+			_$bar.css('left', item.startPoint);
+
+			TimeModel.drawBar(_$timeline, _$bar, item.startPoint, _width);
+
+			_setDataBar.call(_$bar, _dataSet);
+		});
+	};
+	
 	/* 등록 데이타 가져오기 */
 	_getFormData = function(){
 		var _idkey = _idKey,
@@ -290,21 +397,21 @@ $$.timeWork= (function ($) {
 	};
 
 	/* 데이타 설정 */
-	_setData = function(dataSet){
+	_setDataBar = function(dataSet){
 		var _dataSet = dataSet,
 			_$tooltip;
 
 		if(_mode == 'SAVE'){
-			_$bar.find('.switch input:checkbox').prop('checked', true);
-			_$bar.appendTo($('#time-sheet'));
+			this.find('.switch input:checkbox').prop('checked', true);
+			this.appendTo($('#time-sheet'));
 		}
-		_$bar.data('set', _dataSet);
+		this.data('set', _dataSet);
 
-		_$tooltip = _$bar.find('.tooltip');
-		_$tooltip.find('.title').text(_$bar.data('set').title);
-		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
-		if(_$bar.data('set').description){
-			_$tooltip.find('.desc').show().html(_$bar.data('set').description);
+		_$tooltip = this.find('.tooltip');
+		_$tooltip.find('.title').text(this.data('set').title);
+		_$tooltip.find('.time').text(this.data('set').startTime+'-'+this.data('set').endTime);
+		if(this.data('set').description){
+			_$tooltip.find('.desc').show().html(this.data('set').description);
 		}else{
 			_$tooltip.find('.desc').hide();
 		}
@@ -387,6 +494,8 @@ $$.timeWork= (function ($) {
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
+			console.log(_timeStr.startDate());
+
 			//설정한 시간만큼 Bar를 타임시트에 생성
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
 
@@ -464,7 +573,7 @@ $$.timeWork= (function ($) {
 			_success = false,
 			_li,
 			_top,
-			_idx = idx;
+			_idx = idx || 0;
 
 		_$todoArea.find('.nolist').hide();
 

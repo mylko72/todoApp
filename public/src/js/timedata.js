@@ -24,19 +24,22 @@ $$.timeData = (function ($) {
 		_addTime,
 		_removeData,
 		_saveData,
+		_loadData,
 		_getDaysInMonth;
 	//--- 모듈 스코프 변수 끝 ---
 
 	//---  Time 메소드 시작 ---
 	
 	/* Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환 */
-	_getNToday = function (dt){	
+	_getNToday = function (date){	
 
 		var _self = this,
-			_dateObj;
+			_dateObj = date;
+
+		console.log('_dateObj :' + _dateObj);
 
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
-			_dateObj = new Date ();
+			//_dateObj = new Date ();
 			_dateObj.setDate (_dateObj.getDate () + 1);
 			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
@@ -45,23 +48,29 @@ $$.timeData = (function ($) {
 
 		}else{
 
-			_dateObj = new Date(dt);
+			//_dateObj = new Date(dt);
 			_year = _dateObj.getFullYear();
 			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
+			_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
 
 			if(_daysInMonth==null){
 				_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
 			}
 
-			if(_currentDay==null){
+			/*if(_currentDay==null){
 				_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
-			}
+			}*/
+
+			console.log('_currentDay :' + _currentDay);
 
 			if(_currentDay>_date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
 				_date = _dateObj.getDate()+1
 			}
 		}
+
+		console.log('_date :' + _date);
+
 		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
 	};
 
@@ -70,7 +79,7 @@ $$.timeData = (function ($) {
 		
 		var _self = this;
 
-		//_getNToday(_todayObj);
+		//console.log(_todayObj);	
 
 		if(clickcnt==1){
 			var _startTime = startoffsetx / 2;
@@ -107,7 +116,10 @@ $$.timeData = (function ($) {
 		_timeData = TimeModel.extend(_dataSet);
 		_storedData.push(_timeData);
 		
-		_storedData.sort(_comparator);
+		//_storedData.sort(_comparator);
+		_storedData.sort(function(a,b){
+			return a.startPoint < b.startPoint ? -1 : a.startPoint > b.startPoint ? 1 : 0;
+		});
 		
 		for(var i=0;i<_storedData.length;i++){
 			if(_storedData[i].id === _dataSet.id){
@@ -125,6 +137,13 @@ $$.timeData = (function ($) {
 
 		return _idx;
 	};
+
+	_loadData = function(data){
+		_storedData = data;
+		console.log(_storedData);
+
+		return true;
+	},
 
 	_comparator = function(a, b){
 		if (a > b) {
@@ -196,12 +215,16 @@ $$.timeData = (function ($) {
 
 	//--- 공개 api ---
 	return {
+		setObjDate: function(date){
+			_todayObj = date;
+		},
 		getStoredData : function(){
 			return _storedData;
 		},
 		getTime : _getTime,
 		removeData : _removeData,
-		saveData : _saveData
+		saveData : _saveData,
+		loadData : _loadData
 	};
 
 }(jQuery));
