@@ -19,8 +19,9 @@ $$.timeWork= (function ($) {
 	var _init,
 		_bindEvents,
 		_getFormData,
-		_setData,
+		_setDataBar,
 		_loadStoredData,
+		_resetTimeline,
 		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
@@ -126,7 +127,7 @@ $$.timeWork= (function ($) {
 			_dataSet = _getFormData();
 
 			if(_dataSet){
-				_setData(_dataSet);
+				_setDataBar.call(_$bar, _dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
 				
@@ -151,7 +152,7 @@ $$.timeWork= (function ($) {
 				_dataSet = _getFormData();
 
 				if(_dataSet){
-					_setData(_dataSet, _idkey);
+					_setDataBar.call(_$bar, _dataSet);
 
 					for(var i=0;i<_storedData.length;i++){
 						if(_storedData[i].id === _idkey){
@@ -276,6 +277,7 @@ $$.timeWork= (function ($) {
 	
 	_loadStoredData = function(){
 		var _jsonData = './html/todo-2016-11-10.json',
+			_storedData,
 			_timer = null,
 			_result = false;
 
@@ -287,14 +289,67 @@ $$.timeWork= (function ($) {
 		})
 		.done(function(data){
 			if(_result){
-				setTimeout(function(){
+				_timer = setTimeout(function(){
 					if($('.time-area').length){
 						$('.time-area').remove();
 					}
-					_showTimeList('.todo-area');
 					$('#loading').remove();
+
+					_resetTimeline();
+					_showTimeList('.todo-area');
+
+					_timer = null;
 				}, 1000);
 			}
+		});
+	};
+
+	_resetTimeline = function(){
+		var _storedData = $$.timeData.getStoredData(),
+			_startTime = _storedData[0].startTime,
+			_tooltipStr,
+			_dataSet;
+
+		if($('.bar').length){
+			$('.bar').remove();
+		}
+
+		_startTime = parseInt(_startTime.split(':')[0]);
+		$$.timeLine.init(_startTime);
+
+		$.each(_storedData, function(index, item){
+			var _width = item.endPoint - item.startPoint;
+
+			_$bar = $('<div class="bar" id="bar_' + item.id + '" data-set="">'
+				+ '<div class="wrapper progress">'
+					+ '<div class="inner">'
+						+ '<div class="switch demo1">'
+							+ '<input type="checkbox"><label><i></i></label>'
+						+ '</div>'
+					+ '</div>'
+				+ '</div>'
+				+ '</div>');
+
+			$('#time-sheet').append(_$bar);	
+
+			_dataSet = {
+				id: item.id,
+				startDate: item.startDate,
+				startTime: item.startTime, 
+				startPoint: item.startPoint,
+				endDate: item.endDate, 
+				endTime: item.endTime, 
+				endPoint: item.endPoint, 
+				title: item.title,
+				description: item.description, 
+				done: item.done 
+			};					
+
+			_$bar.css('left', item.startPoint);
+
+			TimeModel.drawBar(_$timeline, _$bar, item.startPoint, _width);
+
+			_setDataBar.call(_$bar, _dataSet);
 		});
 	};
 	
@@ -338,21 +393,21 @@ $$.timeWork= (function ($) {
 	};
 
 	/* 데이타 설정 */
-	_setData = function(dataSet){
+	_setDataBar = function(dataSet){
 		var _dataSet = dataSet,
 			_$tooltip;
 
 		if(_mode == 'SAVE'){
-			_$bar.find('.switch input:checkbox').prop('checked', true);
-			_$bar.appendTo($('#time-sheet'));
+			this.find('.switch input:checkbox').prop('checked', true);
+			this.appendTo($('#time-sheet'));
 		}
-		_$bar.data('set', _dataSet);
+		this.data('set', _dataSet);
 
-		_$tooltip = _$bar.find('.tooltip');
-		_$tooltip.find('.title').text(_$bar.data('set').title);
-		_$tooltip.find('.time').text(_$bar.data('set').startTime+'-'+_$bar.data('set').endTime);
-		if(_$bar.data('set').description){
-			_$tooltip.find('.desc').show().html(_$bar.data('set').description);
+		_$tooltip = this.find('.tooltip');
+		_$tooltip.find('.title').text(this.data('set').title);
+		_$tooltip.find('.time').text(this.data('set').startTime+'-'+this.data('set').endTime);
+		if(this.data('set').description){
+			_$tooltip.find('.desc').show().html(this.data('set').description);
 		}else{
 			_$tooltip.find('.desc').hide();
 		}
@@ -434,6 +489,8 @@ $$.timeWork= (function ($) {
 		if(_endOffsetX && _clicked){
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
+
+			console.log(_endOffsetX);
 
 			//설정한 시간만큼 Bar를 타임시트에 생성
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
