@@ -98,8 +98,6 @@ $$.timeWork= (function ($) {
 		$(document).on('click', '.btn-load', function(event){
 			var e = event;
 
-			e.preventDefault();
-
 			_loadStoredData();
 
 		});
@@ -108,7 +106,6 @@ $$.timeWork= (function ($) {
 			var e = event,
 				_todoData = {},
 				_storedData = $$.timeData.getStoredData(),
-				_date = new Date().getDate()+1,
 				_jsonData;
 
 			e.preventDefault();
@@ -211,6 +208,8 @@ $$.timeWork= (function ($) {
 			if(_mode == 'EDIT'){
 				_dataSet = _$bar.data('set');
 
+				console.log(_dataSet);
+
 				var _desc = _dataSet.description;
 				var _descStr;
 
@@ -306,6 +305,7 @@ $$.timeWork= (function ($) {
 
 	_resetTimeline = function(){
 		var _storedData = $$.timeData.getStoredData(),
+			_dateStr = new Date(_storedData[0].startDate),
 			_startTime = _storedData[0].startTime,
 			_tooltipStr,
 			_dataSet;
@@ -315,6 +315,10 @@ $$.timeWork= (function ($) {
 		}
 
 		_startTime = parseInt(_startTime.split(':')[0]);
+
+		console.log(_dateStr);
+
+		$$.timeData.setObjDate(_dateStr);
 		$$.timeLine.init(_startTime);
 
 		$.each(_storedData, function(index, item){
@@ -490,7 +494,7 @@ $$.timeWork= (function ($) {
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
-			console.log(_endOffsetX);
+			console.log(_timeStr.startDate());
 
 			//설정한 시간만큼 Bar를 타임시트에 생성
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
