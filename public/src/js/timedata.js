@@ -37,6 +37,7 @@ $$.timeData = (function ($) {
 			_dateObj = date;
 
 		console.log('_dateObj :' + _dateObj);
+		console.log('_currentDay :' + _currentDay);
 
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
 			//_dateObj = new Date ();
@@ -52,24 +53,21 @@ $$.timeData = (function ($) {
 			_year = _dateObj.getFullYear();
 			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
-			_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
+			//_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
 
 			if(_daysInMonth==null){
 				_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
 			}
 
-			/*if(_currentDay==null){
+			if(_currentDay==null){
 				_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
-			}*/
-
-			console.log('_currentDay :' + _currentDay);
+			}
 
 			if(_currentDay>_date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
 				_date = _dateObj.getDate()+1
 			}
+			
 		}
-
-		console.log('_date :' + _date);
 
 		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
 	};
@@ -78,8 +76,6 @@ $$.timeData = (function ($) {
 	_getTime = function (clickcnt, startoffsetx, endoffsetx){
 		
 		var _self = this;
-
-		//console.log(_todayObj);	
 
 		if(clickcnt==1){
 			var _startTime = startoffsetx / 2;
@@ -90,6 +86,9 @@ $$.timeData = (function ($) {
 			_endTimeStr = _addTime(_endTime);
 			_endDateStr = _getNToday(_todayObj);
 		}
+
+		console.log('_startDateStr :'+_startDateStr);
+		console.log('_endDateStr :'+_endDateStr);
 
 		return {
 			startDate : function(){
@@ -171,6 +170,7 @@ $$.timeData = (function ($) {
 			_day =  24;
 
 		if(_hour>=_day){
+			_today = _todayObj.getDate();
 			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
 			_currentDay = _today+1;
 		}else{
@@ -216,6 +216,7 @@ $$.timeData = (function ($) {
 	//--- 공개 api ---
 	return {
 		setObjDate: function(date){
+			_today = null;
 			_todayObj = date;
 		},
 		getStoredData : function(){

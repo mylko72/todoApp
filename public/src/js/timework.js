@@ -11,13 +11,18 @@ $$.timeWork= (function ($) {
 		_saved = false,
 		_cntDone = 0,
 		_mode = "",
+		_timeStr = null,
+		_refreshIntervalId,
+		_stopped = false,
 		_$bar = null,
 		_$timeline = $('#time-line'),
-		_$todoModal = $('#todoModal'),
-		_timeStr = null;
+		_$todoModal = $('#todoModal');
 		
 	var _init,
 		_bindEvents,
+		_updateClock,
+		_stopClock,
+		_timer,
 		_getFormData,
 		_setDataBar,
 		_loadStoredData,
@@ -39,6 +44,10 @@ $$.timeWork= (function ($) {
 
 	//--- 초기화 메서드 시작 ---
 	_init = function (timeline) {
+
+		_updateClock();
+		_refreshIntervalId = setInterval (_updateClock, 1000);
+
 		_bindEvents();
 	};
 	//--- 초기화 메서드 끝 ---
@@ -274,8 +283,49 @@ $$.timeWork= (function ($) {
 
 	//---  DOM 메서드 시작 ---
 	
+	_updateClock = function(){
+		var _$clock = $("#clock"),
+			_now = new Date(),
+			_year = _now.getFullYear(),
+			_month = _now.getMonth()+1,
+			_date = _now.getDate();
+
+		//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
+		_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
+		_$clock.find('.time')[0].innerHTML = _timer();
+
+	};
+
+	_stopClock = function(newdate){
+		if(_stopped){
+			clearInterval(_refreshIntervalId);
+			$('#clock').find('.date').addClass('only').text(newdate);
+			$('#clock').find('.time').hide();
+		}
+	};
+
+	_timer = function(){
+		var _date = new Date();
+		var _hour = _date.getHours();
+		var _ampm = (_hour<12 || _hour == 24) ? 'AM' : 'PM';
+		_hour = _hour%12 || 12;
+
+		var _minute = _date.getMinutes();
+		_minute = ( _minute > 9 ) ? _minute : "0" + _minute;
+
+		var _second = _date.getSeconds(); 
+		_second = ( _second > 9 ) ? _second : "0" + _second;
+
+		var _millisec = _date.getMilliseconds(); 
+		_millisec = ( _millisec > 99 ) ? _millisec : ( _millisec > 9 ) ? "0" + _millisec : "00" + _millisec;
+
+		var _timeString = _hour + ":" + _minute + ":" + _second + ' <sup>' + _ampm + '</sup>';
+
+		return _timeString;
+	};
+
 	_loadStoredData = function(){
-		var _jsonData = './html/todo-2016-11-10.json',
+		var _jsonData = './html/todo-20161110.json',
 			_storedData,
 			_timer = null,
 			_result = false;
@@ -307,19 +357,21 @@ $$.timeWork= (function ($) {
 		var _storedData = $$.timeData.getStoredData(),
 			_dateStr = new Date(_storedData[0].startDate),
 			_startTime = _storedData[0].startTime,
+			_hour,
 			_tooltipStr,
 			_dataSet;
+
+		_mode = 'LOAD';
+		_stopped = true;
+		_hour = parseInt(_startTime.split(':')[0]);
+
+		_stopClock(_storedData[0].startDate);
+		$$.timeData.setObjDate(_dateStr);
+		$$.timeLine.init(_hour);
 
 		if($('.bar').length){
 			$('.bar').remove();
 		}
-
-		_startTime = parseInt(_startTime.split(':')[0]);
-
-		console.log(_dateStr);
-
-		$$.timeData.setObjDate(_dateStr);
-		$$.timeLine.init(_startTime);
 
 		$.each(_storedData, function(index, item){
 			var _width = item.endPoint - item.startPoint;
@@ -334,7 +386,8 @@ $$.timeWork= (function ($) {
 				+ '</div>'
 				+ '</div>');
 
-			$('#time-sheet').append(_$bar);	
+			$('#time-sheet').css('left',0)
+							.append(_$bar);	
 
 			_dataSet = {
 				id: item.id,
@@ -401,7 +454,7 @@ $$.timeWork= (function ($) {
 		var _dataSet = dataSet,
 			_$tooltip;
 
-		if(_mode == 'SAVE'){
+		if(_mode == 'SAVE' || _mode == 'LOAD'){
 			this.find('.switch input:checkbox').prop('checked', true);
 			this.appendTo($('#time-sheet'));
 		}

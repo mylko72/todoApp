@@ -887,23 +887,23 @@ h3.years {font-size:18px; margin-bottom:10px;}
 			.flag {
 				text-decoration:line-through;
 			} 
-			.flag-wrapper:before {
-				border-color:#999;
-			}
-			.time-wrapper {
-				background-color:#b5b5b5;
-			}
 			.direction-l {
-				.time-wrapper {
-					&:before {
-						border-left-color:#b5b5b5;
+				.flag-wrapper {
+					.time-wrapper {
+						&:before {
+							border-left-color:#606060;
+						}
+						background-color:#606060;
 					}
 				}
 			}
 			.direction-r {
-				.time-wrapper {
-					&:before {
-						border-right-color:#b5b5b5;
+				.flag-wrapper {
+					.time-wrapper {
+						&:before {
+							border-right-color:#606060;
+						}
+						background-color:#606060;
 					}
 				}
 			}
@@ -1444,6 +1444,11 @@ h3.years {font-size:18px; margin-bottom:10px;}
 			font-size:30px;
 			color:rgba(255,255,255,.8);
 			opacity:.8;
+
+			&.only {
+				-webkit-transform:scale(1.8) translateY(15px);
+				transform:scale(1.8) translateY(15px);
+			}
 		}
 		.time {
 			display:block;

@@ -3,63 +3,28 @@ var $$ = $$ || {};
 
 (function ($) {
 	
-
     /**
 	Global object which lives on every page.  This object will handle the creation of other necessary objects for page functionality. 
 	@class $.Global
 	@constructor
 	**/
     $.Global= function () {
+		
+		var refreshIntervalId,
+			newDate;
 
         /** 
 		Init function will check for specific body classes and create the necessary page object.
 		@function init
 		**/
         function init() {
-			$$.timeLine.init();
-			$$.timeWork.init();
 			$$.util = new $.Util();
 			$$.util.init();
-			//new $.Form().init();
-			
-			updateClock();
-			//setInterval (updateClock, 1000);
-		}
-		
-		function updateClock(){
-			var $clock = $("#clock");
-			var now = new Date();
-			var year = now.getFullYear();
-			var month = now.getMonth()+1;
-			var date = now.getDate();
-
-			//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
-			$clock.find('.date')[0].innerHTML = year + '-' + month + '-' + date;
-			$clock.find('.time')[0].innerHTML = timer();
-		}
-
-		function timer(){
-			var date = new Date();
-			var hour = date.getHours();
-			var ampm = (hour<12 || hour == 24) ? 'AM' : 'PM';
-			hour = hour%12 || 12;
-
-			var minute = date.getMinutes();
-			minute = ( minute > 9 ) ? minute : "0" + minute;
-
-			var second = date.getSeconds(); 
-			second = ( second > 9 ) ? second : "0" + second;
-
-			var millisec = date.getMilliseconds(); 
-			millisec = ( millisec > 99 ) ? millisec : ( millisec > 9 ) ? "0" + millisec : "00" + millisec;
-
-			var timeString = hour + ":" + minute + ":" + second + ' <sup>' + ampm + '</sup>';
-
-			return timeString;
+			$$.timeLine.init();
+			$$.timeWork.init();
 		}
 		
 		init();
-
 	};
 
 }(jQuery));
