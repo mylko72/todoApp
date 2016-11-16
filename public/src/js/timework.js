@@ -10,6 +10,7 @@ $$.timeWork= (function ($) {
 		_clicked = false,
 		_saved = false,
 		_cntDone = 0,
+		_chkDate,
 		_mode = "",
 		_timeStr = null,
 		_refreshIntervalId,
@@ -696,7 +697,6 @@ $$.timeWork= (function ($) {
 		var _$todoArea = target,
 			_$todoList,
 			_$moreBtn,
-			_chkDate,
 			_num = 0,
 			_idx = idx,
 			_storedData = storedData,
@@ -714,21 +714,33 @@ $$.timeWork= (function ($) {
 				$.each(_storedData, function(index, item){
 
 					var _newLi = $(template).find('.todo-list > li');				
-					console.log('_chkDate :'+_chkDate);
-					console.log('item.startDate :'+item.startDate);
+
+					//console.log('_chkDate :'+_chkDate);
+					//console.log('item.startDate :'+item.startDate);
 
 					if(_chkDate != item.startDate){
-						_chkDate = item.startDate;
-						_num = 0;
-
 						if(_$todoArea.find('.date_'+item.startDate).size()==0){
-							console.log('call here');
-							_$todoArea.append(template);
-							_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
+							var i;
+
+							if(_chkDate){
+								var lastIdx = _chkDate.lastIndexOf('-');
+								var _dd = _chkDate.substring(lastIdx+1, _chkDate.length);
+								var lastIdx2 = item.startDate.lastIndexOf('-');
+								var _dd2 = item.startDate.substring(lastIdx2+1, item.startDate.length);
+							}
+
+							_dd2 < _dd ? _$todoArea.prepend(template) : _$todoArea.append(template);
+							_dd2 < _dd ? i = 0 : i = -1; 
+								
+							_$todoArea.find('.time-area').eq(i).addClass('date_'+item.startDate);
 							$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
 						} else {
 							_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 						}
+
+						_chkDate = item.startDate;
+						_num = 0;
+
 					} else {
 						_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 					}
