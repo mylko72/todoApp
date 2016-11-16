@@ -21,6 +21,7 @@ var $$ = $$ || {};
 			$$.util = new $.Util();
 			$$.util.init();
 			$$.timeLine.init();
+			$$.timeData.init();
 			$$.timeWork.init();
 		}
 		

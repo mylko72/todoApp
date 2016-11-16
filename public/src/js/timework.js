@@ -421,7 +421,7 @@ $$.timeWork= (function ($) {
 
 			_$bar = $('#bar_'+_idkey);
 			
-			console.log(_$bar);
+			//console.log(_$bar);
 
 			if(!_title){
 				alert('할일 제목을 입력해주세요!');
@@ -635,13 +635,13 @@ $$.timeWork= (function ($) {
 		_success = _renderList(_$todoArea, _idx, _storedData, _url);
 
 		if(_success) {
-			_li = _slideIn($('.todo-list'), _idx);
-			_top = $$.util.elemTop($(_li));
+			//_li = _slideIn($('.todo-list'), _idx);
+			//_top = $$.util.elemTop($(_li));
 
 			$('.content').css('height', 'auto');
 			$('.content').css('height', $('.content').outerHeight());
 
-			$(window).scrollTop(_top);
+			//$(window).scrollTop(_top);
 		}
 		//_sortBy($('.date_'+_storedData[_idx].startDate).find('.todo-list'));
 	};
@@ -697,7 +697,7 @@ $$.timeWork= (function ($) {
 			_$todoList,
 			_$moreBtn,
 			_chkDate,
-			_num,
+			_num = 0,
 			_idx = idx,
 			_storedData = storedData,
 			_templateUrl = templateUrl,
@@ -713,19 +713,23 @@ $$.timeWork= (function ($) {
 			
 				$.each(_storedData, function(index, item){
 
+					var _newLi = $(template).find('.todo-list > li');				
+					console.log('_chkDate :'+_chkDate);
+					console.log('item.startDate :'+item.startDate);
+
 					if(_chkDate != item.startDate){
 						_chkDate = item.startDate;
 						_num = 0;
 
 						if(_$todoArea.find('.date_'+item.startDate).size()==0){
+							console.log('call here');
 							_$todoArea.append(template);
 							_$todoArea.find('.time-area').eq(-1).addClass('date_'+item.startDate);
 							$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
+						} else {
+							_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 						}
-					} 
-
-					if(_$todoArea.find('.todo-list li').size()<_storedData.length){
-						var _newLi = $(template).find('.todo-list > li');
+					} else {
 						_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 					}
 

@@ -27,7 +27,18 @@ $$.timeData = (function ($) {
 		_loadData,
 		_getDaysInMonth;
 	//--- 모듈 스코프 변수 끝 ---
+	
+	_init = function(){
 
+		_year = _todayObj.getFullYear();
+		_month = _todayObj.getMonth()+1;
+		_date = _todayObj.getDate();
+
+		if(_daysInMonth==null){
+			_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
+		}
+
+	};
 	//---  Time 메소드 시작 ---
 	
 	/* Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환 */
@@ -36,28 +47,21 @@ $$.timeData = (function ($) {
 		var _self = this,
 			_dateObj = date;
 
-		console.log('_dateObj :' + _dateObj);
-		console.log('_currentDay :' + _currentDay);
+		//console.log('_dateObj :' + _dateObj);
+		//console.log('_currentDay :' + _currentDay);
 
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
-			//_dateObj = new Date ();
 			_dateObj.setDate (_dateObj.getDate () + 1);
-			_month = _dateObj.getMonth()+1;
+			//_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
 
 			_currentDay = _today;
 
 		}else{
 
-			//_dateObj = new Date(dt);
-			_year = _dateObj.getFullYear();
-			_month = _dateObj.getMonth()+1;
+			//_year = _dateObj.getFullYear();
+			//_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
-			//_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
-
-			if(_daysInMonth==null){
-				_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
-			}
 
 			if(_currentDay==null){
 				_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
@@ -87,8 +91,8 @@ $$.timeData = (function ($) {
 			_endDateStr = _getNToday(_todayObj);
 		}
 
-		console.log('_startDateStr :'+_startDateStr);
-		console.log('_endDateStr :'+_endDateStr);
+		//console.log('_startDateStr :'+_startDateStr);
+		//console.log('_endDateStr :'+_endDateStr);
 
 		return {
 			startDate : function(){
@@ -126,7 +130,7 @@ $$.timeData = (function ($) {
 			}
 		}
 
-		console.log('저장 되었습니다 : _saveData()');
+		//console.log('저장 되었습니다 : _saveData()');
 		console.log(_storedData);
 
 		setTimeout(function(){
@@ -215,6 +219,7 @@ $$.timeData = (function ($) {
 
 	//--- 공개 api ---
 	return {
+		init: _init,
 		setObjDate: function(date){
 			_today = null;
 			_todayObj = date;
