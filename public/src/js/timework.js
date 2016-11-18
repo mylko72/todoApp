@@ -123,6 +123,7 @@ $$.timeWork= (function ($) {
 			_todoData.todo = _storedData; 	
 			_jsonData = JSON.stringify(_todoData);
 			console.log(_jsonData);
+			alert(_jsonData);
 		});
 
 		/* 할일 등록 저장 */
@@ -461,7 +462,7 @@ $$.timeWork= (function ($) {
 		}
 		this.data('set', _dataSet);
 
-		_$tooltip = this.find('.tooltip');
+		_$tooltip = this.find('.tooltip').addClass('in');
 		_$tooltip.find('.title').text(this.data('set').title);
 		_$tooltip.find('.time').text(this.data('set').startTime+'-'+this.data('set').endTime);
 		if(this.data('set').description){

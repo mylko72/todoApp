@@ -51,6 +51,16 @@ gulp.task('tmp:scss', function () {
 //js build
 gulp.task('js:build', ['js:hint', 'js:minify']);
 
+gulp.task('js:minify', function(){
+	gulp
+		.src(paths.js)
+		.pipe(concat('app.combined.js'))
+		.pipe(uglify())
+		.pipe(rename('app.combined.min.js'))*/
+		.pipe(gulp.dest(dist+'/js'))
+		.pipe(browserSync.reload({stream:true}));
+});
+
 //scss build
 gulp.task('css:build', function(){
 	gulp
