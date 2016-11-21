@@ -13,6 +13,7 @@ $$.timeWork= (function ($) {
 		_chkDate,
 		_mode = "",
 		_timeStr = null,
+		_timer = null,
 		_refreshIntervalId,
 		_stopped = false,
 		_$bar = null,
@@ -23,9 +24,10 @@ $$.timeWork= (function ($) {
 		_bindEvents,
 		_updateClock,
 		_stopClock,
-		_timer,
+		_timerFn,
 		_getFormData,
 		_setDataBar,
+		_processChk,
 		_loadStoredData,
 		_resetTimeline,
 		_chkToDone,
@@ -36,6 +38,7 @@ $$.timeWork= (function ($) {
 		_countTotal,
 		_countDone,
 		_showTimeList,
+		_delTimeList,
 		_renderList,
 		_showMsg,
 		_hideMsg,
@@ -138,8 +141,10 @@ $$.timeWork= (function ($) {
 				_setDataBar.call(_$bar, _dataSet);
 
 				_idx = $$.timeData.saveData(_dataSet);
-				
-				_showTimeList('.todo-area', _idx);
+			
+				_processChk(200, function(){
+					_showTimeList('.todo-area', _idx);
+				});
 
 				_$todoModal.modal('hide')
 
@@ -170,7 +175,9 @@ $$.timeWork= (function ($) {
 					}
 
 					//타임리스트 수정
-					_updateTimeList('.todo-area', _dataSet);
+					_processChk(200, function(){
+						_updateTimeList('.todo-area', _dataSet);
+					});
 
 					//tooltip 데이타수정
 					_$todoModal.modal('hide')
@@ -294,7 +301,7 @@ $$.timeWork= (function ($) {
 
 		//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
 		_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
-		_$clock.find('.time')[0].innerHTML = _timer();
+		_$clock.find('.time')[0].innerHTML = _timerFn();
 
 	};
 
@@ -306,7 +313,7 @@ $$.timeWork= (function ($) {
 		}
 	};
 
-	_timer = function(){
+	_timerFn = function(){
 		var _date = new Date();
 		var _hour = _date.getHours();
 		var _ampm = (_hour<12 || _hour == 24) ? 'AM' : 'PM';
@@ -329,30 +336,40 @@ $$.timeWork= (function ($) {
 	_loadStoredData = function(){
 		var _jsonData = './html/todo-20161110.json',
 			_storedData,
-			_timer = null,
 			_result = false;
 
 		$.getJSON(_jsonData, function(data){
 
-			$('<div id="loading" />').appendTo('body');
+			//$('<div id="loading" />').appendTo('body');
 
 			_result = $$.timeData.loadData(data.todo);
 		})
 		.done(function(data){
 			if(_result){
-				_timer = setTimeout(function(){
+				_processChk(500, function(){
 					if($('.time-area').length){
 						$('.time-area').remove();
 					}
-					$('#loading').remove();
-
 					_resetTimeline();
 					_showTimeList('.todo-area');
-
-					_timer = null;
-				}, 1000);
+				});
 			}
 		});
+	};
+
+	_processChk = function(duration, callback){
+		var _self = this;
+
+		$('<div id="loading" />').appendTo('body');
+
+		_timer = setTimeout(function(){
+			if(callback && typeof (callback) === 'function'){
+				callback.call(_self);
+			}
+
+			$('#loading').remove();
+			_timer = null;
+		}, duration);
 	};
 
 	_resetTimeline = function(){
@@ -680,10 +697,17 @@ $$.timeWork= (function ($) {
 	/* 할일 리스트 삭제 */
 	_delTimeList = function(idkey){
 		var _idkey = idkey,
-			_$todolist;
+			_$todolist,
+			len;
 
 		_$todolist = $('li.time_'+_idkey).parent('.todo-list');
 		_$todolist.find('li.time_'+_idkey).remove();
+		_len = _$todolist.find('li').length;
+
+		if(_len == 0) {
+			_$todolist.parents('.time-area').remove();
+			_$todolist.remove();
+		}
 
 		setTimeout(function(){
 			_sortBy(_$todolist);
@@ -850,6 +874,7 @@ $$.timeWork= (function ($) {
 	return {
 		init : _init,
 		showMsg : _showMsg,
+		processChk : _processChk,
 		delTimeList : _delTimeList,
 		countTotal : _countTotal,
 		countDone : _countDone,

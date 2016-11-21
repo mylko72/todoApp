@@ -209,7 +209,9 @@ $$.timeData = (function ($) {
 		_storedData.removeElement(_idx);
 
 		$$.timeWork.countTotal();
-		$$.timeWork.delTimeList(_idKey);
+		$$.timeWork.processChk(200, function(){
+			this.delTimeList(_idKey);
+		});
 	};
 
 	_getDaysInMonth = function (_year, _month) {
