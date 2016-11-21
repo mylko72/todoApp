@@ -56,7 +56,7 @@ gulp.task('js:minify', function(){
 		.src(paths.js)
 		.pipe(concat('app.combined.js'))
 		.pipe(uglify())
-		.pipe(rename('app.combined.min.js'))*/
+		.pipe(rename('app.combined.min.js'))
 		.pipe(gulp.dest(dist+'/js'))
 		.pipe(browserSync.reload({stream:true}));
 });
