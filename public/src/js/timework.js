@@ -22,6 +22,7 @@ $$.timeWork= (function ($) {
 		
 	var _init,
 		_bindEvents,
+		_whichAnimationEvent,
 		_updateClock,
 		_stopClock,
 		_timerFn,
@@ -59,7 +60,12 @@ $$.timeWork= (function ($) {
 	//---  이벤트 핸들러 시작 ---
 	_bindEvents = function (){
 		
-		var _self = this;
+		var _self = this,
+			animatedEvent = _whichAnimationEvent();
+		
+		$('.capsule').one(animatedEvent, function(e){
+			$(this).find('span').addClass('shadow showIn');
+		});
 
 		/* 할일 설정과 종료 이벤트 */
 		_$timeline.on('click', function(event){
@@ -291,7 +297,24 @@ $$.timeWork= (function ($) {
 	//---  이벤트 핸들러 끝 ---
 
 	//---  DOM 메서드 시작 ---
-	
+	_whichAnimationEvent = function(){
+		var t,
+			el = document.createElement("fakeelement");
+
+		var animations = {
+			"animation"      : "animationend",
+			"OAnimation"     : "oAnimationEnd",
+			"MozAnimation"   : "animationend",
+			"WebkitAnimation": "webkitAnimationEnd"
+		}
+
+		for (t in animations){
+			if (el.style[t] !== undefined){
+				return animations[t];
+			}
+		}
+	};
+
 	_updateClock = function(){
 		var _$clock = $("#clock"),
 			_now = new Date(),
@@ -334,7 +357,7 @@ $$.timeWork= (function ($) {
 	};
 
 	_loadStoredData = function(){
-		var _jsonData = './html/todo-20161110.json',
+		var _jsonData = './html/todo-20161118.json',
 			_storedData,
 			_result = false;
 
