@@ -97,7 +97,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 		}
 
 		.step {
-			width:420px;
+			width:445px;
 			margin:0 auto;
 			padding-left:5px;
 			text-align:left;
@@ -535,6 +535,10 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	&:nth-child(12n) {
 		border-right:1px dotted #bbb;
 	}
+
+	&:hover {
+		background-color:#dedede;
+	}
 } /* 10px - 5minute  */
 .quarter {float:left; width:29px; height:80px; background-color:#ebebeb; border-right:1px solid #dfe5ba;} /* 2px - 1minute  */
 .hour {float:left; width:120px; height:80px; background-color:#ccc;} /* 2px - 1minute  */
@@ -686,6 +690,10 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 
 h2.todo-tit {font-family:arial;font-size:26px;color:#3c8e0a;font-weight:bold;margin-bottom:20px;}
 h3.years {font-size:18px;margin-bottom:10px;}
+
+.api-select {
+	display:none;
+}
 
 .todo-area {
 	//position:relative;

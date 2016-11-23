@@ -117,8 +117,15 @@ $$.timeWork= (function ($) {
 		$(document).on('click', '.btn-load', function(event){
 			var e = event;
 
-			_loadStoredData();
+			$(this).hide();
+			$('.api-select').css('display','inline-block');
+		});
 
+		$(document).on('click', '.dropdown-menu a', function(event){
+			var e = event,
+				_url = $(this).data('url');
+
+			_loadStoredData(_url);
 		});
 
 		$(document).on('click', '.btn-send', function(event){
@@ -356,12 +363,12 @@ $$.timeWork= (function ($) {
 		return _timeString;
 	};
 
-	_loadStoredData = function(){
-		var _jsonData = './html/todo-20161118.json',
+	_loadStoredData = function(url){
+		var _jsonUrl = url,
 			_storedData,
 			_result = false;
 
-		$.getJSON(_jsonData, function(data){
+		$.getJSON(_jsonUrl, function(data){
 
 			//$('<div id="loading" />').appendTo('body');
 
