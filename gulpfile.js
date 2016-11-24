@@ -2,6 +2,7 @@ var gulp = require('gulp'),
 	webserver = require('gulp-webserver'),
 	connect = require('gulp-connect'),
 	concat = require('gulp-concat'),
+	jshint = require('gulp-jshint'),
 	uglify = require('gulp-uglify'),
 	rename = require('gulp-rename'),
 	sass = require('gulp-sass'),
@@ -14,19 +15,13 @@ var src = 'public/src',
 	tmp = 'public/tmp';
 
 var paths = {
-	html: src + '/html/*.html',
 	js: src + '/js/**/*.js',
-	scss: src + '/scss/*.scss'
-};
+	scss: src + '/scss/*.scss',
+	html: src + '/html/*',
+	img: src + '/img/*',
+	font: src + '/fonts/*'
 
-gulp.task('js:minify', function(){
-	gulp
-		.src(paths.js)
-		.pipe(concat('combined.js'))
-		.pipe(uglify())
-		.pipe(rename('combined.min.js'))
-		.pipe(gulp.dest(dist+'/js'));
-});
+};
 
 gulp.task('tmp:js:minify', function(){
 	gulp
@@ -49,7 +44,14 @@ gulp.task('tmp:scss', function () {
 });
 
 //js build
-gulp.task('js:build', ['js:hint', 'js:minify']);
+gulp.task('js:build', ['js:minify']);
+
+gulp.task('js:hint', function(){
+	gulp
+		.src(paths.js)
+		.pipe(jshint())
+		.pipe(jshint.reporter('jshint-stylish'));
+});
 
 gulp.task('js:minify', function(){
 	gulp
@@ -57,28 +59,43 @@ gulp.task('js:minify', function(){
 		.pipe(concat('app.combined.js'))
 		.pipe(uglify())
 		.pipe(rename('app.combined.min.js'))
-		.pipe(gulp.dest(dist+'/js'))
-		.pipe(browserSync.reload({stream:true}));
+		.pipe(gulp.dest(dist+'/js'));
 });
 
 //scss build
-gulp.task('css:build', function(){
+gulp.task('scss:build', function(){
 	gulp
-		.src(path.scss)
+		.src(paths.scss)
 		.pipe(sass())
 		.pipe(gulp.dest(dist+'/css'));
 });
 
-//running webserver
-gulp.task('webserver', function(){
+//image distribute
+gulp.task('image:distribute', function(){
 	gulp
-		.src(src+'/')
-		.pipe(webserver({
-			livereload: true,
-			port: "8080",
-			open: '/html/todo-write.html'
-			//fallback: src + '/html/todo-write.html'
-		}));
+		.src(paths.img)
+		.pipe(gulp.dest(dist+'/img'));
+});
+
+//html distribute
+gulp.task('html:distribute', function(){
+	gulp
+		.src(paths.html)
+		.pipe(gulp.dest(dist+'/html'));
+});
+
+//font distribute
+gulp.task('font:distribute', function(){
+	gulp
+		.src(paths.font)
+		.pipe(gulp.dest(dist+'/fonts'));
+});
+
+//running webserver after build
+gulp.task('server', function(){
+	gulp
+		.src(dist+'/')
+		.pipe(webserver());
 });
 
 gulp.task('connect', ['tmp:js:minify', 'tmp:scss'], function(){
@@ -107,3 +124,4 @@ gulp.task('watch', function(){
 
 //default task
 gulp.task('default', ['connect',  'watch']);
+gulp.task('build', ['js:build',  'scss:build', 'image:distribute', 'html:distribute', 'font:distribute']);
