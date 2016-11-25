@@ -70,16 +70,6 @@ var TimeModel = {
 		util.tooltip($('.wrapper', $bar), false, 'mousemove');
 		util.tooltip($del, true, 'mousemove');
 		util.tooltip($edit, true, 'mousemove');
-
-		$mytool.on('click', '.del', function(){
-			var //_idx = idnum,
-				_idkey = $(this).parents('.bar').data('set').id;
-
-			$(this).parents('.bar').remove();
-			$$.timeData.removeData(_idkey);
-
-			return false;
-		});
 	},
 	extend: function(config){
 		var tmp = Object.create(this),

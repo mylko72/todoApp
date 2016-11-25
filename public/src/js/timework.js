@@ -142,6 +142,65 @@ $$.timeWork= (function ($) {
 			alert(_jsonData);
 		});
 
+
+		$(document).on('click', '.mytool .del', function(){
+			var _idkey = $(this).parents('.bar').data('set').id;
+		
+			$('#alert').data('id', _idkey);
+			$('#alert').show();
+			$('#alert').find('.alert').addClass('alert-delete');
+
+			return false;
+		});
+
+		$(document).on('click', '.alert-delete .btn', function(){
+			var _idkey = $(this).parents('#alert').data('id');
+
+			if($(this).hasClass('btn-warning')){
+				$('#bar_'+_idkey).remove();
+				$$.timeData.removeData(_idkey);
+			}
+			$('#alert').hide();
+		});
+
+		$(document).on('click', '.bar input:checkbox', function(){
+			var _idkey = $(this).parents('.bar').data('set').id;
+		
+			/*$('#alert').data('id', _idkey);
+			$('#alert').show();
+			$('#alert').find('.alert').addClass('alert-status');
+			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />A thing-to-do is changed in progress' : '<strong>Wait!</strong><br />A thing-to-do is changed in completion';*/
+
+			console.log($(this));
+			//console.log($(this).is(':checked'));
+			return false;
+		}); 
+
+		$(document).on('click', '.alert-status .btn', function(){
+			var _idkey = $(this).parents('#alert').data('id');
+
+			if($(this).hasClass('btn-warning')){
+				_chkToDone(_idkey);
+			}
+			$('#alert').hide();
+		});
+		//$(document).on('click', '.bar input:checkbox', _chkToDone); 
+
+		$(document).on('click', '.todo-list .more', function(e){
+			e.preventDefault();
+			if($(this).hasClass('glyphicon-chevron-up')){
+				$(this).parents('.flag-wrapper').find('.desc p').removeClass('opened');
+				$(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+				return false;
+			}
+			$(this).parents('.flag-wrapper').find('.desc p').addClass('opened');
+			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+		});
+
+		$(document).on('click', '.modal .modal-backdrop', function(){
+			_$todoModal.find('#cancel').trigger('click'); 
+		});
+
 		/* 할일 등록 저장 */
 		_$todoModal.find('#save').on('click', function(event){
 			var _dataSet,
@@ -284,22 +343,6 @@ $$.timeWork= (function ($) {
 			_$todoModal.find('#todo-desc').val('');
 		});
 
-		$(document).on('click', '.todo-list .more', function(e){
-			e.preventDefault();
-			if($(this).hasClass('glyphicon-chevron-up')){
-				$(this).parents('.flag-wrapper').find('.desc p').removeClass('opened');
-				$(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-				return false;
-			}
-			$(this).parents('.flag-wrapper').find('.desc p').addClass('opened');
-			$(this).removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-		});
-
-		$(document).on('click', '.bar input:checkbox', _chkToDone); 
-
-		$(document).on('click', '.modal .modal-backdrop', function(){
-			_$todoModal.find('#cancel').trigger('click'); 
-		});
 	};
 	//---  이벤트 핸들러 끝 ---
 
@@ -520,14 +563,13 @@ $$.timeWork= (function ($) {
 	};
 
 	/* 할일 상태(진행/완료) 전환 */
-	_chkToDone = function(){
+	_chkToDone = function(idkey){
 		var _storedData = $$.timeData.getStoredData(),
-			_idkey = $(this).parents('.bar').data('set').id,
-			_done = $(this).parents('.bar').data('set').done;
+			_idkey = idkey, 
+			_done = $('#bar_'+_idkey).data('set').done;
 
-			$(this).parents('.bar').data('set').done = !_done;
-
-			$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
+			$('#bar_'+_idkey).data('set').done = !_done;
+			//$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
 
 			$('.todo-list').find('.time_'+_idkey).toggleClass('done');
 
@@ -537,6 +579,8 @@ $$.timeWork= (function ($) {
 					_storedData[i].done ? _cntDone++ : _cntDone--;
 				}
 			}
+
+			console.log(_storedData);
 
 			_countDone(_cntDone);
 	},

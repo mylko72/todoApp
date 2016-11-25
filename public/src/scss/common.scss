@@ -742,6 +742,36 @@ h3.years {font-size:18px;margin-bottom:10px;}
 	p {margin-top:10px; font-size:18px; color:inherit; font-weight:bold;}
 }
 
+#alert {
+	display:none;
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	z-index:99;
+	background-color:rgba(0,0,0,.4);
+	text-align:center;
+
+	&:before {
+		clear:both;
+		display:inline-block;
+		content:'';
+		width:1px;
+		height:100%;
+		vertical-align:middle;
+	}
+
+	.alert {
+		display:inline-block;
+		vertical-align:middle;
+
+		.msg {
+			margin-bottom:10px;
+		}
+	}
+}
+
 #loading {
 	position:fixed;
 	top:0;
