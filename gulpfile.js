@@ -15,7 +15,7 @@ var src = 'public/src',
 	tmp = 'public/tmp';
 
 var paths = {
-	js: src + '/js/**/*.js',
+	js: src + '/js/*.js',
 	scss: src + '/scss/*.scss',
 	html: src + '/html/*',
 	img: src + '/img/*',
@@ -70,25 +70,18 @@ gulp.task('scss:build', function(){
 		.pipe(gulp.dest(dist+'/css'));
 });
 
-//image distribute
-gulp.task('image:distribute', function(){
-	gulp
-		.src(paths.img)
-		.pipe(gulp.dest(dist+'/img'));
-});
-
-//html distribute
-gulp.task('html:distribute', function(){
-	gulp
-		.src(paths.html)
-		.pipe(gulp.dest(dist+'/html'));
-});
-
-//font distribute
-gulp.task('font:distribute', function(){
-	gulp
-		.src(paths.font)
+//copy files
+gulp.task('copy:build', function(){
+	gulp.src(paths.img)
+		.pipe(gulp.dest(dist+'/img'))
+	gulp.src(paths.html)
+		.pipe(gulp.dest(dist+'/html'))
+	gulp.src(paths.font)
 		.pipe(gulp.dest(dist+'/fonts'));
+	gulp.src(src+'/js/lib/*.js')
+		.pipe(gulp.dest(dist+'/js/lib'));
+	gulp.src(src+'/scss/*.css')
+		.pipe(gulp.dest(dist+'/css'));
 });
 
 //running webserver after build
@@ -124,4 +117,4 @@ gulp.task('watch', function(){
 
 //default task
 gulp.task('default', ['connect',  'watch']);
-gulp.task('build', ['js:build',  'scss:build', 'image:distribute', 'html:distribute', 'font:distribute']);
+gulp.task('build', ['js:build',  'scss:build', 'copy:build']);
