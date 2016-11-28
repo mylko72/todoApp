@@ -149,6 +149,7 @@ $$.timeWork= (function ($) {
 			$('#alert').data('id', _idkey);
 			$('#alert').show();
 			$('#alert').find('.alert').addClass('alert-delete');
+			$('#alert').find('.msg')[0].innerHTML = '<strong>Delete!</strong><br />Do you want to delete it?'
 
 			return false;
 		});
@@ -156,34 +157,37 @@ $$.timeWork= (function ($) {
 		$(document).on('click', '.alert-delete .btn', function(){
 			var _idkey = $(this).parents('#alert').data('id');
 
-			if($(this).hasClass('btn-warning')){
+			if($(this).hasClass('btn-ok')){
 				$('#bar_'+_idkey).remove();
 				$$.timeData.removeData(_idkey);
 			}
+
+			$(this).parent('.alert').removeClass('alert-delete');
 			$('#alert').hide();
 		});
 
 		$(document).on('click', '.bar input:checkbox', function(){
 			var _idkey = $(this).parents('.bar').data('set').id;
 		
-			/*$('#alert').data('id', _idkey);
+			$('#alert').data('id', _idkey);
 			$('#alert').show();
 			$('#alert').find('.alert').addClass('alert-status');
-			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />A thing-to-do is changed in progress' : '<strong>Wait!</strong><br />A thing-to-do is changed in completion';*/
-
-			console.log($(this));
-			//console.log($(this).is(':checked'));
-			return false;
+			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />Do you want it changed in progress?' : '<strong>Wait!</strong><br />Do you want it changed in completion?';
 		}); 
 
 		$(document).on('click', '.alert-status .btn', function(){
-			var _idkey = $(this).parents('#alert').data('id');
+			var _idkey = $(this).parents('#alert').data('id'),
+				_chkVal = $('#bar_'+_idkey).find('.switch input:checkbox').is(':checked');
 
-			if($(this).hasClass('btn-warning')){
+			if($(this).hasClass('btn-ok')){
 				_chkToDone(_idkey);
+			}else{
+				$('#bar_'+_idkey).find('.switch input:checkbox').prop('checked',!_chkVal)
 			}
+			$(this).parent('.alert').removeClass('alert-status');
 			$('#alert').hide();
 		});
+
 		//$(document).on('click', '.bar input:checkbox', _chkToDone); 
 
 		$(document).on('click', '.todo-list .more', function(e){
@@ -497,8 +501,8 @@ $$.timeWork= (function ($) {
 			_$bar.css('left', item.startPoint);
 
 			TimeModel.drawBar(_$timeline, _$bar, item.startPoint, _width);
-
 			_setDataBar.call(_$bar, _dataSet);
+			_countTotal();
 		});
 	};
 	
@@ -568,14 +572,14 @@ $$.timeWork= (function ($) {
 			_idkey = idkey, 
 			_done = $('#bar_'+_idkey).data('set').done;
 
-			$('#bar_'+_idkey).data('set').done = !_done;
-			//$(this).is(':checked') ? alert('할일 진행으로 전환됩니다!') : alert('할일 완료로 전환됩니다!'); 
+			console.log(_idkey);
 
+			$('#bar_'+_idkey).data('set').done = !_done;
 			$('.todo-list').find('.time_'+_idkey).toggleClass('done');
 
 			for(var i=0;i<_storedData.length;i++){
 				if(_storedData[i].id === _idkey){
-					_storedData[i].done = $(this).is(':checked') ? false : true;
+					_storedData[i].done = (_done==false) ? true : false;
 					_storedData[i].done ? _cntDone++ : _cntDone--;
 				}
 			}
