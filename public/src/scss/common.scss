@@ -251,7 +251,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	}
 }
 
-.content {position:relative; width:95%; margin:0 auto;}
+.content {position:relative; width:95%; margin:0 auto 50px;}
 
 .trash {
 	position:absolute; 
@@ -713,7 +713,11 @@ h3.years {font-size:18px;margin-bottom:10px;}
 #todoModal {
 	.txt-time {font-size:18px; margin-top:-15px;}
 	.txt-bar {margin:0 20px;}
-
+	.warn {
+		border-color:#a94442;-webkit-box-shadow:0 0 8px #d9534f;box-shadow:0 0 8px #d9534f;
+		&::-webkit-input-placeholder {color:#d9534f;}	
+		&::input-placeholder {color:#d9534f;}	
+	}
 	.btn#edit {display:none;}
 } 
 

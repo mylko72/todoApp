@@ -30,7 +30,7 @@ $$.timeWork= (function ($) {
 		_setDataBar,
 		_processChk,
 		_loadStoredData,
-		_resetTimeline,
+		_redrawTimeline,
 		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
@@ -107,7 +107,7 @@ $$.timeWork= (function ($) {
 			var e = event;
 
 			if(_clicked && e.keyCode === 27){
-				console.log('취소되었습니다!');
+				console.log('cancel!');
 				$('#bar_'+ _idKey).remove();
 				_clickCnt = 0;
 				_clicked = false;
@@ -282,9 +282,13 @@ $$.timeWork= (function ($) {
 			var e = event,
 				_$targetId = e.target.getAttribute('id');
 
+			if(_$todoModal.find('#todo-title').val().length){
+				_$todoModal.find('#todo-title').removeClass('warn');
+			}
+
 			if(_$targetId == 'todoModal'||_$targetId == 'todo-title'||_$targetId == 'todo-desc'){
 				if(e.keyCode === 27){
-					console.log('취소되었습니다!');
+					console.log('cancel!');
 					_$todoModal.find('#cancel').trigger('click');
 				}
 			}
@@ -323,7 +327,7 @@ $$.timeWork= (function ($) {
 
 				_idKey = _dataSet.id;
 
-				console.log(_mode + '모드');
+				console.log(_mode + 'mode');
 
 			}else{
 				_$time.find('#startDate').empty().append(_timeStr.startDate());
@@ -336,10 +340,11 @@ $$.timeWork= (function ($) {
 
 				_mode = 'SAVE';
 
-				console.log(_mode + '모드');
+				console.log(_mode + 'mode');
 			}
 
 			_$todoModal.find('#todo-title').focusin();
+
 		});
 
 		_$todoModal.on('hidden.bs.modal', function(){
@@ -427,7 +432,7 @@ $$.timeWork= (function ($) {
 					if($('.time-area').length){
 						$('.time-area').remove();
 					}
-					_resetTimeline();
+					_redrawTimeline();
 					_showTimeList('.todo-area');
 				});
 			}
@@ -449,7 +454,7 @@ $$.timeWork= (function ($) {
 		}, duration);
 	};
 
-	_resetTimeline = function(){
+	_redrawTimeline = function(){
 		var _storedData = $$.timeData.getStoredData(),
 			_dateStr = new Date(_storedData[0].startDate),
 			_startTime = _storedData[0].startTime,
@@ -520,7 +525,8 @@ $$.timeWork= (function ($) {
 			//console.log(_$bar);
 
 			if(!_title){
-				alert('할일 제목을 입력해주세요!');
+				//alert('할일 제목을 입력해주세요!');
+				_$todoModal.find('#todo-title').addClass('warn').attr('placeholder', 'Please enter a title!');
 				_$todoModal.find('#todo-title').focus();
 				return false;
 			}
@@ -704,6 +710,8 @@ $$.timeWork= (function ($) {
 			_$total = $('.panel-info').find('.total');
 
 		_$total.find('.badge').text(_len);
+
+		return _len;
 	};
 
 	_countDone = function(cntDone){
@@ -785,6 +793,11 @@ $$.timeWork= (function ($) {
 		if(_len == 0) {
 			_$todolist.parents('.time-area').remove();
 			_$todolist.remove();
+		}
+
+		if(!_countTotal()){
+			$('.todo-area').find('.nolist').show();
+			_chkDate = '';
 		}
 
 		setTimeout(function(){

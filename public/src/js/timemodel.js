@@ -8,23 +8,6 @@ var objectCreate = function(arg){
 
 Object.create = Object.create || objectCreate;
 
-function TimeModel(id,startDate,startTime,startPoint,endDate,endTime,endPoint,title,description,done){
-	this.id = id || 0;
-	this.startDate = startDate || '0000-00-00';
-	this.startTime = startTime || '00:00';
-	this.startPoint = startPoint || 0;
-	this.endDate = endDate || '0000-00-00';
-	this.endTime = endTime || '00:00';
-	this.endPoint = endPoint || 0;
-	this.title = title || '할일 제목';
-	this.description = description || '할일 내용';
-	this.done = done || false;
-}
-
-TimeModel.prototype.has = function(key){
-	return {}.hasOwnProperty.call(this.elements, key);
-}
-
 var TimeModel = {
 	id: 0,
 	startDate: '0000-00-00',

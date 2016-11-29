@@ -20,7 +20,7 @@
 		"endPoint": 760,
 		"title": "영화 및 쇼핑",
 		"description": "- '신비한 동물사전' 영화보기<br />- 백화점에 가서 쇼핑",
-		"done": false
+		"done": true
 	}, {
 		"id": "f13a8eb90476c14",
 		"startDate": "2016-11-05",
@@ -42,7 +42,7 @@
 		"endPoint": 1545,
 		"title": "TV 시청하기",
 		"description": null,
-		"done": false
+		"done": true
 	}, {
 		"id": "f3d1e4709c0348c",
 		"startDate": "2016-11-06",
