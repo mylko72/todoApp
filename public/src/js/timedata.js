@@ -194,15 +194,11 @@ $$.timeData = (function ($) {
 			_idKey = idKey,
 			_cntDone;
 
-		console.log(_idKey);
-		
 		for(var i=0;i<_storedData.length;i++){
 			if(_storedData[i].id === _idKey){
 				_idx = _storedData.indexOf(_storedData[i]);
 			}
 		}
-
-		console.log(_idx);
 
 		if(_storedData[_idx].done){
 			_cntDone = $$.timeWork.getDoneCnt();

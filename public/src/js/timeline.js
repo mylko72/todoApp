@@ -127,13 +127,17 @@ $$.timelineNav = (function($){
 	//---  공개 api ---
 	return {
 		goPrev : function(e){
-			_cnt==0 ? _cnt : _cnt--;
-			_$timesheet.animate({'left': '-'+(120*_cnt)+'px'});
+			if(!_$timesheet.is(':animated')){
+				_cnt==0 ? _cnt : _cnt--;
+				_$timesheet.animate({'left': '-'+(120*_cnt)+'px'});
+			}
 			e.preventDefault();
 		},
 		goNext : function(e){
-			_cnt>=23-7 ? _cnt : _cnt++;
-			_$timesheet.animate({'left':'-'+(120*_cnt)+'px'});
+			if(!_$timesheet.is(':animated')){
+				_cnt>=23-7 ? _cnt : _cnt++;
+				_$timesheet.animate({'left':'-'+(120*_cnt)+'px'});
+			}
 			e.preventDefault();
 		},
 		goMove : function(e, self){

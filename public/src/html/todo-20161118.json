@@ -9,7 +9,7 @@
 		"endPoint": 181.5,
 		"title": "영어 공부하기",
 		"description": "- Youtube로 뉴스 청취<br />- 하루 어휘 50개 외우기<br />- 영어일기 쓰기",
-		"done": false
+		"done": true
 	}, {
 		"id": "f34a94306d5815",
 		"startDate": "2016-11-18",
