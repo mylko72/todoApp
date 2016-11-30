@@ -640,7 +640,9 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 			opacity:0;
 			border:1px solid #ddd; 
 			border-radius:5px;
-			//background-color:hsla(136, 86%, 41%, 0.9); 
+			background-color:hsla(136, 86%, 41%, 0.9); 
+			-ms-background:radial-gradient(circle at bottom left, #a3dc78, #1e942f);
+			-webkit-background:radial-gradient(circle at bottom left, #a3dc78, #1e942f);
 			background:radial-gradient(circle at bottom left, #a3dc78, #1e942f);
 			padding:5px 10px; 
 			font-size:11px; 

@@ -1,8 +1,14 @@
 /**
-  @module $$.timeWork
+	* @module $$.timeWork
+	*
+	* (c) 2016 mylko72@maru.net
+	*
+	* licenses:	http://codecanyon.net/licenses/
  **/
+
+
 $$.timeWork= (function ($) {
-	//--- 모듈 스코프 변수 시작 ---
+	//--- Module scope variables ---
 	var _startOffsetX = null,
 		_endOffsetX = null,
 		_clickCnt = 0,
@@ -45,9 +51,8 @@ $$.timeWork= (function ($) {
 		_hideMsg,
 		_slideIn,
 		_sortBy;
-	//--- 모듈 스코프 변수 끝 ---
 
-	//--- 초기화 메서드 시작 ---
+	//--- Initialized method ---
 	_init = function (timeline) {
 
 		_updateClock();
@@ -55,9 +60,8 @@ $$.timeWork= (function ($) {
 
 		_bindEvents();
 	};
-	//--- 초기화 메서드 끝 ---
 
-	//---  이벤트 핸들러 시작 ---
+	//---  Event handler ---
 	_bindEvents = function (){
 		
 		var _self = this,
@@ -67,7 +71,7 @@ $$.timeWork= (function ($) {
 			$(this).find('span').addClass('shadow showIn');
 		});
 
-		/* 할일 설정과 종료 이벤트 */
+		/* Handler to set things-to-do */
 		_$timeline.on('click', function(event){
 			var e = event,
 				_res;
@@ -78,7 +82,7 @@ $$.timeWork= (function ($) {
 			_clickCnt++;
 
 			if(_clickCnt>=2){
-				_res = _getEndPoint(e, _$bar);	//할일 종료를 위한 함수 호출
+				_res = _getEndPoint(e, _$bar);	
 
 				// 할일 등록 팝업 Open
 				if(_res){
@@ -90,19 +94,19 @@ $$.timeWork= (function ($) {
 				_clickCnt = 0;
 				_clicked = false;
 			}else{
-				_getStartPoint(e, $(this));	//할일 설정을 위한 함수 호출
+				_getStartPoint(e, $(this));	
 
 				_clicked = true;
 			}
 		});
 
-		/* 할일 설정 범위 이벤트 */
+		/* Handler to set a range */
 		_$timeline.on('mousemove', function(event){
 			var e = event;
 			_getRange(e, _$bar);	
 		});
 
-		/* 취소를 위한 ESC키 바인드 */
+		/* Bind ESC key for cancel  */
 		$(document).on('keydown', function(event){
 			var e = event;
 
@@ -202,7 +206,7 @@ $$.timeWork= (function ($) {
 			_$todoModal.find('#cancel').trigger('click'); 
 		});
 
-		/* 할일 등록 저장 */
+		/* Save a thing-to-do */
 		_$todoModal.find('#save').on('click', function(event){
 			var _dataSet,
 				_idx;
@@ -227,7 +231,7 @@ $$.timeWork= (function ($) {
 			}
 		});
 
-		/* 할일 수정 */
+		/* modify a thing-to-do */
 		_$todoModal.find('#edit').on('click', function(event){
 			var _idkey = _idKey,
 				_dataSet,
@@ -247,12 +251,12 @@ $$.timeWork= (function ($) {
 						}
 					}
 
-					//타임리스트 수정
+					// Update timelist
 					_processChk(200, function(){
 						_updateTimeList('.todo-area', _dataSet);
 					});
 
-					//tooltip 데이타수정
+					// Hide modal popup
 					_$todoModal.modal('hide')
 
 					console.log(_storedData);
@@ -263,7 +267,7 @@ $$.timeWork= (function ($) {
 			}
 		});
 
-		/* 할일 등록 취소 */
+		/* Cancel a thing-to-do */
 		_$todoModal.find('#cancel, .close').on('click', function(event){
 			if(_mode == 'SAVE'){
 				$('#bar_'+ _idKey).remove();
@@ -274,7 +278,7 @@ $$.timeWork= (function ($) {
 			_idKey = '';
 		});
 
-		/* 할일 등록 취소를 위한 ESC키 바인드 */
+		/* Bind ESC key for cancel a thing-to-do */
 		_$todoModal.on('keydown', function(event){
 			var e = event,
 				_$targetId = e.target.getAttribute('id');
@@ -348,9 +352,8 @@ $$.timeWork= (function ($) {
 		});
 
 	};
-	//---  이벤트 핸들러 끝 ---
 
-	//---  DOM 메서드 시작 ---
+	//---  DOM method start ---
 	_whichAnimationEvent = function(){
 		var t,
 			el = document.createElement("fakeelement");
@@ -416,9 +419,6 @@ $$.timeWork= (function ($) {
 			_result = false;
 
 		$.getJSON(_jsonUrl, function(data){
-
-			//$('<div id="loading" />').appendTo('body');
-
 			_result = $$.timeData.loadData(data.todo);
 		})
 		.done(function(data){
@@ -498,8 +498,7 @@ $$.timeWork= (function ($) {
 
 			if(item.done) _cntDone++;
 
-			$('#time-sheet').css('left',0)
-							.append(_$bar);	
+			$('#time-sheet').css('left',0).append(_$bar);	
 
 			_$bar.css('left', item.startPoint);
 			TimeModel.drawBar(_$timeline, _$bar, item.startPoint, _width);
@@ -510,7 +509,7 @@ $$.timeWork= (function ($) {
 		});
 	};
 	
-	/* 등록 데이타 가져오기 */
+	/* Bring data from a form */
 	_getFormData = function(){
 		var _idkey = _idKey,
 			_dataSet= {},
@@ -524,7 +523,6 @@ $$.timeWork= (function ($) {
 			//console.log(_$bar);
 
 			if(!_title){
-				//alert('할일 제목을 입력해주세요!');
 				_$todoModal.find('#todo-title').addClass('warn').attr('placeholder', 'Please enter a title!');
 				_$todoModal.find('#todo-title').focus();
 				return false;
@@ -550,7 +548,7 @@ $$.timeWork= (function ($) {
 			return _dataSet;
 	};
 
-	/* 데이타 설정 */
+	/* Set data to bar */
 	_setDataBar = function(dataSet){
 		var _dataSet = dataSet,
 			_$tooltip;
@@ -571,7 +569,7 @@ $$.timeWork= (function ($) {
 		this.data('set').description ? _$tooltip.find('.desc').show().html(this.data('set').description) : _$tooltip.find('.desc').hide();
 	};
 
-	/* 할일 상태(진행/완료) 전환 */
+	/* Change status for a thing-to-do */
 	_chkToDone = function(idkey){
 		var _storedData = $$.timeData.getStoredData(),
 			_idkey = idkey, 
