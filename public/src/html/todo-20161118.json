@@ -1,10 +1,10 @@
 {
 	"todo": [{
 		"id": "f28bb6e40ab981c",
-		"startDate": "2016-11-18",
+		"startDate": "11/18/2016",
 		"startTime": "17:14",
 		"startPoint": 28.5,
-		"endDate": "2016-11-18",
+		"endDate": "11/18/2016",
 		"endTime": "18:30",
 		"endPoint": 181.5,
 		"title": "영어 공부하기",
@@ -12,10 +12,10 @@
 		"done": true
 	}, {
 		"id": "f34a94306d5815",
-		"startDate": "2016-11-18",
+		"startDate": "11/18/2016",
 		"startTime": "19:51",
 		"startPoint": 342,
-		"endDate": "2016-11-18",
+		"endDate": "11/18/2016",
 		"endTime": "21:22",
 		"endPoint": 525,
 		"title": "책읽기",
@@ -23,10 +23,10 @@
 		"done": false
 	}, {
 		"id": "f38d9c19764eb68",
-		"startDate": "2016-11-18",
+		"startDate": "11/18/2016",
 		"startTime": "22:53",
 		"startPoint": 707,
-		"endDate": "2016-11-19",
+		"endDate": "11/19/2016",
 		"endTime": "00:16",
 		"endPoint": 872,
 		"title": "게임하기",

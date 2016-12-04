@@ -73,7 +73,7 @@ $$.timeData = (function ($) {
 			
 		}
 
-		return (_year + '-' + (_month < 10 ? "0": "") + (_month) + '-' + (_date < 10 ? "0": "") + _date);
+		return ((_month < 10 ? "0": "") + (_month) + '/' + (_date < 10 ? "0": "") + _date) + '/' + _year;
 	};
 
 	/* 클릭좌표를 날짜와 시간으로 변환 */

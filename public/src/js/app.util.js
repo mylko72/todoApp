@@ -70,6 +70,10 @@
 			$('body').animate({scrollTop: pos}, _speed, function () {callback;});
 		};
 
+		var replaceAll = function(str, searchStr, replaceStr) {
+		    return str.split(searchStr).join(replaceStr);
+		};
+
 		//툴팁 레이어
 		var tooltip = function(target, titleVar, event){
 			var $target = target;
@@ -169,6 +173,7 @@
 			returnLine : returnLine,
 			elemTop : elemTop,
 			scrollTo : scrollTo,
+			replaceAll : replaceAll,
 			tooltip: tooltip
 		};
 	};

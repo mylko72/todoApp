@@ -385,7 +385,8 @@ $$.timeWork= (function ($) {
 		_date = ( _date > 9 ) ? _date : "0" + _date;
 		
 		//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
-		_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
+		//_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
+		_$clock.find('.date')[0].innerHTML = _month + '/' + _date + '/' + _year;
 		_$clock.find('.time')[0].innerHTML = _timerFn();
 
 	};
@@ -815,9 +816,10 @@ $$.timeWork= (function ($) {
 				$.each(_storedData, function(index, item){
 
 					var _newLi = $(template).find('.todo-list > li');				
+					var _strDate = $$.util.replaceAll(item.startDate, '/', '-');
 
 					if(_chkVal.date != item.startDate){
-						if(_$todoArea.find('.date_'+item.startDate).size()==0){
+						if(_$todoArea.find('.date_'+_strDate).size()==0){
 							var i;
 
 							if(_chkVal.date){
@@ -827,20 +829,20 @@ $$.timeWork= (function ($) {
 							_chkVal.offsetX2 < _chkVal.offsetX ? _$todoArea.prepend(template) : _$todoArea.append(template);
 							_chkVal.offsetX2 < _chkVal.offsetX ? i = 0 : i = -1; 
 								
-							_$todoArea.find('.time-area').eq(i).addClass('date_'+item.startDate);
-							$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
+							_$todoArea.find('.time-area').eq(i).addClass('date_'+_strDate);
+							$('.date_'+_strDate).find('.time-tit').text(item.startDate);
 						} else {
-							_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
+							_$todoArea.find('.date_'+_strDate).find('.todo-list').append(_newLi);
 						}
 
 						_chkVal.date = item.startDate;
 						_chkVal.offsetX = item.startPoint;
 						_num = 0;
 					} else {
-						_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
+						_$todoArea.find('.date_'+_strDate).find('.todo-list').append(_newLi);
 					}
 
-					_$todoList = _$todoArea.find('.date_'+item.startDate).find('.todo-list');
+					_$todoList = _$todoArea.find('.date_'+_strDate).find('.todo-list');
 
 					_$liEl = _$todoList.find('li').eq(_num);
 
