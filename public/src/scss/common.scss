@@ -11,8 +11,12 @@
 }
 
 @font-face {
-	font-family:'digital-clock-font';
-	src: url('../fonts/digital-7.ttf');
+	font-family:'DIGITALDREAMFATNARROW';
+	src: url('../fonts/DIGITALDREAMFATNARROW.ttf');
+}
+@font-face {
+	font-family:'Open Sans';
+	src: url('../fonts/OpenSans-Regular.ttf');
 }
 
 html{
@@ -21,7 +25,7 @@ html{
 	background-size: cover;
 	height: 100%;
 }
-html, body { margin:0px; padding:0px; background:#f7f7f7 url(http://css-tricks.com/examples/RoundButtons/images/bg.png) repeat center top; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
+html, body { margin:0px; padding:0px; background:#f7f7f7 url(/images/bg.png) repeat center top; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
 img, fieldset { border:0px; }
 legend { visibility:hidden; height:0px; width:0px; line-height:0; _text-indent:-10px; font-size:0px; }
 table { border-collapse:collapse; }
@@ -464,7 +468,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 				top:0; 
 				cursor:pointer; 
 				z-index:10;
-				background:#f7f7f7 url(http://css-tricks.com/examples/RoundButtons/images/bg.png) repeat center top;
+				background:#f7f7f7 url(/images/bg.png) repeat center top;
 
 				&:after {content: "."; display: block; height: 0px; clear: both; visibility: hidden;}
 			}
@@ -718,7 +722,14 @@ h3.years {font-size:18px;margin-bottom:10px;}
 }
 
 #todoModal {
-	.txt-time {font-size:18px; margin-top:-15px;}
+	.txt-time {
+		font-size:18px; 
+		margin-top:-15px;
+
+		.glyphicon {
+			top:2px;
+		}
+	}
 	.txt-bar {margin:0 20px;}
 	.warn {
 		border-color:#a94442;-webkit-box-shadow:0 0 8px #d9534f;box-shadow:0 0 8px #d9534f;
@@ -1081,11 +1092,11 @@ h3.years {font-size:18px;margin-bottom:10px;}
 		.flag-wrapper {
 			position: relative;
 			display: inline-block;
-			width:50%;
+			width:60%;
 			background: rgb(248,248,248);
 			border-radius: 5px;
 			font-family: 'Open Sans', sans-serif;
-			font-weight: 600;
+			font-weight: 500;
 			text-align: left;
 			-webkit-transition:height 1s, transform 2s;
 			transition:height 1s, transform 2s;
@@ -1101,6 +1112,8 @@ h3.years {font-size:18px;margin-bottom:10px;}
 
 				.time {
 					display: inline-block;
+					font-size:16px;
+					font-weight:300;
 				}
 			}
 
@@ -1111,6 +1124,7 @@ h3.years {font-size:18px;margin-bottom:10px;}
 
 				&.title {
 					padding: 10px;
+					color:#000;
 				}
 			}
 
@@ -1603,34 +1617,35 @@ h3.years {font-size:18px;margin-bottom:10px;}
 		border:1px solid #555;
 		border-radius:1em;
 		background-color:#6bb53e;
-		font-family:'digital-clock-font';
+		font-family:'DIGITALDREAMFATNARROW';
 		text-align:center;
 		//box-shadow: inset 0 0 0 0.1em #bdbdbd, inset 0 0 0.2em 0.2em #bebebe, inset 0 0.3em 0.3em 0.4em #070707, inset 0 -0.3em 0.1em 0.1em #070707, inset 0 0 0 0.9em #fff,inset 0 0 0 1.05em #313131, inset 3.5em -0.5em 2em -2em #a4a4a4, inset -1.2em -0em 0.5em 0em #a4a4a4, inset -0.4em -1.1em 0.5em 0em #a4a4a4;
 
 		.date {
 			display:block;
-			margin-top:17px;
-			font-size:30px;
+			margin-top:14px;
+			font-size:20px;
 			color:rgba(255,255,255,.8);
 			opacity:.8;
 
 			&.only {
-				-webkit-transform:scale(1.8) translateY(15px);
-				transform:scale(1.8) translateY(15px);
+				-webkit-transform:scale(1.8) translateY(17px);
+				transform:scale(1.8) translateY(17px);
 			}
 		}
 		.time {
 			display:block;
-			margin-top:7px;
-			font-size:50px;
+			margin-top:14px;
+			font-size:34px;
 			color:rgba(0,0,0,.4);
 			line-height:1;
+			letter-spacing:-2px;
 			opacity:.8;
 
 			sup {
 				display:inline-block;
-				margin-top:-50px;
-				font-size:30px;
+				margin-left:-10px;
+				font-size:26px;
 			}
 		}
 	}
