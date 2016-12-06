@@ -1,4 +1,4 @@
-{
+myCallback({
 	"todo": [{
 		"id": "f3234ebbf173fe",
 		"startDate": "11/05/2016",
@@ -55,4 +55,4 @@
 		"description": "- '나미야 잡화점' 읽기",
 		"done": false
 	}]
-}
+});
