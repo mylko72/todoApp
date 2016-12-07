@@ -1,60 +1,58 @@
-try {
-	myCallback({
-		"todo": [{
-			"id": "f3234ebbf173fe",
-			"startDate": "11/05/2016",
-			"startTime": "11:59",
-			"startPoint": 118,
-			"endDate": "11/05/2016",
-			"endTime": "13:34",
-			"endPoint": 309,
-			"title": "Lunch with friends",
-			"description": "- Meet a friend at Jongno 3-ga by 11:40<br />- Go to Insa-dong and eat lunch<br />- Have a cup of coffee after lunch",
-			"done": false
-		}, {
-			"id": "f34d7bd8b566b08",
-			"startDate": "11/05/2016",
-			"startTime": "13:40",
-			"startPoint": 321,
-			"endDate": "11/05/2016",
-			"endTime": "17:20",
-			"endPoint": 760,
-			"title": "To see a movie and go shopping ",
-			"description": "- Watch 'Star Wars' movie at Megabox<br />- Shopping near the theater",
-			"done": true
-		}, {
-			"id": "f13a8eb90476c14",
-			"startDate": "11/05/2016",
-			"startTime": "18:25",
-			"startPoint": 890,
-			"endDate": "11/05/2016",
-			"endTime": "20:59",
-			"endPoint": 1198,
-			"title": "Have a beer with a friend",
-			"description": "- Take a taxi to COEX and have a drink",
-			"done": false
-		}, {
-			"id": "fc4ce63dc8319c",
-			"startDate": "11/05/2016",
-			"startTime": "22:03",
-			"startPoint": 1326,
-			"endDate": "11/05/2016",
-			"endTime": "23:52",
-			"endPoint": 1545,
-			"title": "Watch TV",
-			"description": "- Watch Major League Highlights<br />- Watch sitcom 'Friends'",
-			"done": true
-		}, {
-			"id": "f3d1e4709c0348c",
-			"startDate": "11/06/2016",
-			"startTime": "00:11",
-			"startPoint": 1583,
-			"endDate": "11/06/2016",
-			"endTime": "01:30",
-			"endPoint": 1740,
-			"title": "Read the book before sleep",
-			"description": "- Read Steve Jobs' autobiography",
-			"done": false
-		}]
-	});
-} catch(e){}
+{
+	"todo": [{
+		"id": "f3234ebbf173fe",
+		"startDate": "11/05/2016",
+		"startTime": "11:59",
+		"startPoint": 118,
+		"endDate": "11/05/2016",
+		"endTime": "13:34",
+		"endPoint": 309,
+		"title": "Lunch with friends",
+		"description": "- Meet a friend at Jongno 3-ga by 11:40<br />- Go to Insa-dong and eat lunch<br />- Have a cup of coffee after lunch",
+		"done": false
+	}, {
+		"id": "f34d7bd8b566b08",
+		"startDate": "11/05/2016",
+		"startTime": "13:40",
+		"startPoint": 321,
+		"endDate": "11/05/2016",
+		"endTime": "17:20",
+		"endPoint": 760,
+		"title": "To see a movie and go shopping ",
+		"description": "- Watch 'Star Wars' movie at Megabox<br />- Shopping near the theater",
+		"done": true
+	}, {
+		"id": "f13a8eb90476c14",
+		"startDate": "11/05/2016",
+		"startTime": "18:25",
+		"startPoint": 890,
+		"endDate": "11/05/2016",
+		"endTime": "20:59",
+		"endPoint": 1198,
+		"title": "Have a beer with a friend",
+		"description": "- Take a taxi to COEX and have a drink",
+		"done": false
+	}, {
+		"id": "fc4ce63dc8319c",
+		"startDate": "11/05/2016",
+		"startTime": "22:03",
+		"startPoint": 1326,
+		"endDate": "11/05/2016",
+		"endTime": "23:52",
+		"endPoint": 1545,
+		"title": "Watch TV",
+		"description": "- Watch Major League Highlights<br />- Watch sitcom 'Friends'",
+		"done": true
+	}, {
+		"id": "f3d1e4709c0348c",
+		"startDate": "11/06/2016",
+		"startTime": "00:11",
+		"startPoint": 1583,
+		"endDate": "11/06/2016",
+		"endTime": "01:30",
+		"endPoint": 1740,
+		"title": "Read the book before sleep",
+		"description": "- Read Steve Jobs' autobiography",
+		"done": false
+	}]
+}

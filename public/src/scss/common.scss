@@ -25,7 +25,7 @@ html{
 	background-size: cover;
 	height: 100%;
 }
-html, body { margin:0px; padding:0px; background:#f7f7f7 url(/images/bg.png) repeat center top; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
+html, body { margin:0px; padding:0px; background:#f7f7f7 url(/img/bg.png) repeat center top; font-family:Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif; font-size:100%; color:#666; line-height:16px; }
 img, fieldset { border:0px; }
 legend { visibility:hidden; height:0px; width:0px; line-height:0; _text-indent:-10px; font-size:0px; }
 table { border-collapse:collapse; }
@@ -393,7 +393,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 				width:100%;
 				height:19px;
 				padding:2px 0 0 26px;
-				background:url(/images/icon_checkbox.png) 0 0 no-repeat;
+				background:url(/img/icon_checkbox.png) 0 0 no-repeat;
 				color:#555;
 				cursor:pointer;
 			}
@@ -468,7 +468,7 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 				top:0; 
 				cursor:pointer; 
 				z-index:10;
-				background:#f7f7f7 url(/images/bg.png) repeat center top;
+				background:#f7f7f7 url(/img/bg.png) repeat center top;
 
 				&:after {content: "."; display: block; height: 0px; clear: both; visibility: hidden;}
 			}
