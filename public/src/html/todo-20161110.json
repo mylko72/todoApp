@@ -7,8 +7,8 @@
 		"endDate":"11/10/2016",
 		"endTime":"19:16",
 		"endPoint":273,
-		"title":"자바스크립트 공부",
-		"description":"- 이펙티브 자바스크립트 책 보기<br />- Git 관련 자료 정리<br />- todoApp 기능 추가",
+		"title":"Study programming languages",
+		"description":"- Studying Python related books<br />- Posting Python resources on Facebook",
 		"done":false
 	},
 	{
@@ -19,8 +19,8 @@
 		"endDate":"11/10/2016",
 		"endTime":"22:28",
 		"endPoint":657.5,
-		"title":"영화보기",
-		"description":"- '어벤져스' 영화 예매<br />- 대한 극장에 8시까지 도착",
+		"title":"Exercise",
+		"description":"- Get ready before running<br />- Run around the park five times",
 		"done":false
 	}]
 }

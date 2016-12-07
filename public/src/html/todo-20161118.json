@@ -7,8 +7,8 @@
 		"endDate": "11/18/2016",
 		"endTime": "18:30",
 		"endPoint": 181.5,
-		"title": "영어 공부하기",
-		"description": "- Youtube로 뉴스 청취<br />- 하루 어휘 50개 외우기<br />- 영어일기 쓰기",
+		"title": "Go to the bookstore after work",
+		"description": "- Buy novels and English books",
 		"done": true
 	}, {
 		"id": "f34a94306d5815",
@@ -18,8 +18,8 @@
 		"endDate": "11/18/2016",
 		"endTime": "21:22",
 		"endPoint": 525,
-		"title": "책읽기",
-		"description": "- 외네스뵈 <아들>",
+		"title": "Go to the coffeshop and read the book",
+		"description": "- Purchase gift tumbler",
 		"done": false
 	}, {
 		"id": "f38d9c19764eb68",
@@ -29,8 +29,8 @@
 		"endDate": "11/19/2016",
 		"endTime": "00:16",
 		"endPoint": 872,
-		"title": "게임하기",
-		"description": "- FIFA 온라인 게임",
+		"title": "Play online game",
+		"description": "- Join the FIFA game and play",
 		"done": false
 	}]
 }
