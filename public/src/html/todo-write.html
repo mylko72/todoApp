@@ -5,13 +5,14 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- External stylesheet -->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<!-- TimeCapsule stylesheet -->
 	<link rel="stylesheet" href="../css/common.css">
-	<!--<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic' rel='stylesheet' type='text/css'>-->
 </head>
 <body>
 
+	
 	<div class="header">
 		<div class="header-inner">
 			<div class="header-caption">
@@ -31,6 +32,7 @@
 		</div>
 	</div>
 	<div class="container bs-main-container">
+		<!-- Timesheet //-->
 		<div class="panel panel-bx">
 			<div class="panel-time">
 				<div id="clock">
@@ -43,10 +45,12 @@
 					<a href="#" class="prev" id="left"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
 					<div class="time-wrap">
 						<div class="time-inner">
+							<!-- Timeline //-->
 							<div id="time-sheet">
 								<div id="time-line"></div>
 								<ol id="time-list" class="clfix"></ol>
 							</div>
+							<!--// Timeline -->
 						</div>
 					</div>
 					<a href="#none" class="next" id="right"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
@@ -59,15 +63,18 @@
 				</ul>
 			</div>
 		</div>
+		<!--// Timesheet -->
 
 		<section class="content">
 			<form>
 			<fieldset class="form">
 				<legend>To Do List</legend>
 				<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> To Do List</h2>
+				<!-- Timelist //-->
 				<div class="todo-area" data-template="./html/time-list.tpl">
 					<p class="nolist">No registered.</p>
 				</div>
+				<!--// Timelist -->
 				<div class="row text-center">
 					<button type="button" class="btn btn-success btn-load">Load Json</button>
 					<div class="btn btn-success api-select">
@@ -90,12 +97,14 @@
 		</section>
 	</div>
 
+	<!-- message popup //-->
 	<div id="msgBx" class="panel panel-default fade">
 		<div class="text-center">
 			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
 			<p>It was registered to do.</p>
 		</div>
 	</div>
+	<!--// message popup -->
 
 	<!-- alert //-->
 	<div id="alert">
@@ -107,6 +116,7 @@
 	</div>
 	<!--// alert -->
 
+	<!-- Registration form //-->
 	<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-labelledby="todoModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 		<div class="modal-content">
@@ -150,6 +160,7 @@
 		</div>
 	  </div>
 	</div>
+	<!--// Registration form -->
 
 	<!-- External libraries: jQuery & BootStrap -->
 	<script src="../js/lib/jquery.js"></script>

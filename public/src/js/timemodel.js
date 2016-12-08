@@ -1,4 +1,4 @@
-//Object.create()
+// Object.create()
 var objectCreate = function(arg){
     if( !arg ) { return {}; }
     function obj() {};
@@ -8,6 +8,7 @@ var objectCreate = function(arg){
 
 Object.create = Object.create || objectCreate;
 
+//--- To-do data model definition ---
 var TimeModel = {
 	id: 0,
 	startDate: '0000-00-00',
@@ -16,12 +17,9 @@ var TimeModel = {
 	endDate: '0000-00-00',
 	endTime: '00:00',
 	endPoint: 0,
-	title: '할일 제목',
-	description: '할일 내용',
+	title: '',
+	description: '',
 	done: false,
-	toString: function(){
-		return this.startDate + ' ' + this.startTime + ' 부터' + this.endDate + ' ' + this.endTime + ' 까지' + this.title + '(을)를 할일로 등록했습니다.';
-	},
 	drawBar: function(target1, target2, startoffsetx, endoffsetx){
 		var $timeline = target1,
 			$bar = target2,

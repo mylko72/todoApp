@@ -1,18 +1,15 @@
-// 전역 네임스페이스 정의
+// Defining a Global Namespace
 var $$ = $$ || {};
 
 (function ($) {
 	
     /**
-	Global object which lives on every page.  This object will handle the creation of other necessary objects for page functionality. 
-	@class $.Global
+	TimeCapsule object which lives on every page.  This object will handle the creation of other necessary objects for page functionality. 
+	@class $.TimeCapsule
 	@constructor
 	**/
-    $.Global= function () {
+    $.TimeCapsule= function () {
 		
-		var refreshIntervalId,
-			newDate;
-
         /** 
 		Init function will check for specific body classes and create the necessary page object.
 		@function init
@@ -31,7 +28,7 @@ var $$ = $$ || {};
 }(jQuery));
 
 $(function (){
-	new $.Global();
+	new $.TimeCapsule();
 });
 
 (function ($) {

@@ -1,5 +1,5 @@
 /**
-	* @module $$.timeWork
+	* @Module $$.timeWork
 	*
 	* (c) 2016 mylko72@maru.net
 	*
@@ -26,6 +26,7 @@ $$.timeWork= (function ($) {
 		_$timeline = $('#time-line'),
 		_$todoModal = $('#todoModal');
 		
+	//--- Module scope methods ---
 	var _init,
 		_bindEvents,
 		_whichAnimationEvent,
@@ -40,7 +41,6 @@ $$.timeWork= (function ($) {
 		_chkToDone,
 		_getStartPoint,
 		_getEndPoint,
-		_getChkPoint,
 		_getRange,
 		_countTotal,
 		_countDone,
@@ -73,7 +73,7 @@ $$.timeWork= (function ($) {
 			$(this).find('span').addClass('shadow showIn');
 		});
 
-		/* Handler to set things-to-do */
+		/* Handler for registering a thing to do */
 		_$timeline.on('click', function(event){
 			var e = event,
 				_res;
@@ -86,7 +86,7 @@ $$.timeWork= (function ($) {
 			if(_clickCnt>=2){
 				_res = _getEndPoint(e, _$bar);	
 
-				// 할일 등록 팝업 Open
+				// Open a modal popup for register 
 				if(_res){
 					_$todoModal.modal({
 						keyboard: true
@@ -102,13 +102,13 @@ $$.timeWork= (function ($) {
 			}
 		});
 
-		/* Handler to set a range */
+		/* Handler to set a range of a thing to do */
 		_$timeline.on('mousemove', function(event){
 			var e = event;
 			_getRange(e, _$bar);	
 		});
 
-		/* Bind ESC key for cancel  */
+		/* Bind ESC key for cancel */
 		$(document).on('keydown', function(event){
 			var e = event;
 
@@ -127,6 +127,7 @@ $$.timeWork= (function ($) {
 			$('.api-select').css('display','inline-block');
 		});
 
+		/* Load Json files */
 		$(document).on('click', '.dropdown-menu a', function(event){
 			var e = event,
 				_url = $(this).data('url');
@@ -134,6 +135,7 @@ $$.timeWork= (function ($) {
 			_loadStoredData(_url);
 		});
 
+		/* Send Json format */
 		$(document).on('click', '.btn-send', function(event){
 			var e = event,
 				_todoData = {},
@@ -160,6 +162,7 @@ $$.timeWork= (function ($) {
 			return false;
 		});
 
+		/* Handler to delete a thing to do */
 		$(document).on('click', '.alert-delete .btn', function(){
 			var _idkey = $(this).parents('#alert').data('id');
 
@@ -181,6 +184,7 @@ $$.timeWork= (function ($) {
 			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />Do you want it changed in progress?' : '<strong>Wait!</strong><br />Do you want it changed in completion?';
 		}); 
 
+		/* A handler that sets a thing-to-do into complete or progress */
 		$(document).on('click', '.alert-status .btn', function(){
 			var _idkey = $(this).parents('#alert').data('id'),
 				_checkVal = $('#bar_'+_idkey).find('.switch input:checkbox').is(':checked');
@@ -191,8 +195,7 @@ $$.timeWork= (function ($) {
 			$('#alert').hide();
 		});
 
-		//$(document).on('click', '.bar input:checkbox', _chkToDone); 
-
+		/* A handler to view more */
 		$(document).on('click', '.todo-list .more', function(e){
 			e.preventDefault();
 			if($(this).hasClass('glyphicon-chevron-up')){
@@ -280,7 +283,7 @@ $$.timeWork= (function ($) {
 			_idKey = '';
 		});
 
-		/* Bind ESC key for cancel a thing-to-do */
+		/* Bind keydown key for cancel a thing-to-do */
 		_$todoModal.on('keydown', function(event){
 			var e = event,
 				_$targetId = e.target.getAttribute('id');
@@ -297,6 +300,7 @@ $$.timeWork= (function ($) {
 			}
 		});
 
+		/* Custom event for Modal */
 		_$todoModal.on('show.bs.modal', function(event){
 			var e = event,
 				_dataSet,
@@ -356,6 +360,8 @@ $$.timeWork= (function ($) {
 	};
 
 	//---  DOM method start ---
+	
+	/* Methods for defining animation events */
 	_whichAnimationEvent = function(){
 		var t,
 			el = document.createElement("fakeelement");
@@ -374,6 +380,7 @@ $$.timeWork= (function ($) {
 		}
 	};
 
+	/* Methods for displaying the current date and time */
 	_updateClock = function(){
 		var _$clock = $("#clock"),
 			_now = new Date(),
@@ -385,7 +392,6 @@ $$.timeWork= (function ($) {
 		_date = ( _date > 9 ) ? _date : "0" + _date;
 		
 		//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
-		//_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
 		_$clock.find('.date')[0].innerHTML = _month + '/' + _date + '/' + _year;
 		_$clock.find('.time')[0].innerHTML = _timerFn();
 
@@ -399,6 +405,7 @@ $$.timeWork= (function ($) {
 		}
 	};
 
+	/* Methods that return the current time */
 	_timerFn = function(){
 		var _date = new Date();
 		var _hour = _date.getHours();
@@ -419,6 +426,7 @@ $$.timeWork= (function ($) {
 		return _timeString;
 	};
 
+	/* Methods to load a Json file */
 	_loadStoredData = function(url){
 		var _jsonUrl = url,
 			_storedData,
@@ -441,6 +449,7 @@ $$.timeWork= (function ($) {
 		});
 	};
 
+	/* Methods to check loading */
 	_processChk = function(duration, callback){
 		var _self = this;
 
@@ -456,6 +465,7 @@ $$.timeWork= (function ($) {
 		}, duration);
 	};
 
+	/* Method to initialize and redraw timeline when loading json file */
 	_redrawTimeline = function(){
 		var _storedData = $$.timeData.getStoredData(),
 			_dateStr = new Date(_storedData[0].startDate),
@@ -517,7 +527,7 @@ $$.timeWork= (function ($) {
 		});
 	};
 	
-	/* Bring data from a form */
+	/* Methods to get data from a form */
 	_getFormData = function(){
 		var _idkey = _idKey,
 			_dataSet= {},
@@ -556,7 +566,7 @@ $$.timeWork= (function ($) {
 			return _dataSet;
 	};
 
-	/* Set data to bar */
+	/* Methods for setting data in the data- attribute of bar */
 	_setDataBar = function(dataSet){
 		var _dataSet = dataSet,
 			_$tooltip;
@@ -577,7 +587,7 @@ $$.timeWork= (function ($) {
 		this.data('set').description ? _$tooltip.find('.desc').show().html(this.data('set').description) : _$tooltip.find('.desc').hide();
 	};
 
-	/* Change status for a thing-to-do */
+	/* A method to change a thing to do into Complete or Progress. */
 	_chkToDone = function(idkey){
 		var _storedData = $$.timeData.getStoredData(),
 			_idkey = idkey, 
@@ -596,7 +606,7 @@ $$.timeWork= (function ($) {
 			_countDone(_cntDone);
 	},
 
-   	/* 할일설정(bar생성)을 위한 Start 함수 */
+   	/* Method called by the first click on the timeline to register a thing to do */
 	_getStartPoint = function (event, target){	
 
 		var	e = event,
@@ -627,7 +637,7 @@ $$.timeWork= (function ($) {
 		$$.timeData.getTime(_clickCnt, _startOffsetX);	//할일 시간 설정
 	}
 
-	/* 할일 종료를 위한 End 함수 */
+	/* Method called by the second click on the timeline to register a thing to do */
 	_getEndPoint = function (event, target){	
 		var e = event,
 			_endPos,
@@ -635,11 +645,10 @@ $$.timeWork= (function ($) {
 			_$bar = target;
 
 		_endPos = _$bar.offset();
-		//endOffsetX = (e.pageX+config.base)-(_endPos.left+config.base);
 		_endOffsetX = e.pageX-_endPos.left;
 
 		if(_endOffsetX && _endOffsetX<(_getPxToHour/2)){
-			alert('할 일은 최소한 30분이상 등록할 수 있습니다!');
+			alert('You must register over at least 30 minutes!');
 			$('#bar_'+ _idKey).remove();
 			_clickCnt = 0;
 			_clicked = false;
@@ -651,7 +660,7 @@ $$.timeWork= (function ($) {
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
-			//설정한 시간만큼 Bar를 타임시트에 생성
+			// Calling method to draw bar on timeline
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
 
 			return true; 
@@ -660,26 +669,7 @@ $$.timeWork= (function ($) {
 		//return endOffsetX;
 	}
 
-	_getChkPoint = function (locOfClick, callback){
-		var _idx = 0,
-			_storedData = $$.timeData.getStoredData();
-
-		if(callback && typeof (callback) === 'fuction'){
-			callback();
-		}
-		do{
-			if(locOfClick > _storedData[_idx]["startPoint"]+30 &&  locOfClick < _storedData[_idx]["endPoint"]){
-				alert("이미 할 일이 등록되어 있습니다. 다른 시간을 선택해 주세요!!");
-				$('#bar_'+ _idKey).remove();
-				_clickCnt = 0;
-				_clicked = false;
-				return false;
-			}
-			_idx++;
-		}while (_idx<_storedData.length);
-	};
-	
-	/* 할일 범위 설정 */
+	/* A method that sets the range for registering a thing to do */
 	_getRange = function (event, target){	
 		var e = event;
 		var _$bar = target;
@@ -692,6 +682,7 @@ $$.timeWork= (function ($) {
 		}
 	};
 
+	/* The method that displays the total number of registrations */
 	_countTotal = function(){
 		var _len = $$.timeData.getStoredData().length,
 			_$total = $('.panel-info').find('.total');
@@ -701,6 +692,7 @@ $$.timeWork= (function ($) {
 		return _len;
 	};
 
+	/* A method that display the total number of completions */
 	_countDone = function(cntDone){
 		var _cnt = cntDone,
 			_$done = $('.panel-info').find('.done');
@@ -710,7 +702,7 @@ $$.timeWork= (function ($) {
 		_$done.find('.badge').text(_cntDone);
 	};
 
-	/* 할일 리스트 출력 */
+	/* A methods to show to-do lists */
 	_showTimeList = function(target, idx){
 		var _$todoArea = $(target),
 			_url = _$todoArea.data('template'),
@@ -735,6 +727,7 @@ $$.timeWork= (function ($) {
 		}
 	};
 
+	/* A method to update to-do lists */
 	_updateTimeList = function(target, dataset){
 		var _dataSet = dataset,
 			_$moreBtn,
@@ -764,7 +757,7 @@ $$.timeWork= (function ($) {
 		}, 300);
 	};
 
-	/* 할일 리스트 삭제 */
+	/* A method to delete a thing to do */
 	_delTimeList = function(idkey){
 		var _idkey = idkey,
 			_$todolist,
@@ -794,7 +787,7 @@ $$.timeWork= (function ($) {
 		}, 1000);
 	};
 
-	/* Html(목록) 렌더링 */
+	/* A methods to render a to-do list from a template */
 	_renderList = function(target, idx, storedData, templateUrl){
 		var _$todoArea = target,
 			_$todoList,
@@ -873,7 +866,7 @@ $$.timeWork= (function ($) {
 		return true;
 	};
 
-	/* 등록 메시지 show */
+	/* A method that shows the message that it is registered */
 	_showMsg = function (target){
 		$(target).addClass(function(index){
 			var _addClass;
@@ -893,7 +886,7 @@ $$.timeWork= (function ($) {
 		}, 1500);
 	};
 
-	/* 등록 메시지 hide */
+	/* A methods to hide registration messages */
 	_hideMsg = function (target){
 		var _top = parseInt($(target).css('top'));
 		$(target).css('transform', 'translateY(-50px)');
@@ -904,6 +897,7 @@ $$.timeWork= (function ($) {
 		}, 1000);
 	};
 
+	/* A methods to sort to-do lists */
 	_sortBy = function(target){
 		var _$liEl = $(target).find('li');
 		_$liEl.each(function(){
@@ -926,6 +920,7 @@ $$.timeWork= (function ($) {
 		});
 	};
 
+	/* Methods to call slide animations */
 	_slideIn = function(target, idx){
 		var _$todolist = target,
 			_li,
@@ -944,9 +939,9 @@ $$.timeWork= (function ($) {
 
 		return _li;
 	};
-	//---  DOM 메서드 끝 ---
+	//--- DOM method end ---
 
-	//---  공개 api ---
+	//--- Public methods ---
 	return {
 		init : _init,
 		showMsg : _showMsg,
