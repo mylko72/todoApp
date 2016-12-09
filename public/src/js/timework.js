@@ -6,7 +6,6 @@
 	* licenses:	http://codecanyon.net/licenses/
  **/
 
-
 $$.timeWork= (function ($) {
 	//--- Module scope variables ---
 	var _startOffsetX = null,
@@ -356,8 +355,8 @@ $$.timeWork= (function ($) {
 			_$todoModal.find('#todo-title').val('');
 			_$todoModal.find('#todo-desc').val('');
 		});
-
 	};
+	//---  Event handler end ---
 
 	//---  DOM method start ---
 	

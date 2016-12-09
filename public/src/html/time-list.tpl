@@ -10,7 +10,7 @@
 			<h3 class="time-tit">2016-00-00</h3>
 		</div>
 	</div>
-	<!-- The Timeline -->
+	<!-- The Timelist -->
 	<ul class="todo-list">
 		<!-- Item 1 -->
 		<li>

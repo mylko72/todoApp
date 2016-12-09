@@ -1,15 +1,19 @@
 /**
-  @module $$.timeData
-**/
-$$.timeData = (function ($) {
+	* @Module $$.timeData
+	*
+	* (c) 2016 mylko72@maru.net
+	*
+	* licenses:	http://codecanyon.net/licenses/
+ **/
 
-	//--- 모듈 스코프 변수 시작 ---
-	var _currentDay = null,		//현재일(theDay)
-		_daysInMonth = null,	//총일수(Month기준)
+$$.timeData = (function ($) {
+	//--- Module scope variables ---
+	var _currentDay = null,		
+		_daysInMonth = null,	
 		_year,
 		_month,
 		_date,
-		_today = null,			//오늘(today)
+		_today = null,			
 		_todayObj = new Date(),
 		_storedData = [],
 		_startDateStr,
@@ -17,17 +21,17 @@ $$.timeData = (function ($) {
 		_endDateStr,
 		_endTimeStr;
 
+	//--- Module scope methods ---
 	var _getNToday,
 		_getTime,
-		_getTimeInfo,
 		_comparator,
 		_addTime,
 		_removeData,
 		_saveData,
 		_loadData,
 		_getDaysInMonth;
-	//--- 모듈 스코프 변수 끝 ---
 	
+	//--- Initialized method ---
 	_init = function(){
 
 		_year = _todayObj.getFullYear();
@@ -35,22 +39,22 @@ $$.timeData = (function ($) {
 		_date = _todayObj.getDate();
 
 		if(_daysInMonth==null){
-			_daysInMonth = _getDaysInMonth(_year, _month-1);		//이달의 총일수를 설정
+			// Set the total number of days for this month
+			_daysInMonth = _getDaysInMonth(_year, _month-1);		
 		}
 
 	};
-	//---  Time 메소드 시작 ---
 	
-	/* Date 개체를 입력받아 yyyy-MM-dd hh:mm:ss 형식으로 반환 */
+	//---  DOM method start ---
+	
+	/* A methods that take a Date object and return it in yyyy-MM-dd format */
 	_getNToday = function (date){	
 
 		var _self = this,
 			_dateObj = date;
 
-		//console.log('_dateObj :' + _dateObj);
-		//console.log('_currentDay :' + _currentDay);
-
-		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
+		// Set the next month if the current date is greater than the total number of days
+		if(_currentDay > _daysInMonth){						
 			_dateObj.setDate (_dateObj.getDate () + 1);
 			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
@@ -64,10 +68,12 @@ $$.timeData = (function ($) {
 			_date = _dateObj.getDate();
 
 			if(_currentDay==null){
-				_currentDay = _today = _date;		//Date객체로 구한 날짜를 현재 날짜와 오늘 날짜로 설정
+				// Set the date obtained by a Date object to the current date and today's date
+				_currentDay = _today = _date;		
 			}
 
-			if(_currentDay>_date){				//현재 날짜가 Date객체로 얻은 날짜(getDate())보다 크면 getDate()+1을 하여 익일로 설정
+			// If the current date is greater than the date obtained by a Date object, set getDate () + 1 to the next day
+			if(_currentDay>_date){				
 				_date = _dateObj.getDate()+1
 			}
 			
@@ -76,7 +82,7 @@ $$.timeData = (function ($) {
 		return ((_month < 10 ? "0": "") + (_month) + '/' + (_date < 10 ? "0": "") + _date) + '/' + _year;
 	};
 
-	/* 클릭좌표를 날짜와 시간으로 변환 */
+	/* A methods to convert click coordinates to date and time */
 	_getTime = function (clickcnt, startoffsetx, endoffsetx){
 		
 		var _self = this;
@@ -95,9 +101,6 @@ $$.timeData = (function ($) {
 			_endDateStr = _getNToday(_todayObj);
 		}
 
-		//console.log('_startDateStr :'+_startDateStr);
-		//console.log('_endDateStr :'+_endDateStr);
-
 		return {
 			startDate : function(){
 				return _startDateStr;
@@ -114,7 +117,7 @@ $$.timeData = (function ($) {
 		};
 	};
 
-	//데이타저장
+	/* A methods to store data */
 	_saveData = function(dataSet){
 		var _dataSet = dataSet,
 			_idx,
@@ -123,7 +126,6 @@ $$.timeData = (function ($) {
 		_timeData = TimeModel.extend(_dataSet);
 		_storedData.push(_timeData);
 		
-		//_storedData.sort(_comparator);
 		_storedData.sort(function(a,b){
 			return a.startPoint < b.startPoint ? -1 : a.startPoint > b.startPoint ? 1 : 0;
 		});
@@ -134,7 +136,6 @@ $$.timeData = (function ($) {
 			}
 		}
 
-		//console.log('저장 되었습니다 : _saveData()');
 		console.log(_storedData);
 
 		setTimeout(function(){
@@ -145,8 +146,11 @@ $$.timeData = (function ($) {
 		return _idx;
 	};
 
+	/* A methods that return true if data is loaded */
 	_loadData = function(data){
-		_storedData = data;
+		if(data){
+			_storedData = data;
+		}
 		console.log(_storedData);
 
 		return true;
@@ -161,38 +165,29 @@ $$.timeData = (function ($) {
 		return 0;
 	};
 
-	_getTimeInfo = function (target, idx){
-		var _$objInfo = $(target),
-			_result = '\n';
-
-		for(var prop in _storedData[idx]){
-			_result += '[속성명 : ' + prop + ', 값: ' + _storedData[idx][prop] + ']\n';
-		}
-		_$objInfo.append('<li class="list-group-item" />');
-		_$objInfo.children().eq(idx).text(_result);
-	};
-
+	/* Methods that return coordinates as a time */
 	_addTime = function (times){
 		var _now = $$.timeLine.getCurrentHour(),
 			_hour = Math.floor(times/60) + _now,
-			_day =  24;
+			_day =  24,
+			_minute,
+			_timeStr;
 
 		if(_hour>=_day){
 			_today = _todayObj.getDate();
-			_hour %= _day;		//나머지연산자를 이용하여 24시가 넘어가면 0시로 초기화
+			_hour %= _day;		// Use the remaining operators to initialize to 0 o'clock after 24 hours
 			_currentDay = _today+1;
 		}else{
 			_currentDay = _today;
 		}
 
-		var _minute = Math.floor(times%60);
-
-		var _timeStr = (_hour < 10 ? "0": "") + _hour+':' + (_minute < 10 ? "0": "") + _minute;
+		_minute = Math.floor(times%60);
+		_timeStr = (_hour < 10 ? "0": "") + _hour+':' + (_minute < 10 ? "0": "") + _minute;
 
 		return _timeStr;
 	};
 
-	/* 데이타 삭제 */
+	/* A methods to delete data */
 	_removeData = function (idKey){
 		var _idx,
 			_idKey = idKey,
@@ -220,12 +215,13 @@ $$.timeData = (function ($) {
 		});
 	};
 
+	/* A method that returns the total number of days in this month */
 	_getDaysInMonth = function (_year, _month) {
 		return 32 - new Date(_year, _month, 32).getDate();
 	};
-	//--- 이벤트 핸들러 끝 ---
+	//--- DOM method end ---
 
-	//--- 공개 api ---
+	//--- Public methods ---
 	return {
 		init: _init,
 		setObjDate: function(date){

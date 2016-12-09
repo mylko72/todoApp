@@ -1,82 +1,85 @@
-/*
- *1minute = 2px	, 5minutes = 10px = 1unit, 1hour(60minute) = 120px, 현재 15시이면 120*15 = 1800px
-
- */
-
 /**
-  @module $$.timeLine
-**/
+	* @Module $$.timeLine
+	* 1min = 2px, 5min = 10px, 1hours = 120px
+	*
+	* (c) 2016 mylko72@maru.net
+	*
+	* licenses:	http://codecanyon.net/licenses/
+	*
+ **/
+
 $$.timeLine = (function ($) {
 
-	//--- 모듈 스코프 변수 시작 ---
-	var _now = null,	//현재시간으로 설정하기 위한 변수
-		_unit = 10,		//_unit = 타임라인 단위 = 10px
+	//--- Module scope variables ---
+	var _now = null,	
+		_unit = 10,		
 		_timeNavObj = null;
 
+	//--- Module scope methods ---
 	var _init,
 		_bindEvents,
 		_setupTimeline,
 		_createTimeline,
 		_createTimeSheet,
 		_getTotalUnit;
-	//--- 모듈 스코프 변수 끝 ---
 
-	//--- 초기화 메서드 시작 ---
+	//--- Initialized method ---
 	_init = function (times) {
 		var _times = times,
-			_d = new Date();			//현재 시간을 가져오기 위한 Date 오브젝트 생성;
+			_d = new Date();			
 
-		_now = (_times) ? _times : _d.getHours();		//현재 시간을 가져오거나 서버에 저장된 시간을 가져와서 _now변수에 저장
+		_now = (_times) ? _times : _d.getHours();		
 
-		_timeNavObj = $$.timelineNav; //네비게이션 객체 생성
+		_timeNavObj = $$.timelineNav; 
 		_setupTimeline('#time-line', _now);
 
 		_bindEvents();
 	};
-	//--- 초기화 메서드 끝 ---
 
-	//---  이벤트 핸들러 시작 ---
+	//---  Event handler start ---
 	_bindEvents = function (){
 		var _$prev = $('#left'),
 			_$next = $('#right');
 
-		_$prev.on('click', _timeNavObj.goPrev);	//타임시트 탐색 (이전시간 탐색) 
-		_$next.on('click', _timeNavObj.goNext);	//타임시트 탐색 (다음시간 탐색) 
+		// Move to previous or next time in timeline
+		_$prev.on('click', _timeNavObj.goPrev);	
+		_$next.on('click', _timeNavObj.goNext);	
 
 		var _$link = $('#time-list').find('li > a');
-		// 클릭한 시간을 앞으로 slide
+
+		// Handler to slide to the clicked time
 		_$link.on('click', function(e){
 			var _$self = $(this);
 			_timeNavObj.goMove(e, _$self);
 		});
 	};
-	//---  이벤트 핸들러 끝 ---
+	//---  Event handler end ---
 
-	//---  DOM 메서드 시작 ---
+	//---  DOM method start ---
+	
+	/* Methods to install timelines */
 	_setupTimeline = function (target, now){
 		var _$timeline = $(target).css('width','3000px');
 		
-		_createTimeline(now); // 현재시간을 기준으로 24시간을 생성
-		_createTimeSheet(_$timeline);	// unit(5minutes)을 단위로 타임시트 생성
+		_createTimeline(now);  
+		_createTimeSheet(_$timeline);	
 	};
 
-	//현재 시간을 기준으로 타임라인(24시간) 생성
+	/* A methods that generate 24 hours based on the current time */
 	_createTimeline = function (now){
 		var _self = this,	
 			_day =  24,
 			_now = now,
-			_n = 0;						//24시간 생성을 위한 카운트변수
+			_n = 0;						
 		
 		$('#time-list').empty();
 		
-		//_now = 0;
+		console.log('current time : '+ _now);
 
-		console.log('현재시간 : '+ _now + '시');
-
-		for (var i = _now; i < (_day+2); i++) {		//현재 시간을 기준으로 24시간 생성
+		for (var i = _now; i < (_day+2); i++) {		
 			if(_n>=(_day+2)) break;
 			var _listEl = document.createElement('li');
-			i %= _day;	//나머지연산자를 이용하여 23시 이후는 0시로 초기화
+			i %= _day;	
 			_n++;
 			_listEl.innerHTML = "<a href='#'>"+(i < 10 ? "0": "") + i + ":00</a>";
 			document.getElementById('time-list').appendChild(_listEl);
@@ -84,7 +87,7 @@ $$.timeLine = (function ($) {
 		$('#time-list').children().eq(0).addClass('first');
 	};
 
-	//타임시트 생성
+	/* Methods for generating timesheets */
 	_createTimeSheet = function (target){
 		var _self = this,
 			_totalUnit = _getTotalUnit(),
@@ -97,17 +100,17 @@ $$.timeLine = (function ($) {
 		}
 	};
 			 
-	_getTotalUnit = function (){	//타임시트내의 Total Unit 개수
+	_getTotalUnit = function (){	
 		var _timeSheetWidth = $('#time-sheet').outerWidth();
 
 		return _timeSheetWidth / _unit;
 	};
-	//---  DOM 메서드 끝 ---
+	//--- DOM method end ---
 
-	//---  공개 api ---
+	//--- Public methods ---
 	return {
 		init : _init,
-		//1시간을 px로 변환
+		// A methods that return 1 hour in px
 		getPxToHour : function(){
 			var _5min = _unit/2;
 			return _unit * 60/_5min;
@@ -118,13 +121,16 @@ $$.timeLine = (function ($) {
 	};
 }(jQuery));
 
+/**
+	* @Module $$.timelineNav
+	*
+ **/
 $$.timelineNav = (function($){
-	//--- 모듈 스코프 변수 시작 ---
+	//--- Module scope variables ---
 	var _cnt = 0,
 		_$timesheet = $('#time-sheet');
-	//--- 모듈 스코프 변수 끝 ---
 
-	//---  공개 api ---
+	//--- Public methods ---
 	return {
 		goPrev : function(e){
 			if(!_$timesheet.is(':animated')){
