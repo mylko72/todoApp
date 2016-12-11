@@ -96,7 +96,7 @@ gulp.task('connect', ['tmp:js:minify', 'tmp:scss'], function(){
 		server : {
 			baseDir: [src, tmp],
 			browser: "google chrome",
-			index: 'html/todo-write.html'
+			index: 'html/index.html'
 		}
 	});
 });
