@@ -180,7 +180,7 @@ $$.timeWork= (function ($) {
 			$('#alert').data('id', _idkey);
 			$('#alert').show();
 			$('#alert').find('.alert').addClass('alert-status');
-			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />Do you want it changed in progress?' : '<strong>Wait!</strong><br />Do you want it changed in completion?';
+			$('#alert').find('.msg')[0].innerHTML = $(this).is(':checked') ? '<strong>Wait!</strong><br />Do you want to change it in progress?' : '<strong>Wait!</strong><br />Do you want to change it to Done?';
 		}); 
 
 		/* A handler that sets a thing-to-do into complete or progress */
@@ -328,6 +328,7 @@ $$.timeWork= (function ($) {
 
 				_$todoModal.find('#save').hide();
 				_$todoModal.find('#edit').show();
+				_$todoModal.find('.modal-title .mode').text('Edit');
 
 				_idKey = _dataSet.id;
 
@@ -341,6 +342,7 @@ $$.timeWork= (function ($) {
 
 				_$todoModal.find('#save').show();
 				_$todoModal.find('#edit').hide();
+				_$todoModal.find('.modal-title .mode').text('Register');
 
 				_mode = 'SAVE';
 
