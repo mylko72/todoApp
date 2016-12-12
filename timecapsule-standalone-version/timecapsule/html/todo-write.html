@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+	<title>Time Capsule</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<!-- External stylesheet -->
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<!-- TimeCapsule stylesheet -->
+	<link rel="stylesheet" href="../css/common.css">
+</head>
+<body>
+
+	<div class="header">
+		<div class="header-inner">
+			<div class="header-caption">
+				<h1 class="fadeInBounceUp">Time Capsule</h1>
+				<p class="txts fadeInBounceDown">Record a thing to do</p>
+				<ol class="step animation">
+					<li>Step1. Click the time you want to register on the Timeline.</li>
+					<li>Step2. Move the mouse to your time to register and then click.</li>
+					<li>Step3. Fill out a form and register a thing to do.</li>
+				</ol>
+				<p class="contact">Please feel free to <span><a href="mailto:mypmk72@gmail.com">contact us</a></span> if you need any questions.</p>
+			</div>
+			<div class="capsule rotate fadeInLeft">
+				<span class=""></span>
+			</div>
+			<img src="../img/img_mac.png" class="monitor fadeInRight" alt="" />
+		</div>
+	</div>
+	<div class="container bs-main-container">
+		<div class="panel panel-bx">
+			<div class="panel-time">
+				<div id="clock">
+					<span class="date">0000-00-00</span>
+					<span class="time">00:00</span>
+				</div>
+			</div>
+			<div class="panel-body">
+				<div class="timesheet-bx">
+					<a href="#" class="prev" id="left"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+					<div class="time-wrap">
+						<div class="time-inner">
+							<div id="time-sheet">
+								<div id="time-line"></div>
+								<ol id="time-list" class="clfix"></ol>
+							</div>
+						</div>
+					</div>
+					<a href="#none" class="next" id="right"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
+				</div>
+			</div>
+			<div class="panel-info">
+				<ul>
+					<li><a href="#" class="total">To-do <span class="badge">0</span></a></li>
+					<li><a href="#" class="done">Complete <span class="badge">0</span></a></li>
+				</ul>
+			</div>
+		</div>
+
+		<section class="content">
+			<form>
+			<fieldset class="form">
+				<legend>To Do List</legend>
+				<h2 class="todo-tit"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> To Do List</h2>
+				<div class="todo-area" data-template="./time-list.tpl">
+					<p class="nolist">No registered.</p>
+				</div>
+				<div class="row text-center">
+					<button type="button" class="btn btn-success btn-load">Load Json</button>
+					<div class="btn btn-success api-select">
+						Load Json
+						<div class="btn-group dropup">
+							<button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+								Select date <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-url="./todo-20161105.json">11/05/2016</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-url="./todo-20161110.json">11/10/2016</a></li>
+								<li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-url="./todo-20161118.json">11/18/2016</a></li>
+							</ul>
+						</div>
+					</div>
+					<button type="button" class="btn btn-danger btn-send">Send Json</button>
+				</div>
+			</fieldset>
+			</form>
+		</section>
+	</div>
+
+	<div id="msgBx" class="panel panel-default fade">
+		<div class="text-center">
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+			<p>It was registered to do.</p>
+		</div>
+	</div>
+
+	<!-- alert //-->
+	<div id="alert">
+		<div class="alert alert-warning" role="alert">
+			<p class="msg"></p>
+			<button type="button" class="btn btn-warning btn-ok">OK</button>
+			<button type="button" class="btn btn-default">NO</button>
+		</div>
+	</div>
+	<!--// alert -->
+
+	<div class="modal fade" id="todoModal" tabindex="-1" role="dialog" aria-labelledby="todoModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title" id="exampleModalLabel">Step2. Register things to do.</h4>
+		  </div>
+		  <div class="modal-body">
+			<div class="container-fluid">
+				<form>
+				  <div class="form-group">
+					<label for="todo-title" class="control-label">Title :</label>
+					<input type="text" class="form-control" id="todo-title">	
+				  </div>
+				  <div class="form-group">
+					<p class="b">Date :</p>
+					<p class="txt-time">
+						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+						<span id="startDate">0000-00-00</span>
+						<span class="glyphicon glyphicon-time ml5" aria-hidden="true"></span>
+						<span id="startTime">00:00</span>
+						<span class="txt-bar">~</span>
+						<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+						<span id="endDate">0000-00-00</span>
+						<span class="glyphicon glyphicon-time ml5" aria-hidden="true"></span>
+						<span id="endTime">00:00</span>
+					</p>
+				  </div>
+				  <div class="form-group">
+					<label for="todo-text" class="control-label">Description :</label>
+					<textarea class="form-control" id="todo-desc"></textarea>
+				  </div>
+				</form>
+			</div>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" id="cancel" data-dismiss="modal">cancel</button>
+			<button type="button" class="btn btn-primary" id="save">register</button>
+			<button type="button" class="btn btn-primary" id="edit">modify</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<!-- External libraries: jQuery & BootStrap -->
+	<script src="../js/lib/jquery.js"></script>
+	<script src="../js/lib/bootstrap.js"></script>
+	<!-- TimeCapsule script files -->
+	<script src="../js/app.combined.min.js"></script>
+</body>
+</html>
