@@ -30,8 +30,8 @@ $$.timeLine = (function ($) {
 
 		_now = (_times) ? _times : _d.getHours();		
 
-		_timeNavObj = $$.timelineNav; 
 		_setupTimeline('#time-line', _now);
+		_timeNavObj = $$.timelineNav; 
 
 		_bindEvents();
 	};
@@ -76,8 +76,8 @@ $$.timeLine = (function ($) {
 		
 		console.log('current time : '+ _now);
 
-		for (var i = _now; i < (_day+2); i++) {		
-			if(_n>=(_day+2)) break;
+		for (var i = _now; i < (_day+1); i++) {		
+			if(_n>=(_day+1)) break;
 			var _listEl = document.createElement('li');
 			i %= _day;	
 			_n++;
@@ -94,6 +94,8 @@ $$.timeLine = (function ($) {
 			_$timeline = target;
 
 		_$timeline.empty();
+
+		console.log(_totalUnit);
 
 		for(var i=0;i<_totalUnit;i++){
 			$('<div class="unit bg1" />').appendTo(_$timeline);
@@ -128,31 +130,52 @@ $$.timeLine = (function ($) {
 $$.timelineNav = (function($){
 	//--- Module scope variables ---
 	var _cnt = 0,
-		_$timesheet = $('#time-sheet');
+		_hour = $$.timeLine.getPxToHour(),
+		_$timesheet = $('#time-sheet'),
+		_limit = _$timesheet.outerWidth() - $('.time-inner').outerWidth(); 
+
+
+	$(window).on('resize', function(e){
+		var _left = parseInt(_$timesheet.css('left'));
+		_limit = _$timesheet.outerWidth() - $('.time-inner').outerWidth(); 
+
+		if(Math.abs(_left)>_limit) {
+			_$timesheet.css('left', '-'+ _limit +'px');
+		}
+	});
 
 	//--- Public methods ---
 	return {
 		goPrev : function(e){
 			if(!_$timesheet.is(':animated')){
 				_cnt==0 ? _cnt : _cnt--;
-				_$timesheet.animate({'left': '-'+(120*_cnt)+'px'});
+				_$timesheet.animate({'left': '-'+(_hour*_cnt)+'px'});
 			}
 			e.preventDefault();
 		},
 		goNext : function(e){
+			var _move, _value;
+
 			if(!_$timesheet.is(':animated')){
-				_cnt>=23-7 ? _cnt : _cnt++;
-				_$timesheet.animate({'left':'-'+(120*_cnt)+'px'});
+				_cnt>=24-7 ? _cnt : _cnt++;
+				_value = _hour*_cnt;
+				_move = (_value > _limit) ? _limit : _value;
+
+				_$timesheet.animate({'left':'-'+_move+'px'});
 			}
 			e.preventDefault();
 		},
 		goMove : function(e, self){
-			var _parent = self.parent();
-			var _idx = $('#time-list').children().index(_parent);
+			var _parent = self.parent(),
+				_idx = $('#time-list').children().index(_parent),
+				_move,
+				_value;
 
-			(_idx>18) ? _cnt = 18 : _cnt = _idx;
+			_cnt = (_idx>18) ? 18 : _idx;
+			_value = _hour*_cnt;
+			_move = (_value > _limit) ? _limit : _value;
 
-			_$timesheet.animate({'left': '-'+(120*_cnt)+'px'},'slow');
+			_$timesheet.animate({'left': '-'+_move+'px'},'slow');
 			e.preventDefault();
 		}
 	};
