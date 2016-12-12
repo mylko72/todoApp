@@ -2,7 +2,7 @@
 	* @Module $$.timeLine
 	* 1min = 2px, 5min = 10px, 1hours = 120px
 	*
-	* (c) 2016 mylko72@maru.net
+	* (c) 2016 mypmk72, freelancer & front end developer
 	*
 	* licenses:	http://codecanyon.net/licenses/
 	*

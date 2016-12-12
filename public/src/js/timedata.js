@@ -1,7 +1,7 @@
 /**
 	* @Module $$.timeData
 	*
-	* (c) 2016 mylko72@maru.net
+	* (c) 2016 mypmk72, freelancer & front end developer
 	*
 	* licenses:	http://codecanyon.net/licenses/
  **/

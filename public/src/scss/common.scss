@@ -227,6 +227,10 @@ input[type="checkbox"], input[type="radio"] {box-sizing:border-box; padding:0;}
 	}
 }
 
+@media screen and (min-width:0\0) and (min-resolution:.001dpcm) { 
+	.capsule { display:none; } 
+}
+
 .container {
 	margin-top: -80px;
 }

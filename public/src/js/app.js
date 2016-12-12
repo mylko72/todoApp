@@ -1,3 +1,9 @@
+/**
+	* (c) 2016 mypmk72, freelancer & front end developer
+	*
+	* licenses:	http://codecanyon.net/licenses/
+ **/
+
 // Defining a Global Namespace
 var $$ = $$ || {};
 
