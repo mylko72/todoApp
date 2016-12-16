@@ -23,6 +23,9 @@ var $$ = $$ || {};
         function init() {
 			$$.util = new $.Util();
 			$$.util.init();
+
+			$$.lazyload = new $.LazyLoadImages();
+
 			$$.timeLine.init();
 			$$.timeData.init();
 			$$.timeWork.init();

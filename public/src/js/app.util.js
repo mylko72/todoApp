@@ -64,7 +64,11 @@
 			var offset = elem.offset();
 
 			return offset.top;
-		}
+		};
+		
+		var scrollTop = function(){
+			return $(window).scrollTop();
+		};
 
 		// Move the scrollbar to the position of an element
 		var scrollTo = function(element, position, speed, func) { 
@@ -188,9 +192,157 @@
 			returnBr : returnBr,
 			returnLine : returnLine,
 			elemTop : elemTop,
+			scrollTop : scrollTop,
 			scrollTo : scrollTo,
 			replaceAll : replaceAll,
 			tooltip: tooltip
+		};
+	};
+}(jQuery));
+
+(function($){
+	var eventDriven = $('<div />'),
+		eventDictionary = {
+			global : {
+				RESIZE : 'resize',
+				 ROTATE : 'rotate',
+				 SCROLL : 'scroll'
+			 }
+		};
+
+	var ticking = false,
+		fireScroll = false,
+		fireResize = false;
+
+	/**
+	  Function to throttle speed of events
+	  @function throttle
+	 **/
+	var throttle = (function () {
+		return function (fn, delay) {
+			delay || (delay = 100);
+			var last = (function () {
+					return +new Date();
+				})(),
+			timeoutId = null;
+
+			return function () {
+				var args = arguments;
+				if (timeoutId) {
+					clearTimeout(timeoutId);
+					timeoutId = null;
+				}
+
+				var now = (function () {
+					return +new Date();
+				})();
+				if (now - last > delay) {
+					fn.apply(this, args);
+					last = now;
+				} else {
+					timeoutId = setTimeout(function () {
+						fn.apply(this, args);
+					}, delay);
+				}
+			};
+		};
+	})();
+
+	var requestTick = function(ev) {
+		if (!ticking) {
+			window.webkitRequestAnimationFrame(function () {
+				if (fireScroll) {
+					eventDriven.trigger(jQuery.Event(eventDictionary.global.SCROLL));
+					fireScroll = false;
+				}
+				if (fireResize) {
+					eventDriven.trigger(jQuery.Event(eventDictionary.global.RESIZE));
+					fireResize = false;
+				}
+				ticking = false;
+			});
+			ticking = true;
+		}
+	}
+
+	$.LazyLoadImages = function(){
+		return {
+			lazy : [],
+			elem : [],
+			init : function(el, index){
+				var self = this;
+				self.lazy = [];
+				self.elem = [];
+
+				self.elem = $(el);
+				self.setLazy(index);
+				self.bindEvents();
+
+				$$.util = new $.Util();
+			},
+			setLazy : function(index){
+				var self = this,
+					len = self.elem.length;
+				for(var i=0;i<len;i++){
+					var $elem = $(self.elem[i]);
+					if($elem.attr('data-lazy-loaded') !== 'true' && self.isInView($elem)){
+						if(i==index){
+							$elem.addClass('lazy');
+							$elem.attr('data-lazy-loaded', 'false');
+							self.lazy.push($elem);
+							setTimeout(function(){
+								eventDriven.trigger(jQuery.Event(eventDictionary.global.SCROLL));
+							}, 300);
+						}else{
+							$elem.attr('data-lazy-loaded', 'true');
+						}
+					}else{
+						$elem.addClass('lazy');
+						$elem.attr('data-lazy-loaded', 'false');
+						self.lazy.push($elem);
+					}
+				}
+			},
+			scan : function(){
+				var self = this,
+					len = self.lazy.length;
+
+				for(var i=0;i<len;i++){
+					var $lazy = $(self.lazy[i]);
+					if($lazy.attr('data-lazy-loaded') !== 'true' && self.isInView($lazy)){
+						$lazy.attr('data-lazy-loaded', 'true');
+						$lazy.animate({'opacity':1});
+						$lazy.removeClass('lazy');
+					}
+				}
+			},
+			isInView : function(elem){
+				if(!elem.is(':visible')){
+					return false;	
+				}
+				var elemTop = $$.util.elemTop(elem),
+					scrollBottom = $(window).height()+$$.util.scrollTop(),
+					threshold = 0;
+
+				if(elemTop < scrollBottom+threshold){
+					return true;
+				}
+				return false;
+		   	},
+			bindEvents : function(){
+				var self = this;
+				eventDriven.on(eventDictionary.global.SCROLL, function(e){
+					self.scan();
+				});
+				$(window).on('scroll', throttle(function (e) {
+					fireScroll = true;
+					if (typeof window.webkitRequestAnimationFrame !== 'undefined') {
+						requestTick();
+					} else {
+						eventDriven.trigger(jQuery.Event(eventDictionary.global.SCROLL));
+					}
+				}, 250));
+			}
 		};
 	};
 }(jQuery));

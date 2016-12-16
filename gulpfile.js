@@ -62,7 +62,7 @@ var scssOptions = {
 gulp.task('tmp:js:minify', function(){
 	gulp
 		.src(paths.js)
-		.pipe(stripDebug())
+		//.pipe(stripDebug())
 		.pipe(concat('tmp.combined.js'))
 		/*.pipe(uglify())
 		.pipe(rename('tmp.combined.min.js'))*/

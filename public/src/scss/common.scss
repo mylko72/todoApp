@@ -1157,8 +1157,8 @@ h3.years {font-size:18px;margin-bottom:10px;}
 			font-family: 'Open Sans', sans-serif;
 			font-weight: 500;
 			text-align: left;
-			-webkit-transition:height 1s, transform 2s;
-			transition:height 1s, transform 2s;
+			-webkit-transition:height 1s, transform .7s;
+			transition:height 1s, transform .7s;
 
 			.time-wrapper {
 				padding: 10px 15px;
@@ -1398,23 +1398,30 @@ h3.years {font-size:18px;margin-bottom:10px;}
 
 }
 
+.lazy {
+	-webkit-transition-property: opacity; 
+	-moz-transition-property: opacity; 
+	-o-transition-property: opacity; 
+	transition-property: opacity; 
+	-webkit-transition-duration: 0.3s; 
+	-moz-transition-duration: 0.3s; 
+	-o-transition-duration: 0.3s; 
+	transition-duration: 0.3s; 
+	-webkit-transition-timing-function: ease; 
+	-moz-transition-timing-function: ease; 
+	-o-transition-timing-function: ease; 
+	transition-timing-function: ease;
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0); 
+	transform:translateY(50px);
+	opacity: 0;
+}
+
 @media screen and (min-width: 400px) and (max-width: 660px) {
 
 	.todo-list .direction-l .desc,
 	.todo-list .direction-r .desc {
 		margin: 1em 4em 0 4em;
 	}
-
-}
-
-
-*:after,
-*:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 .switch {

@@ -798,6 +798,8 @@ $$.timeWork= (function ($) {
 			_storedData = storedData,
 			_templateUrl = templateUrl,
 			_$liEl;
+
+		console.log('_idx :'+_idx);
 	
 		$.ajax({
 			type : "GET",
@@ -841,6 +843,7 @@ $$.timeWork= (function ($) {
 					_$liEl = _$todoList.find('li').eq(_num);
 
 					_$liEl.addClass('time_'+item.id);
+					//_$liEl.find('.flag-wrapper').addClass('lazy');
 					_$liEl.find('.title').text(item.title);
 					_$liEl.find('.start-time').text(item.startTime);
 					_$liEl.find('.end-time').text(item.endTime);
@@ -861,6 +864,9 @@ $$.timeWork= (function ($) {
 
 					_num++;
 				});
+			},
+			complete: function(){
+				$$.lazyload.init('.flag-wrapper', _idx);
 			}
 		});
 

@@ -95,8 +95,6 @@ $$.timeLine = (function ($) {
 
 		_$timeline.empty();
 
-		console.log(_totalUnit);
-
 		for(var i=0;i<_totalUnit;i++){
 			$('<div class="unit bg1" />').appendTo(_$timeline);
 		}
