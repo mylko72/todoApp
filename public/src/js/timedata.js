@@ -52,15 +52,15 @@ $$.timeData = (function ($) {
 
 		if(_currentDay > _daysInMonth){						//현재 날짜가 총일수보다 커지면 다음달로 설정
 			_dateObj.setDate (_dateObj.getDate () + 1);
-			//_month = _dateObj.getMonth()+1;
+			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
 
 			_currentDay = _today;
 
 		}else{
 
-			//_year = _dateObj.getFullYear();
-			//_month = _dateObj.getMonth()+1;
+			_year = _dateObj.getFullYear();
+			_month = _dateObj.getMonth()+1;
 			_date = _dateObj.getDate();
 
 			if(_currentDay==null){
@@ -80,6 +80,10 @@ $$.timeData = (function ($) {
 	_getTime = function (clickcnt, startoffsetx, endoffsetx){
 		
 		var _self = this;
+
+		if($('.container').data('mode')=='new'){
+			_todayObj = new Date();
+		}
 
 		if(clickcnt==1){
 			var _startTime = startoffsetx / 2;

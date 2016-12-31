@@ -16,7 +16,7 @@ $$.timeWork= (function ($) {
 		_clicked = false,
 		_saved = false,
 		_cntDone = 0,
-		_chkDate,
+		_chkVal = {},
 		_mode = "",
 		_timeStr = null,
 		_timer = null,
@@ -54,6 +54,8 @@ $$.timeWork= (function ($) {
 
 	//--- Initialized method ---
 	_init = function (timeline) {
+
+		$('.container').data('mode','new');
 
 		_updateClock();
 		_refreshIntervalId = setInterval (_updateClock, 1000);
@@ -181,9 +183,9 @@ $$.timeWork= (function ($) {
 
 		$(document).on('click', '.alert-status .btn', function(){
 			var _idkey = $(this).parents('#alert').data('id'),
-				_chkVal = $('#bar_'+_idkey).find('.switch input:checkbox').is(':checked');
+				_checkVal = $('#bar_'+_idkey).find('.switch input:checkbox').is(':checked');
 
-			$(this).hasClass('btn-ok') ? _chkToDone(_idkey) : $('#bar_'+_idkey).find('.switch input:checkbox').prop('checked',!_chkVal);
+			$(this).hasClass('btn-ok') ? _chkToDone(_idkey) : $('#bar_'+_idkey).find('.switch input:checkbox').prop('checked',!_checkVal);
 
 			$(this).parent('.alert').removeClass('alert-status');
 			$('#alert').hide();
@@ -379,6 +381,9 @@ $$.timeWork= (function ($) {
 			_month = _now.getMonth()+1,
 			_date = _now.getDate();
 
+		_month = ( _month > 9 ) ? _month : "0" + _month;
+		_date = ( _date > 9 ) ? _date : "0" + _date;
+		
 		//var timeStr = now.replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
 		_$clock.find('.date')[0].innerHTML = _year + '-' + _month + '-' + _date;
 		_$clock.find('.time')[0].innerHTML = _timerFn();
@@ -461,8 +466,10 @@ $$.timeWork= (function ($) {
 		_mode = 'LOAD';
 		_stopped = true;
 		_hour = parseInt(_startTime.split(':')[0]);
-
 		_stopClock(_storedData[0].startDate);
+
+		$('.container').data('mode','loaded');
+		
 		$$.timeData.setObjDate(_dateStr);
 		$$.timeLine.init(_hour);
 
@@ -643,8 +650,6 @@ $$.timeWork= (function ($) {
 
 			_timeStr = $$.timeData.getTime(_clickCnt, _startOffsetX, _endOffsetX);	//할일 시간 설정
 
-			console.log(_timeStr.startDate());
-
 			//설정한 시간만큼 Bar를 타임시트에 생성
 			TimeModel.drawBar(_$timeline, _$bar, _startOffsetX, _endOffsetX);
 
@@ -775,7 +780,9 @@ $$.timeWork= (function ($) {
 
 		if(!_countTotal()){
 			$('.todo-area').find('.nolist').show();
-			_chkDate = '';
+			_chkVal.date = '';
+			_chkVal.offsetX = '';
+			_chkVal.offsetX2 = '';
 		}
 
 		setTimeout(function(){
@@ -809,22 +816,16 @@ $$.timeWork= (function ($) {
 
 					var _newLi = $(template).find('.todo-list > li');				
 
-					//console.log('_chkDate :'+_chkDate);
-					//console.log('item.startDate :'+item.startDate);
-
-					if(_chkDate != item.startDate){
+					if(_chkVal.date != item.startDate){
 						if(_$todoArea.find('.date_'+item.startDate).size()==0){
 							var i;
 
-							if(_chkDate){
-								var lastIdx = _chkDate.lastIndexOf('-');
-								var _dd = _chkDate.substring(lastIdx+1, _chkDate.length);
-								var lastIdx2 = item.startDate.lastIndexOf('-');
-								var _dd2 = item.startDate.substring(lastIdx2+1, item.startDate.length);
+							if(_chkVal.date){
+								_chkVal.offsetX2 = item.startPoint;
 							}
 
-							_dd2 < _dd ? _$todoArea.prepend(template) : _$todoArea.append(template);
-							_dd2 < _dd ? i = 0 : i = -1; 
+							_chkVal.offsetX2 < _chkVal.offsetX ? _$todoArea.prepend(template) : _$todoArea.append(template);
+							_chkVal.offsetX2 < _chkVal.offsetX ? i = 0 : i = -1; 
 								
 							_$todoArea.find('.time-area').eq(i).addClass('date_'+item.startDate);
 							$('.date_'+item.startDate).find('.time-tit').text(item.startDate);
@@ -832,9 +833,9 @@ $$.timeWork= (function ($) {
 							_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 						}
 
-						_chkDate = item.startDate;
+						_chkVal.date = item.startDate;
+						_chkVal.offsetX = item.startPoint;
 						_num = 0;
-
 					} else {
 						_$todoArea.find('.date_'+item.startDate).find('.todo-list').append(_newLi);
 					}
