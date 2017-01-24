@@ -37,7 +37,7 @@ html {
 html, body {
 	margin: 0px;
 	padding: 0px;
-	background: #f7f7f7 url(../img/bg.png) repeat center top;
+	background: #f7f7f7 url(../../src/img/bg.png) repeat center top;
 	font-family: Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif;
 	font-size: 100%;
 	color: #666;
@@ -226,7 +226,7 @@ input[type="checkbox"], input[type="radio"] {
 /* line 68, /Users/mylko_mac/Documents/todoApp/public/src/scss/common.scss */
 .header {
 	height: 400px;
-	background: url(../img/header-background-front.png) left top repeat-x;
+	background: url(../../src/img/header-background-front.png) left top repeat-x;
 }
 
 /* line 72, /Users/mylko_mac/Documents/todoApp/public/src/scss/common.scss */
@@ -635,7 +635,7 @@ input[type="checkbox"], input[type="radio"] {
 	width: 100%;
 	height: 19px;
 	padding: 2px 0 0 26px;
-	background: url(../img/icon_checkbox.png) 0 0 no-repeat;
+	background: url(../../src/img/icon_checkbox.png) 0 0 no-repeat;
 	color: #555;
 	cursor: pointer;
 }
@@ -735,7 +735,7 @@ input[type="checkbox"], input[type="radio"] {
 	top: 0;
 	cursor: pointer;
 	z-index: 10;
-	background: #f7f7f7 url(../img/bg.png) repeat center top;
+	background: #f7f7f7 url(../../src/img/bg.png) repeat center top;
 }
 
 /* line 498, /Users/mylko_mac/Documents/todoApp/public/src/scss/common.scss */
