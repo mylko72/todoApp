@@ -17,12 +17,12 @@
 
 @font-face {
 	font-family: 'DIGITALDREAMFATNARROW';
-	src: url("../fonts/DIGITALDREAMFATNARROW.ttf");
+	src: url("../../src/fonts/DIGITALDREAMFATNARROW.ttf");
 }
 
 @font-face {
 	font-family: 'Open Sans';
-	src: url("../fonts/OpenSans-Regular.ttf");
+	src: url("../../src/fonts/OpenSans-Regular.ttf");
 }
 
 /* line 23, /Users/mylko_mac/Documents/todoApp/public/src/scss/common.scss */
@@ -37,7 +37,7 @@ html {
 html, body {
 	margin: 0px;
 	padding: 0px;
-	background: #f7f7f7 url(/img/bg.png) repeat center top;
+	background: #f7f7f7 url(../img/bg.png) repeat center top;
 	font-family: Tahoma,"Nanum Gothic", 'Dotum', 'serif', sans-serif;
 	font-size: 100%;
 	color: #666;
@@ -635,7 +635,7 @@ input[type="checkbox"], input[type="radio"] {
 	width: 100%;
 	height: 19px;
 	padding: 2px 0 0 26px;
-	background: url(/img/icon_checkbox.png) 0 0 no-repeat;
+	background: url(../img/icon_checkbox.png) 0 0 no-repeat;
 	color: #555;
 	cursor: pointer;
 }
@@ -735,7 +735,7 @@ input[type="checkbox"], input[type="radio"] {
 	top: 0;
 	cursor: pointer;
 	z-index: 10;
-	background: #f7f7f7 url(/img/bg.png) repeat center top;
+	background: #f7f7f7 url(../img/bg.png) repeat center top;
 }
 
 /* line 498, /Users/mylko_mac/Documents/todoApp/public/src/scss/common.scss */
