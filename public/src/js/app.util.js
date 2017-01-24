@@ -30,6 +30,16 @@
 					}
 				}
 			}
+
+			if (!Number.isNaN) { 
+				/* Polyphil to check for NaN
+				 * var a = 2/"foo";
+				 * Number.isNaN(a);
+				 */
+				Number.isNaN = function(n) { 
+					return n !== n;
+				};
+			}
 		}
 
 		// Generate ramdom key
